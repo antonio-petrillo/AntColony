@@ -1,7 +1,6 @@
-package com.example.mfaella.physicsapp;
+package com.gdd.game;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.google.fpl.liquidfun.Body;
 

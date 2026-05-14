@@ -1,4 +1,4 @@
-package com.example.mfaella.physicsapp;
+package com.gdd.game;
 
 import android.util.Log;
 
@@ -78,16 +78,6 @@ public class TouchConsumer {
                 setupMouseJoint(x, y, touchedBody);
                 // splitBox(touchedGO, touchedBody);
             }
-        }
-    }
-
-    // If a DynamicBox is touched, it splits into two
-    private void splitBox(GameObject touchedGO, Body touchedBody) {
-        if (touchedGO instanceof DynamicBoxGO) {
-            gw.world.destroyBody(touchedBody);
-            gw.objects.remove(touchedGO);
-            gw.addGameObject(new DynamicBoxGO(gw, touchedBody.getPositionX(), touchedBody.getPositionY()));
-            gw.addGameObject(new DynamicBoxGO(gw, touchedBody.getPositionX(), touchedBody.getPositionY()));
         }
     }
 

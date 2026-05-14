@@ -1,9 +1,8 @@
-package com.example.mfaella.physicsapp;
+package com.gdd.game;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.util.Log;
 
 /**
  * Created by mfaella on 28/02/16.

@@ -1,24 +1,16 @@
-package com.example.mfaella.physicsapp;
+package com.gdd.game;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.os.Build;
-import android.util.Log;
 
 import com.badlogic.androidgames.framework.Input;
-import com.badlogic.androidgames.framework.Sound;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
-import com.google.fpl.liquidfun.ContactListener;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.ParticleSystemDef;
 import com.google.fpl.liquidfun.World;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,15 +22,13 @@ public class GameWorld {
     // Rendering
     final static int bufferWidth = 400, bufferHeight = 600;    // actual pixels
     Bitmap buffer;
-    private Canvas canvas;
-    private Paint particlePaint;
+    private final Canvas canvas;
 
     // Simulation
     List<GameObject> objects;
     World world;
     final Box physicalSize, screenSize, currentView;
-    private MyContactListener contactListener;
-    private TouchConsumer touchConsumer;
+    private final TouchConsumer touchConsumer;
     private TouchHandler touchHandler;
 
     // Particles
@@ -47,7 +37,6 @@ public class GameWorld {
     private static final float PARTICLE_RADIUS = 0.3f;
 
     // Parameters for world simulation
-    private static final float TIME_STEP = 1 / 50f; // 50 fps
     private static final int VELOCITY_ITERATIONS = 8;
     private static final int POSITION_ITERATIONS = 3;
     private static final int PARTICLE_ITERATIONS = 3;
@@ -74,9 +63,6 @@ public class GameWorld {
         psysdef.delete();
 
         // stored to prevent GC
-        contactListener = new MyContactListener();
-        world.setContactListener(contactListener);
-
         touchConsumer = new TouchConsumer(this);
 
         this.objects = new ArrayList<>();
@@ -104,8 +90,6 @@ public class GameWorld {
         world.step(elapsedTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
 
         // Handle collisions
-        handleCollisions(contactListener.getCollisions());
-
         // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents())
             touchConsumer.consumeTouchEvent(event);
@@ -118,20 +102,6 @@ public class GameWorld {
         for (GameObject obj: objects)
             obj.draw(buffer);
         // drawParticles();
-    }
-
-    private void handleCollisions(Collection<Collision> collisions) {
-        for (Collision event: collisions) {
-            Sound sound = CollisionSounds.getSound(event.a.getClass(), event.b.getClass());
-            if (sound!=null) {
-                long currentTime = System.nanoTime();
-                if (currentTime - timeOfLastSound > 500_000_000) {
-                    timeOfLastSound = currentTime;
-                    sound.play(0.7f);
-                }
-            }
-        }
-
     }
 
     // Conversions between screen coordinates and physical coordinates
@@ -157,9 +127,13 @@ public class GameWorld {
     }
 
     @Override
-    public void finalize()
+    protected void finalize() throws Throwable
     {
-        world.delete();
+        try {
+            world.delete();
+        } finally {
+            super.finalize();
+        }
     }
 
     public void setTouchHandler(TouchHandler touchHandler) {

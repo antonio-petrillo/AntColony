@@ -11,6 +11,7 @@ import com.google.fpl.liquidfun.PolygonShape;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 // TODO: by default in the center of the screen
 public class Nest extends GameObject {
@@ -19,6 +20,8 @@ public class Nest extends GameObject {
     private final Canvas canvas;
     private final Paint paint = new Paint();
     private final float HALF_WIDTH = 0.5f, HALF_HEIGHT = 0.5f;
+    private final float SPAWN_DIST = 1.0f;
+    private final Random rng = new Random();
 
     private final float xmin, ymin, xmax, ymax;
 
@@ -58,7 +61,11 @@ public class Nest extends GameObject {
     }
 
     public void spawn() {
-        var ant = new Ant(gw);
+       float angle = rng.nextFloat(360.0f);
+       float x = (float) Math.cos(angle) * SPAWN_DIST;
+        float y = (float) Math.sin(angle) * SPAWN_DIST;
+
+        var ant = new Ant(gw, x, y, angle);
         ants.add(ant);
         gw.addGameObject(ant);
     }

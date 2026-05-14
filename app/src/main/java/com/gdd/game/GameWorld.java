@@ -80,12 +80,9 @@ public class GameWorld {
     {
         objects.add(obj);
     }
-
-    // To distance sounds from each other
-    private long timeOfLastSound = 0;
-
-    public synchronized void update(float elapsedTime)
-    {
+    private float spawnAccum = 0.0f;
+    private static final float SPAWN_INTERVAL = 1.0f;
+    public synchronized void update(float elapsedTime)  {
         // advance the physics simulation
         world.step(elapsedTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
 
@@ -93,6 +90,30 @@ public class GameWorld {
         // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents())
             touchConsumer.consumeTouchEvent(event);
+
+        spawnAccum += elapsedTime;
+
+        var iter = objects.iterator();
+        Nest nest = null;
+        while (iter.hasNext()) {
+            var obj = iter.next();
+            float x = obj.body.getPositionX();
+            float y = obj.body.getPositionY();
+            if (x < physicalSize.xmin || x > physicalSize.xmax || y < physicalSize.ymin || y > physicalSize.ymax) {
+                iter.remove();
+            }
+
+            if (spawnAccum >= SPAWN_INTERVAL && obj instanceof Nest theNest) {
+                nest = theNest;
+            }
+        }
+
+        if (spawnAccum >= SPAWN_INTERVAL) {
+            spawnAccum = 0.0f;
+            if (nest != null)
+                for (int i = 0; i < 5; i++)
+                    nest.spawn();
+        }
     }
 
     public synchronized void render()

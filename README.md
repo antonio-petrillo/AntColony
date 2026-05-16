@@ -1,10 +1,14 @@
-# DragMe
+# AntColony
 
-DragMe is an Android app that simulates the movement of a set of rigid bodies in 2D.
-Bodies can be dragged around using the touchscreen.
-They are subject to gravity, whose direction is aligned to the earth thanks to accelerometer data.
+Progetto per il corso GameDesign and Development della Federico II, anno accademico 2025/2026.
 
-It is intended as an educational project, showing how to use the JLiquidFun library for
-physics simulations.
-
-Part of the "Game Design and Development" curriculum at the University of Naples "Federico II", Italy.
+# Progress
+- [x] fork from [DragMe](https://github.com/mfaella/DragMe.git)
+- [x] basic nest + ant simultation
+- [x] implement ecs 
+- [ ] implement fsm
+- [ ] implement ant wander system
+- [ ] implement food (spawn & gather)
+- [ ] implement enemies (wasp, spawn & gather)
+- [ ] implement card system
+- [ ] implement camera view (pan & zoom)

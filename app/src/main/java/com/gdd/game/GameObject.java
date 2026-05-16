@@ -4,19 +4,15 @@ import android.graphics.Bitmap;
 
 import com.google.fpl.liquidfun.Body;
 
-/**
- * Created by mfaella on 27/02/16.
- */
 public abstract class GameObject {
-    Body body;
-    protected String name;
+    public Body body;
+    public String name;
     protected GameWorld gw;
 
-    public GameObject(GameWorld gw)
-    {
+
+    public GameObject(GameWorld gw) {
         this.gw = gw;
     }
-
     public boolean draw(Bitmap buffer)
     {
         if (body!=null) {

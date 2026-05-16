@@ -3,36 +3,38 @@ package com.gdd.game;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
+import com.gdd.game.ecs.entities.AntFactory;
+import com.gdd.game.ecs.entities.Entity;
+import com.gdd.game.ecs.entities.NestFactory;
+import com.gdd.game.ecs.systems.RenderSystem;
+import com.gdd.game.ecs.systems.WorldBoundSystem;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.ParticleSystemDef;
 import com.google.fpl.liquidfun.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-/**
- * The game objects and the viewport.
- *
- * Created by mfaella on 27/02/16.
- */
 public class GameWorld {
     // Rendering
-    final static int bufferWidth = 400, bufferHeight = 600;    // actual pixels
-    Bitmap buffer;
+    public final static int bufferWidth = 400, bufferHeight = 600;    // actual pixels
+    public Bitmap buffer;
     private final Canvas canvas;
 
     // Simulation
-    List<GameObject> objects;
-    World world;
-    final Box physicalSize, screenSize, currentView;
+    public List<GameObject> objects;
+    public World world;
+    public final Box physicalSize, screenSize, currentView;
     private final TouchConsumer touchConsumer;
     private TouchHandler touchHandler;
 
     // Particles
-    ParticleSystem particleSystem;
+    public ParticleSystem particleSystem;
     private static final int MAXPARTICLECOUNT = 1000;
     private static final float PARTICLE_RADIUS = 0.3f;
 
@@ -41,9 +43,11 @@ public class GameWorld {
     private static final int POSITION_ITERATIONS = 3;
     private static final int PARTICLE_ITERATIONS = 3;
 
-    final Activity activity; // just for loading bitmaps in game objects
+    public final Activity activity; // just for loading bitmaps in game objects
 
-    // Arguments are in physical simulation units.
+    public RenderSystem rsys;
+    public WorldBoundSystem wbsys;
+    public List<Entity> entities = new ArrayList<>();
     public GameWorld(Box physicalSize, Box screenSize, Activity theActivity) {
         this.physicalSize = physicalSize;
         this.screenSize = screenSize;
@@ -51,37 +55,34 @@ public class GameWorld {
         this.buffer = Bitmap.createBitmap(bufferWidth, bufferHeight, Bitmap.Config.ARGB_8888);
         this.world = new World(0, 0);  // gravity vector
 
-        this.currentView = physicalSize;
-        // Start with half the world
-        // new Box(physicalSize.xmin, physicalSize.ymin, physicalSize.xmax, physicalSize.ymin + physicalSize.height/2);
-
-        // The particle system
-        ParticleSystemDef psysdef = new ParticleSystemDef();
-        this.particleSystem = world.createParticleSystem(psysdef);
-        particleSystem.setRadius(PARTICLE_RADIUS);
-        particleSystem.setMaxParticleCount(MAXPARTICLECOUNT);
-        psysdef.delete();
+        this.currentView = new Box(physicalSize);
 
         // stored to prevent GC
         touchConsumer = new TouchConsumer(this);
 
         this.objects = new ArrayList<>();
         this.canvas = new Canvas(buffer);
+
+        rsys = new RenderSystem(this);
+        wbsys = new WorldBoundSystem(this);
+
+        var nest = NestFactory.makeNest(this);
+        entities.add(nest);
+
+        for (int i = 0; i < 100; i++) {
+//        for (int i = 0; i < 1; i++) {
+            float angle = rng.nextFloat(360.0f);
+            float x = (float) Math.cos(angle) * SPAWN_DIST;
+            float y = (float) Math.sin(angle) * SPAWN_DIST;
+
+            var ant = AntFactory.makeAnt(this, x, y, angle);
+            entities.add(ant);
+        }
     }
 
+    private static final Random rng = new Random();
+    private final float SPAWN_DIST = 1.0f;
 
-    public synchronized GameObject addGameObject(GameObject obj)
-    {
-        objects.add(obj);
-        return obj;
-    }
-
-    public synchronized void addParticleGroup(GameObject obj)
-    {
-        objects.add(obj);
-    }
-    private float spawnAccum = 0.0f;
-    private static final float SPAWN_INTERVAL = 1.0f;
     public synchronized void update(float elapsedTime)  {
         // advance the physics simulation
         world.step(elapsedTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
@@ -91,38 +92,14 @@ public class GameWorld {
         for (Input.TouchEvent event: touchHandler.getTouchEvents())
             touchConsumer.consumeTouchEvent(event);
 
-        spawnAccum += elapsedTime;
-
-        var iter = objects.iterator();
-        Nest nest = null;
-        while (iter.hasNext()) {
-            var obj = iter.next();
-            float x = obj.body.getPositionX();
-            float y = obj.body.getPositionY();
-            if (x < physicalSize.xmin || x > physicalSize.xmax || y < physicalSize.ymin || y > physicalSize.ymax) {
-                iter.remove();
-            }
-
-            if (spawnAccum >= SPAWN_INTERVAL && obj instanceof Nest theNest) {
-                nest = theNest;
-            }
-        }
-
-        if (spawnAccum >= SPAWN_INTERVAL) {
-            spawnAccum = 0.0f;
-            if (nest != null)
-                for (int i = 0; i < 5; i++)
-                    nest.spawn();
-        }
+        wbsys.update(entities, elapsedTime);
     }
 
     public synchronized void render()
     {
         // clear the screen (with black)
         canvas.drawARGB(255, 0, 0, 0);
-        for (GameObject obj: objects)
-            obj.draw(buffer);
-        // drawParticles();
+        rsys.update(entities, 0.0f);
     }
 
     // Conversions between screen coordinates and physical coordinates

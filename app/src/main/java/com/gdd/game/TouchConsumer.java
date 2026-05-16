@@ -3,6 +3,9 @@ package com.gdd.game;
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Input;
+import com.gdd.game.ecs.components.ComponentType;
+import com.gdd.game.ecs.components.PhysicComponent;
+import com.gdd.game.ecs.entities.Entity;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.Fixture;
 import com.google.fpl.liquidfun.MouseJoint;
@@ -16,8 +19,9 @@ public class TouchConsumer {
 
     // keep track of what we are dragging
     private MouseJoint mouseJoint;
-    private int activePointerID;
+    private int activePointerID = -1;
     private Fixture touchedFixture;
+    private float lastX, lastY;
 
     private GameWorld gw;
     private QueryCallback touchQueryCallback = new TouchQueryCallback();
@@ -25,8 +29,7 @@ public class TouchConsumer {
     // physical units, semi-side of a square around the touch point
     private final static float POINTER_SIZE = 0.5f;
 
-    private class TouchQueryCallback extends QueryCallback
-    {
+    private class TouchQueryCallback extends QueryCallback {
         public boolean reportFixture(Fixture fixture) {
             touchedFixture = fixture;
             return true;
@@ -40,8 +43,7 @@ public class TouchConsumer {
         this.gw = gw;
     }
 
-    public void consumeTouchEvent(Input.TouchEvent event)
-    {
+    public void consumeTouchEvent(Input.TouchEvent event) {
         switch (event.type) {
             case Input.TouchEvent.TOUCH_DOWN:
                 consumeTouchDown(event);
@@ -72,11 +74,20 @@ public class TouchConsumer {
             Body touchedBody = touchedFixture.getBody();
             Object userData = touchedBody.getUserData();
             if (userData != null) {
-                GameObject touchedGO = (GameObject) userData;
-                activePointerID = pointerId;
-                Log.d("MultiTouchHandler", "touched game object " + touchedGO.name);
-                setupMouseJoint(x, y, touchedBody);
-                // splitBox(touchedGO, touchedBody);
+                if (userData instanceof GameObject touchedGO) {
+//                    GameObject touchedGO = (GameObject) userData;
+                    activePointerID = pointerId;
+                    Log.d("MultiTouchHandler", "touched game object " + touchedGO.name);
+                    setupMouseJoint(x, y, touchedBody);
+                    // splitBox(touchedGO, touchedBody);
+                } else if (userData instanceof Entity entity) {
+                    var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
+                    if (phys == null) return;
+
+                    activePointerID = pointerId;
+                    Log.d("MultiTouchHandler", "touched entity ");
+                    setupMouseJoint(x, y, touchedBody);
+                }
             }
         }
     }

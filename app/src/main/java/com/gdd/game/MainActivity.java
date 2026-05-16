@@ -3,17 +3,22 @@ package com.gdd.game;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.WindowMetrics;
 
 import com.badlogic.androidgames.framework.Audio;
 import com.badlogic.androidgames.framework.Music;
 import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.badlogic.androidgames.framework.impl.MultiTouchHandler;
+
+import java.io.IOException;
 
 public class MainActivity extends Activity {
 
@@ -39,6 +44,9 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        var manager = getAssets();
+        Assets.load(manager);
+
         // Sound
         Audio audio = new AndroidAudio(this);
         backgroundMusic = audio.newMusic("soundtrack.mp3");
@@ -50,14 +58,6 @@ public class MainActivity extends Activity {
         Box physicalSize = new Box(XMIN, YMIN, XMAX, YMAX),
             screenSize   = new Box(0, 0, metrics.widthPixels, metrics.heightPixels);
         GameWorld gw = new GameWorld(physicalSize, screenSize, this);
-
-        var nest = new Nest(gw);
-        gw.addGameObject(nest);
-
-        // NOTE: just for test
-        for (int i = 0; i < 100; i++) {
-            nest.spawn();
-        }
 
         // View
         renderView = new AndroidFastRenderView(this, gw);

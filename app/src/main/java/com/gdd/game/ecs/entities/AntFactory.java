@@ -1,11 +1,11 @@
-package com.gdd.game;
+package com.gdd.game.ecs.entities;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.util.Log;
 
+import com.gdd.game.GameWorld;
+import com.gdd.game.ecs.components.HealthComponent;
+import com.gdd.game.ecs.components.PhysicComponent;
+import com.gdd.game.ecs.components.RenderComponent;
 import com.google.fpl.liquidfun.BodyDef;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.CircleShape;
@@ -14,26 +14,17 @@ import com.google.fpl.liquidfun.Vec2;
 
 import java.util.Random;
 
-public class Ant extends GameObject {
+public class AntFactory {
+
     private static final float DENSITY     = 1.0f;
     private static final float FRICTION    = 0.3f;
     private static final float RESTITUTION = 0.2f;
     private static final float RADIUS = 0.1f;
     private static final float SPEED   = 0.5f;
-
-    private final Canvas canvas;
     private static final Random rng = new Random();
+    private  AntFactory() {}
 
-    private final Paint paint = new Paint();
-    private final Path drawPath = new Path();
-
-    public Ant(GameWorld gw, float x, float y, float direction) {
-       super(gw);
-       name = "ANT";
-
-       canvas = new Canvas(gw.buffer);
-       paint.setARGB(255, 170, 0, 200);
-       paint.setStyle(Paint.Style.FILL);
+    public static Entity makeAnt(GameWorld gw, float x, float y, float direction) {
 
         BodyDef bdef = new BodyDef();
         bdef.setType(BodyType.dynamicBody);
@@ -41,8 +32,7 @@ public class Ant extends GameObject {
 
         bdef.setAngle(direction);
 
-        body = gw.world.createBody(bdef);
-        body.setUserData(this);
+        var body = gw.world.createBody(bdef);
         body.setSleepingAllowed(false);
 
         CircleShape shape = new CircleShape();
@@ -63,19 +53,16 @@ public class Ant extends GameObject {
         fdef.delete();
         bdef.delete();
         shape.delete();
-    }
+        var ant = new Entity();
 
-    public void update(float dt) {
+        ant.addComponent(new HealthComponent(25));
+        ant.addComponent(new PhysicComponent(body));
+        var paint = new Paint();
+        paint.setARGB(64, 100, 0, 100);
+        ant.addComponent(new RenderComponent(paint, RenderComponent.Kind.ANT));
 
-    }
+        body.setUserData(ant);
 
-    @Override
-    public void draw(Bitmap buf, float x, float y, float angle) {
-        float r = gw.toPixelsXLength(RADIUS);
-        canvas.save();
-        canvas.translate(x, y);
-        canvas.rotate((float) Math.toDegrees(angle));
-        canvas.drawCircle(0, 0, r, paint);
-        canvas.restore();
+        return  ant;
     }
 }

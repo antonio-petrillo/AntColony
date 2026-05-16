@@ -5,8 +5,16 @@ package com.gdd.game;
  */
 public class Box {
     public float xmin, ymin, xmax, ymax, width, height;
-    public Box(float xmin, float ymin, float xmax, float ymax)
-    {
+
+    public Box(Box box) {
+        xmin = box.xmin;
+        xmax = box.xmax;
+        ymin = box.ymin;
+        ymax = box.ymax;
+        width = box.width;
+        height = box.height;
+    }
+    public Box(float xmin, float ymin, float xmax, float ymax) {
         this.xmin = xmin;
         this.xmax = xmax;
         this.ymin = ymin;

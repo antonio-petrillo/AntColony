@@ -2,19 +2,15 @@ package com.gdd.game.ecs.components;
 
 import android.graphics.Paint;
 
-public class RenderComponent extends Component {
+import com.gdd.game.ecs.entities.Entity;
 
-    public enum Kind {
-        ANT, NEST, WASP, FOOD, CARD;
-    }
+public class RenderComponent extends Component {
 
     // TODO: support paint and bitmap
     public Paint paint;
-    public Kind kind;
 
-    public RenderComponent(Paint paint, Kind kind) {
+    public RenderComponent(Paint paint) {
         this.paint = paint;
-        this.kind = kind;
     }
 
     @Override

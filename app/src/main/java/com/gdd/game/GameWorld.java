@@ -10,6 +10,7 @@ import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.ecs.entities.AntFactory;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.NestFactory;
+import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.WorldBoundSystem;
 import com.google.fpl.liquidfun.ParticleSystem;
@@ -47,6 +48,7 @@ public class GameWorld {
 
     public RenderSystem rsys;
     public WorldBoundSystem wbsys;
+    public AiSystem aisys;
     public List<Entity> entities = new ArrayList<>();
     public GameWorld(Box physicalSize, Box screenSize, Activity theActivity) {
         this.physicalSize = physicalSize;
@@ -65,12 +67,12 @@ public class GameWorld {
 
         rsys = new RenderSystem(this);
         wbsys = new WorldBoundSystem(this);
+        aisys = new AiSystem(this);
 
         var nest = NestFactory.makeNest(this);
         entities.add(nest);
 
-        for (int i = 0; i < 100; i++) {
-//        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 1000; i++) {
             float angle = rng.nextFloat(360.0f);
             float x = (float) Math.cos(angle) * SPAWN_DIST;
             float y = (float) Math.sin(angle) * SPAWN_DIST;
@@ -93,6 +95,7 @@ public class GameWorld {
             touchConsumer.consumeTouchEvent(event);
 
         wbsys.update(entities, elapsedTime);
+        aisys.update(entities, elapsedTime);
     }
 
     public synchronized void render()

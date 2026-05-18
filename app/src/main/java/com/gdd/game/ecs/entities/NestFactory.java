@@ -15,7 +15,7 @@ public class NestFactory {
     private NestFactory() {}
 
     private static int nestCount = 0;
-    private static Entity theNest = new Entity();
+    private static Entity theNest = new Entity(Entity.Kind.NEST);
 
     public static Entity makeNest(GameWorld gw) {
         if (nestCount > 0) {
@@ -27,7 +27,7 @@ public class NestFactory {
         Paint paint = new Paint();
         paint.setARGB(255, 0, 255, 0);
         paint.setStyle(Paint.Style.STROKE);
-        theNest.addComponent(new RenderComponent(paint, RenderComponent.Kind.NEST));
+        theNest.addComponent(new RenderComponent(paint));
 
         final float SIDE = 0.25f;
 

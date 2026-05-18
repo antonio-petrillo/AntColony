@@ -41,7 +41,7 @@ public class RenderSystem implements System {
             if (x < view.xmin || x > view.xmax || y < view.ymin || y > view.ymax)
                 continue;
 
-            switch (render.kind) {
+            switch (entity.kind) {
                 case ANT: renderAnt(x, y, phys.body.getAngle(), render); break;
                 case NEST: renderNest(render); break;
                 case WASP: break;
@@ -61,7 +61,6 @@ public class RenderSystem implements System {
 
         dst.set(screenX - halfWidth, screenY - halfHeight, screenX + halfWidth, screenY + halfHeight);
         canvas.save();
-//        canvas.drawRect(dst, render.paint);
         canvas.drawBitmap(Assets.NEST_BITMAP, null, dst, render.paint);
         canvas.restore();
     }
@@ -70,14 +69,16 @@ public class RenderSystem implements System {
         float screenX = gw.toPixelsX(x);
         float screenY = gw.toPixelsY(y);
 
-        final float halfWidth = gw.toPixelsXLength(0.1f);
-        final float halfHeight = gw.toPixelsYLength(0.1f);
+        angle = (float) Math.atan2(Math.sin(angle), Math.cos(angle));
+
+        final float halfWidth = gw.toPixelsXLength(0.3f);
+        final float halfHeight = gw.toPixelsYLength(0.3f);
 
         dst.set(-halfWidth, -halfHeight, halfWidth, halfHeight);
 
         canvas.save();
         canvas.translate(screenX, screenY);
-        canvas.rotate((float) Math.toDegrees(angle));
+        canvas.rotate((float) Math.toDegrees(angle) + 90.0f);
         canvas.drawBitmap(Assets.ANT_BITMAP, null, dst, render.paint);
         canvas.restore();
     }

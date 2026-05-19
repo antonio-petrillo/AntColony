@@ -41,6 +41,16 @@ public class Assets {
             throw new RuntimeException("Can't load bitmap: " + ANT_BITMAP_PATH);
         }
 
+        try (var stream = manager.open(FOOD_BITMAP_PATH)) {
+            FOOD_BITMAP = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (FOOD_BITMAP== null) {
+            throw new RuntimeException("Can't load bitmap: " + FOOD_BITMAP_PATH);
+        }
+
         loaded = true;
     }
 

@@ -15,8 +15,12 @@ public class AiComponent extends Component {
     }
 
     public State current;
+    public boolean isColliding = false;
     public float timeAccumulator = 0.0f;
-    public AiComponent(State initial) {
+    public float timeBetweenActions;
+
+    public AiComponent(State initial, float timeBetweenActions) {
         current = initial;
+        this.timeBetweenActions = timeBetweenActions;
     }
 }

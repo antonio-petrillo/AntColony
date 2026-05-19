@@ -10,9 +10,11 @@ import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.ecs.entities.AntFactory;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.NestFactory;
+import com.gdd.game.ecs.misc.EntityContactListener;
 import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.WorldBoundSystem;
+import com.google.fpl.liquidfun.ContactListener;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.ParticleSystemDef;
 import com.google.fpl.liquidfun.World;
@@ -32,6 +34,7 @@ public class GameWorld {
     public World world;
     public final Box physicalSize, screenSize, currentView;
     private final TouchConsumer touchConsumer;
+    private final EntityContactListener entityContactListener;
     private TouchHandler touchHandler;
 
     // Particles
@@ -61,6 +64,9 @@ public class GameWorld {
 
         // stored to prevent GC
         touchConsumer = new TouchConsumer(this);
+        entityContactListener = new EntityContactListener();
+
+        this.world.setContactListener(entityContactListener);
 
         this.objects = new ArrayList<>();
         this.canvas = new Canvas(buffer);
@@ -72,7 +78,8 @@ public class GameWorld {
         var nest = NestFactory.makeNest(this);
         entities.add(nest);
 
-        for (int i = 0; i < 1000; i++) {
+        // spawn ants
+        for (int i = 0; i < 100; i++) {
             float angle = rng.nextFloat(360.0f);
             float x = (float) Math.cos(angle) * SPAWN_DIST;
             float y = (float) Math.sin(angle) * SPAWN_DIST;

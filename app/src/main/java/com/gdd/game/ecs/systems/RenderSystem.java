@@ -56,7 +56,7 @@ public class RenderSystem implements System {
         final float SIDE = 0.5f;
         float screenX = gw.toPixelsX(0);
         float screenY = gw.toPixelsY(0);
-        float halfWidth = gw.toPixelsXLength(SIDE);
+        float halfWidth = gw.toPixelsXLength(SIDE * 2);
         float halfHeight = gw.toPixelsYLength(SIDE);
 
         dst.set(screenX - halfWidth, screenY - halfHeight, screenX + halfWidth, screenY + halfHeight);
@@ -69,7 +69,7 @@ public class RenderSystem implements System {
         float screenX = gw.toPixelsX(x);
         float screenY = gw.toPixelsY(y);
 
-        angle = (float) Math.atan2(Math.sin(angle), Math.cos(angle));
+//        angle = (float) Math.atan2(Math.sin(angle), Math.cos(angle));
 
         final float halfWidth = gw.toPixelsXLength(0.3f);
         final float halfHeight = gw.toPixelsYLength(0.3f);

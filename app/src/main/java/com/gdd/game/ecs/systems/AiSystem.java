@@ -41,26 +41,35 @@ public final class AiSystem implements System {
             }
         }
     }
-
-    public final float ANT_TIME_THRESHOLD = 3.0f;
-    private final Vec2 antV = new Vec2(); // to avoid reallocation in update loop
     public void ant(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
         switch (aiState.current) {
             case WANDER: {
-                aiState.timeAccumulator += dt;
-                if (aiState.timeAccumulator >= ANT_TIME_THRESHOLD) {
-                    aiState.timeAccumulator = 0.0f;
-                    float newdir = phys.body.getAngle() + rng.nextFloat(-Entity.ANT_MAX_STEERING_ANGLE, Entity.ANT_MAX_STEERING_ANGLE);
+                if (aiState.isColliding) {
+                    aiState.isColliding = false;
+
+                    float nudge = Entity.ANT_MAX_STEERING_ANGLE * 0.5f;
+                    float newDirection = phys.body.getAngle() + nudge;
                     phys.body.setTransform(
                             phys.body.getPositionX(),
                             phys.body.getPositionY(),
-                            newdir
+                            newDirection);
+
+                }
+
+                aiState.timeAccumulator += dt;
+                if (aiState.timeAccumulator >= aiState.timeBetweenActions) {
+                    aiState.timeAccumulator = 0.0f;
+                    float newDirection = phys.body.getAngle() + rng.nextFloat(-Entity.ANT_MAX_STEERING_ANGLE, Entity.ANT_MAX_STEERING_ANGLE);
+                    phys.body.setTransform(
+                            phys.body.getPositionX(),
+                            phys.body.getPositionY(),
+                            newDirection
                     );
                 }
-                float angle = (float) Math.toDegrees(phys.body.getAngle());
-                antV.setX(Entity.ANT_SPEED * (float) Math.cos(angle));
-                antV.setY(Entity.ANT_SPEED * (float) Math.sin(angle));
-                phys.body.setLinearVelocity(antV);
+                float angle = phys.body.getAngle();
+                var vel = phys.body.getLinearVelocity();
+                vel.setX(Entity.ANT_SPEED * (float) Math.cos(angle));
+                vel.setY(Entity.ANT_SPEED * (float) Math.sin(angle));
                 phys.body.setAngularVelocity(0);
 
             } break;

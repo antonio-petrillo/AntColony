@@ -62,7 +62,10 @@ public class AntFactory {
         var paint = new Paint();
         paint.setARGB(255, 100, 0, 100);
         ant.addComponent(new RenderComponent(paint));
-        ant.addComponent(new AiComponent(AiComponent.State.WANDER));
+
+        float timeBetweenActions = rng.nextFloat(1.5f, 5.0f);
+
+        ant.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions));
 
         body.setUserData(ant);
 

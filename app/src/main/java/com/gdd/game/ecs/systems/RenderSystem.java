@@ -12,6 +12,7 @@ import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
 import com.gdd.game.ecs.entities.Entity;
+import com.gdd.game.ecs.entities.FoodFactory;
 
 import java.util.List;
 
@@ -44,15 +45,27 @@ public class RenderSystem implements System {
             switch (entity.kind) {
                 case ANT: renderAnt(x, y, phys.body.getAngle(), render); break;
                 case NEST: renderNest(render); break;
+                case FOOD: renderFood(x, y, render); break;
                 case WASP: break;
-                case FOOD: break;
                 case CARD: break;
             }
         }
     }
 
-    private RectF dst = new RectF();
-    private void renderNest(RenderComponent render) {
+    private final RectF dst = new RectF(); // allocate once and used for every drawBitmap
+    private void renderFood(float x, float y, RenderComponent rc) {
+        float screenX = gw.toPixelsX(x);
+        float screenY = gw.toPixelsY(y);
+        float half = gw.toPixelsXLength(FoodFactory.RADIUS);
+
+        Log.d("RSYS FOOD", "render food");
+
+        dst.set(screenX - half, screenY - half, screenX + half, screenY + half);
+        canvas.save();
+        canvas.drawBitmap(Assets.FOOD_BITMAP, null, dst, rc.paint);
+        canvas.restore();
+    }
+    private void renderNest(RenderComponent rc) {
         final float SIDE = 0.5f;
         float screenX = gw.toPixelsX(0);
         float screenY = gw.toPixelsY(0);
@@ -61,15 +74,15 @@ public class RenderSystem implements System {
 
         dst.set(screenX - halfWidth, screenY - halfHeight, screenX + halfWidth, screenY + halfHeight);
         canvas.save();
-        canvas.drawBitmap(Assets.NEST_BITMAP, null, dst, render.paint);
+        canvas.drawBitmap(Assets.NEST_BITMAP, null, dst, rc.paint);
         canvas.restore();
     }
 
-    private void renderAnt(float x, float y, float angle, RenderComponent render) {
+    private void renderAnt(float x, float y, float angle, RenderComponent rc) {
         float screenX = gw.toPixelsX(x);
         float screenY = gw.toPixelsY(y);
 
-//        angle = (float) Math.atan2(Math.sin(angle), Math.cos(angle));
+//        angle = (float) Math.atan2(Math.sin(angle), Math.cos(angle)); // normalize in [-pi, +pi], the movements looks smoother but increase computation time
 
         final float halfWidth = gw.toPixelsXLength(0.3f);
         final float halfHeight = gw.toPixelsYLength(0.3f);
@@ -79,7 +92,7 @@ public class RenderSystem implements System {
         canvas.save();
         canvas.translate(screenX, screenY);
         canvas.rotate((float) Math.toDegrees(angle) + 90.0f);
-        canvas.drawBitmap(Assets.ANT_BITMAP, null, dst, render.paint);
+        canvas.drawBitmap(Assets.ANT_BITMAP, null, dst, rc.paint);
         canvas.restore();
     }
 

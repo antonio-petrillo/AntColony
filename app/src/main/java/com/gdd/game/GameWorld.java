@@ -13,6 +13,7 @@ import com.gdd.game.ecs.entities.NestFactory;
 import com.gdd.game.ecs.misc.EntityContactListener;
 import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
+import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.WorldBoundSystem;
 import com.google.fpl.liquidfun.ContactListener;
 import com.google.fpl.liquidfun.ParticleSystem;
@@ -49,10 +50,14 @@ public class GameWorld {
 
     public final Activity activity; // just for loading bitmaps in game objects
 
-    public RenderSystem rsys;
-    public WorldBoundSystem wbsys;
-    public AiSystem aisys;
+    public final RenderSystem rsys;
+    public final WorldBoundSystem wbsys;
+    public final AiSystem aisys;
+
+    public final SpawnSystem spawnsys;
+
     public List<Entity> entities = new ArrayList<>();
+
     public GameWorld(Box physicalSize, Box screenSize, Activity theActivity) {
         this.physicalSize = physicalSize;
         this.screenSize = screenSize;
@@ -74,6 +79,7 @@ public class GameWorld {
         rsys = new RenderSystem(this);
         wbsys = new WorldBoundSystem(this);
         aisys = new AiSystem(this);
+        spawnsys = new SpawnSystem(this);
 
         var nest = NestFactory.makeNest(this);
         entities.add(nest);
@@ -102,6 +108,7 @@ public class GameWorld {
             touchConsumer.consumeTouchEvent(event);
 
         wbsys.update(entities, elapsedTime);
+        spawnsys.update(entities, elapsedTime);
         aisys.update(entities, elapsedTime);
     }
 

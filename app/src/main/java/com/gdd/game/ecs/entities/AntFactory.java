@@ -66,10 +66,13 @@ public class AntFactory {
 
         float timeBetweenActions = rng.nextFloat(1.5f, 5.0f);
 
-        ant.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions));
+        ant.addComponent(new HealthComponent(20));
+        ant.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 10));
 
         body.setUserData(ant);
 
         return  ant;
     }
+
+    public static final float ATTACK_COOLDOWN = 1.0f;
 }

@@ -15,6 +15,6 @@ Progetto per il corso GameDesign and Development della Federico II, anno accadem
 
 # To improve
 - [ ] garbage collector system for entities
-- [ ] objects pools 
+- [ ] object pools 
 - [ ] clean up on fsm, when they are completed can be refactored easy, also with a complete overview it will be easy
 

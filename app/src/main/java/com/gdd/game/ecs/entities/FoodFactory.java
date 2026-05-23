@@ -46,7 +46,7 @@ public class FoodFactory {
 
         var food = new Entity(Entity.Kind.FOOD);
         food.addComponent(new PhysicComponent(body));
-        food.addComponent(new AiComponent(AiComponent.State.NONE, 0.0f));
+        food.addComponent(new AiComponent(AiComponent.State.NONE));
         food.addComponent(new RenderComponent(paint));
 
         body.setUserData(food);

@@ -1,8 +1,11 @@
 package com.gdd.game.ecs.systems;
 
+import android.util.Log;
+
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
+import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.google.fpl.liquidfun.DistanceJointDef;
@@ -34,10 +37,52 @@ public final class AiSystem implements System {
             switch (entity.kind) {
                 case ANT: ant(entity, phys, aiState, dt); break;
                 case NEST: nest(dt); break;
-                case WASP: break;
+                case WASP: wasp(entity, phys, aiState, dt); break;
                 case FOOD: break;
                 case CARD: break;
             }
+        }
+    }
+
+    public void wasp(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
+        switch (aiState.current) {
+            case WANDER: {
+                aiState.timeWanderAccumulator += dt;
+                if (aiState.timeWanderAccumulator >= aiState.timeBetweenActions) {
+                    aiState.timeWanderAccumulator = 0f;
+                    float newDir = phys.body.getAngle()
+                            + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE, Entity.WASP_MAX_STEERING_ANGLE);
+                    phys.body.setTransform(
+                            phys.body.getPositionX(),
+                            phys.body.getPositionY(),
+                            newDir);
+                }
+                float angle = phys.body.getAngle();
+                var vel = phys.body.getLinearVelocity();
+                vel.setX(Entity.WASP_SPEED * (float) Math.cos(angle));
+                vel.setY(Entity.WASP_SPEED * (float) Math.sin(angle));
+                phys.body.setAngularVelocity(0);
+            } break;
+            case COMBAT: {
+                // fight standing like a true here (more like die like an idiot)
+                aiState.timeAttackAccumulator += dt;
+                if (aiState.timeAttackAccumulator >= aiState.timeBetweenAttacks) {
+                    aiState.timeAttackAccumulator = 0;
+                    if (aiState.enemyToAttack == null) return;
+                    var enemy = aiState.enemyToAttack;
+                    var healthEnemy = (HealthComponent) enemy.getComponent(ComponentType.HEALTH);
+                    assert(healthEnemy != null);
+                    healthEnemy.takeDamage(aiState.attackPower);
+
+                    if (!healthEnemy.isAlive()) {
+                        var enemyAi = (AiComponent) enemy.getComponent(ComponentType.AI);
+                        enemyAi.canBeGarbageCollected = true;
+                        aiState.restore();
+                        aiState.enemyToAttack = null;
+                    }
+                }
+            } break;
+            default: break;
         }
     }
 
@@ -62,7 +107,7 @@ public final class AiSystem implements System {
 
                     jointDef.delete();
 
-                    aiState.current = AiComponent.State.RETURN;
+                    aiState.transition(AiComponent.State.RETURN);
                     return;
                 }
 
@@ -78,9 +123,9 @@ public final class AiSystem implements System {
 
                 }
 
-                aiState.timeAccumulator += dt;
-                if (aiState.timeAccumulator >= aiState.timeBetweenActions) {
-                    aiState.timeAccumulator = 0.0f;
+                aiState.timeWanderAccumulator += dt;
+                if (aiState.timeWanderAccumulator >= aiState.timeBetweenActions) {
+                    aiState.timeWanderAccumulator = 0.0f;
                     float newDirection = phys.body.getAngle() + rng.nextFloat(-Entity.ANT_MAX_STEERING_ANGLE, Entity.ANT_MAX_STEERING_ANGLE);
                     phys.body.setTransform(
                             phys.body.getPositionX(),
@@ -96,7 +141,24 @@ public final class AiSystem implements System {
 
             } break;
             case COMBAT: {
-               // go toward enemy and fight like a true ant
+                // go toward enemy and fight like a true ant
+                aiState.timeAttackAccumulator += dt;
+                if (aiState.timeAttackAccumulator >= aiState.timeBetweenAttacks ) {
+                    aiState.timeAttackAccumulator = 0;
+                    if (aiState.enemyToAttack == null) return;
+                    var enemy = aiState.enemyToAttack;
+                    var healthEnemy = (HealthComponent) enemy.getComponent(ComponentType.HEALTH);
+                    assert(healthEnemy != null);
+                    Log.d("ANT", "COMBAT after attack");
+                    healthEnemy.takeDamage(aiState.attackPower);
+
+                    if (!healthEnemy.isAlive()) {
+                        var enemyAi = (AiComponent) enemy.getComponent(ComponentType.AI);
+                        enemyAi.canBeGarbageCollected = true;
+                        aiState.restore();
+                    }
+                    aiState.enemyToAttack = null;
+                }
             } break;
             case GATHER: {
                // go toward object
@@ -110,8 +172,8 @@ public final class AiSystem implements System {
                 float distSquared = dx * dx + dy * dy;
 
                 if (distSquared <= dropFoodDistance) {
-                    aiState.current = AiComponent.State.WANDER;
-                    aiState.timeAccumulator = 0f;
+                    aiState.transition(AiComponent.State.WANDER);
+                    aiState.timeWanderAccumulator = 0f;
 
                     gw.world.destroyJoint(aiState.joint);
                     var foodAi = (AiComponent) aiState.foodToPickup.getComponent(ComponentType.AI);
@@ -120,7 +182,7 @@ public final class AiSystem implements System {
                     aiState.joint = null;
 
                     phys.body.setTransform(x, y, rng.nextFloat(30.0f) - 15.0f);
-                    aiState.timeAccumulator = aiState.timeBetweenActions + 1.0f;
+                    aiState.timeWanderAccumulator = aiState.timeBetweenActions + 1.0f;
                     return;
                 }
 

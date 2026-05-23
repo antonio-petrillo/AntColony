@@ -46,7 +46,7 @@ public class RenderSystem implements System {
                 case ANT: renderAnt(x, y, phys.body.getAngle(), render); break;
                 case NEST: renderNest(render); break;
                 case FOOD: renderFood(x, y, render); break;
-                case WASP: break;
+                case WASP: renderWasp(x, y, phys.body.getAngle(), render); break;
                 case CARD: break;
             }
         }
@@ -76,11 +76,24 @@ public class RenderSystem implements System {
         canvas.restore();
     }
 
-    private void renderAnt(float x, float y, float angle, RenderComponent rc) {
+    private void renderWasp(float x, float y, float angle, RenderComponent rc) {
         float screenX = gw.toPixelsX(x);
         float screenY = gw.toPixelsY(y);
 
-//        angle = (float) Math.atan2(Math.sin(angle), Math.cos(angle)); // normalize in [-pi, +pi], the movements looks smoother but increase computation time
+        final float halfWidth = gw.toPixelsXLength(0.3f);
+        final float halfHeight = gw.toPixelsYLength(0.3f);
+
+        dst.set(-halfWidth, -halfHeight, halfWidth, halfHeight);
+
+        canvas.save();
+        canvas.translate(screenX, screenY);
+        canvas.rotate((float) Math.toDegrees(angle) + 90.0f);
+        canvas.drawBitmap(Assets.WASP_BITMAP, null, dst, rc.paint);
+        canvas.restore();
+    }
+    private void renderAnt(float x, float y, float angle, RenderComponent rc) {
+        float screenX = gw.toPixelsX(x);
+        float screenY = gw.toPixelsY(y);
 
         final float halfWidth = gw.toPixelsXLength(0.3f);
         final float halfHeight = gw.toPixelsYLength(0.3f);

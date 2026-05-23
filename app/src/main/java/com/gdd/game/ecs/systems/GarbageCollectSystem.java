@@ -28,6 +28,14 @@ public record GarbageCollectSystem(GameWorld gw) implements System {
 
             var ai = (AiComponent) entity.getComponent(ComponentType.AI);
             if (ai != null && ai.canBeGarbageCollected) {
+
+                if (ai.joint != null) {
+                    gw.world.destroyJoint(ai.joint);
+                    var foodAi = (AiComponent) ai.foodToPickup.getComponent(ComponentType.AI);
+                    assert (foodAi != null);
+                    foodAi.pickedUp = false;
+                }
+
                 iter.remove();
             }
         }

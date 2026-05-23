@@ -9,6 +9,7 @@ import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.ecs.entities.AntFactory;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.NestFactory;
+import com.gdd.game.ecs.entities.WaspFactory;
 import com.gdd.game.ecs.misc.EntityContactListener;
 import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
@@ -91,6 +92,15 @@ public class GameWorld {
 
             var ant = AntFactory.makeAnt(this, x, y, angle);
             entities.add(ant);
+        }
+
+        // spawn wasps around the edges
+        for (int i = 0; i < 5; i++) {
+            float angle = rng.nextFloat(360.0f);
+            float dist  = 4.0f ; // spawn far from nest
+            float x = (float) Math.cos(angle) * dist;
+            float y = (float) Math.sin(angle) * dist;
+            entities.add(WaspFactory.makeWasp(this, x, y, dist));
         }
     }
 

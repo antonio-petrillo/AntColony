@@ -3,6 +3,7 @@ package com.gdd.game.ecs.entities;
 import android.graphics.Paint;
 
 import com.gdd.game.GameWorld;
+import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
 import com.google.fpl.liquidfun.BodyDef;
@@ -22,7 +23,7 @@ public class FoodFactory {
         paint.setStyle(Paint.Style.STROKE);
 
         BodyDef bdef = new BodyDef();
-        bdef.setType(BodyType.kinematicBody);
+        bdef.setType(BodyType.dynamicBody);
         bdef.setPosition(x, y);
 
         var body = gw.world.createBody(bdef);
@@ -35,7 +36,7 @@ public class FoodFactory {
         fdef.setShape(shape);
         fdef.setRestitution(0);
         fdef.setFriction(0);
-        fdef.setDensity(0); // TODO: spqwn food with differents weights
+        fdef.setDensity(0.5f); // TODO: spqwn food with differents weights
 
         body.createFixture(fdef);
 
@@ -45,6 +46,7 @@ public class FoodFactory {
 
         var food = new Entity(Entity.Kind.FOOD);
         food.addComponent(new PhysicComponent(body));
+        food.addComponent(new AiComponent(AiComponent.State.NONE, 0.0f));
         food.addComponent(new RenderComponent(paint));
 
         body.setUserData(food);

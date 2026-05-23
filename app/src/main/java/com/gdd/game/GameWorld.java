@@ -84,7 +84,7 @@ public class GameWorld {
         rsys = new RenderSystem(this);
         wbsys = new WorldBoundSystem(this);
         aisys = new AiSystem(this, nestPosition, 1.0f);
-
+        spawnsys = new SpawnSystem(this);
 
         // spawn ants
         for (int i = 0; i < 100; i++) {

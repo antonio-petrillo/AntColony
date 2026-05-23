@@ -51,6 +51,7 @@ public class AntFactory {
                 Entity.ANT_SPEED * (float) Math.sin(direction)
         );
         body.setLinearVelocity(vec);
+        vec.delete();
 
         fdef.delete();
         bdef.delete();

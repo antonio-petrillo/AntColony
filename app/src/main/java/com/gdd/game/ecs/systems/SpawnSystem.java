@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class SpawnSystem  implements System {
-    public static final float SPAWN_INTERVAL = 6.0f;
+    public static final float SPAWN_INTERVAL = 3.0f;
     public static final float MIN_SPAWN_DIST = 2.0f;   // metres from origin (nest)
     private static final float MIN_SPAWN_DIST_SQUARE = MIN_SPAWN_DIST * MIN_SPAWN_DIST;   // metres from origin (nest)
     public static final float BORDER_MARGIN = 0.5f;   // keep food away from world edges

@@ -58,8 +58,6 @@ public class RenderSystem implements System {
         float screenY = gw.toPixelsY(y);
         float half = gw.toPixelsXLength(FoodFactory.RADIUS);
 
-        Log.d("RSYS FOOD", "render food");
-
         dst.set(screenX - half, screenY - half, screenX + half, screenY + half);
         canvas.save();
         canvas.drawBitmap(Assets.FOOD_BITMAP, null, dst, rc.paint);

@@ -5,11 +5,9 @@ import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
-import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.RevoluteJointDef;
+import com.google.fpl.liquidfun.DistanceJointDef;
 import com.google.fpl.liquidfun.Vec2;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -18,10 +16,9 @@ public final class AiSystem implements System {
     private static final Random rng = new Random();
     public final GameWorld gw;
     private final Vec2 nestPosition;
-    private final Vec2 outsideTheWorld = new Vec2();
+    public static final Vec2 OUTSIDE_THE_WORLD = new Vec2(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
     private final float dropFoodDistance;
     public AiSystem(GameWorld gw, Vec2 nestPosition, float dropFoodDistance) {
-        outsideTheWorld.setX(Float.POSITIVE_INFINITY);
         this.gw = gw;
         this.nestPosition = nestPosition;
         this.dropFoodDistance = dropFoodDistance * dropFoodDistance;
@@ -34,10 +31,6 @@ public final class AiSystem implements System {
             var aiState = (AiComponent) entity.getComponent(ComponentType.AI);
 
             if (aiState == null) continue;
-
-            float x = phys.body.getPositionX();
-            float y = phys.body.getPositionY();
-
 
             switch (entity.kind) {
                 case ANT: ant(entity, phys, aiState, dt); break;
@@ -53,17 +46,19 @@ public final class AiSystem implements System {
         switch (aiState.current) {
             case WANDER: {
                 if (aiState.foodToPickup != null) {
-                    var jointDef = new RevoluteJointDef();
+                    var jointDef = new DistanceJointDef();
                     jointDef.setBodyA(phys.body);
                     jointDef.setBodyB(aiState.foodToPickup);
-
-                    jointDef.setEnableMotor(true);
-                    jointDef.setMotorSpeed(1.5f);
-                    jointDef.setMaxMotorTorque(80f);
+                    jointDef.setLocalAnchorA(0, 0);
+                    jointDef.setLocalAnchorB(0, 0);
+                    jointDef.setLength(0.3f);
+                    jointDef.setFrequencyHz(4.0f);
+                    jointDef.setDampingRatio(0.5f);
 
                     aiState.joint = gw.world.createJoint(jointDef);
 
                     jointDef.delete();
+
                     aiState.current = AiComponent.State.RETURN;
                     return;
                 }
@@ -116,24 +111,21 @@ public final class AiSystem implements System {
                     aiState.timeAccumulator = 0f;
 
                     gw.world.destroyJoint(aiState.joint);
-                    aiState.foodToPickup.setTransform(outsideTheWorld, 0); // place outside the world so it will be cleaned up by someone else
-                    break;
+                    aiState.foodToPickup.setTransform(OUTSIDE_THE_WORLD, 0); // place outside the world so it will be cleaned up by someone else
+                    aiState.foodToPickup = null;
+                    aiState.joint = null;
+
+//                    phys.body.setTransform(-x, -y, rng.nextFloat(30.0f) - 15.0f);
+                    aiState.timeAccumulator = aiState.timeBetweenActions + 1.0f;
+                    return;
                 }
 
-                aiState.timeAccumulator += dt;
-                if (aiState.timeAccumulator >= aiState.timeBetweenActions) {
-                    aiState.timeAccumulator = 0.0f;
-                    float newDirection = phys.body.getAngle() + rng.nextFloat(-Entity.ANT_MAX_STEERING_ANGLE, Entity.ANT_MAX_STEERING_ANGLE);
-                    phys.body.setTransform(
-                            phys.body.getPositionX(),
-                            phys.body.getPositionY(),
-                            newDirection
-                    );
-                }
-                float angle = phys.body.getAngle();
+                var angleNest = (float) Math.atan2(dy, dx);
+
+                phys.body.setTransform(x, y, angleNest);
                 var vel = phys.body.getLinearVelocity();
-                vel.setX(Entity.ANT_SPEED * (float) Math.cos(angle));
-                vel.setY(Entity.ANT_SPEED * (float) Math.sin(angle));
+                vel.setX(Entity.ANT_SPEED * (float) Math.cos(angleNest));
+                vel.setY(Entity.ANT_SPEED * (float) Math.sin(angleNest));
                 phys.body.setAngularVelocity(0);
 
             }

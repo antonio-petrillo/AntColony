@@ -23,7 +23,8 @@ public record WorldBoundSystem(GameWorld gw) implements System {
 
             if (x < worldSize.xmin || x > worldSize.xmax || y < worldSize.ymin || y > worldSize.ymax) {
                 iter.remove();
-                phys.body.delete();
+                if (phys.body.getPosition() != AiSystem.OUTSIDE_THE_WORLD)
+                    gw.world.destroyBody(phys.body);
             }
         }
     }

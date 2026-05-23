@@ -16,7 +16,6 @@ public final class AiSystem implements System {
     private static final Random rng = new Random();
     public final GameWorld gw;
     private final Vec2 nestPosition;
-    public static final Vec2 OUTSIDE_THE_WORLD = new Vec2(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
     private final float dropFoodDistance;
     public AiSystem(GameWorld gw, Vec2 nestPosition, float dropFoodDistance) {
         this.gw = gw;
@@ -48,7 +47,11 @@ public final class AiSystem implements System {
                 if (aiState.foodToPickup != null) {
                     var jointDef = new DistanceJointDef();
                     jointDef.setBodyA(phys.body);
-                    jointDef.setBodyB(aiState.foodToPickup);
+
+                    var foodPhys = (PhysicComponent) aiState.foodToPickup.getComponent(ComponentType.PHYSIC);
+                    assert (foodPhys != null);
+
+                    jointDef.setBodyB(foodPhys.body);
                     jointDef.setLocalAnchorA(0, 0);
                     jointDef.setLocalAnchorB(0, 0);
                     jointDef.setLength(0.3f);
@@ -111,11 +114,12 @@ public final class AiSystem implements System {
                     aiState.timeAccumulator = 0f;
 
                     gw.world.destroyJoint(aiState.joint);
-                    aiState.foodToPickup.setTransform(OUTSIDE_THE_WORLD, 0); // place outside the world so it will be cleaned up by someone else
+                    var foodAi = (AiComponent) aiState.foodToPickup.getComponent(ComponentType.AI);
+                    foodAi.canBeGarbageCollected = true;
                     aiState.foodToPickup = null;
                     aiState.joint = null;
 
-//                    phys.body.setTransform(-x, -y, rng.nextFloat(30.0f) - 15.0f);
+                    phys.body.setTransform(x, y, rng.nextFloat(30.0f) - 15.0f);
                     aiState.timeAccumulator = aiState.timeBetweenActions + 1.0f;
                     return;
                 }

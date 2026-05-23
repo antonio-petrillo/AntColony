@@ -6,9 +6,15 @@ Progetto per il corso GameDesign and Development della Federico II, anno accadem
 - [x] fork from [DragMe](https://github.com/mfaella/DragMe.git)
 - [x] basic nest + ant simultation
 - [x] implement ecs 
-- [ ] implement fsm
-- [ ] implement ant wander system
-- [ ] implement food (spawn & gather)
+- [x] implement fsm
+- [x] implement ant wander system
+- [x] implement food (spawn & gather)
 - [ ] implement enemies (wasp, spawn & gather)
 - [ ] implement card system
 - [ ] implement camera view (pan & zoom)
+
+# To improve
+- [ ] garbage collector system for entities
+- [ ] objects pools 
+- [ ] clean up on fsm, when they are completed can be refactored easy, also with a complete overview it will be easy
+

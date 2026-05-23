@@ -39,10 +39,7 @@ public class EntityContactListener extends ContactListener {
                     AiComponent ant = (AiComponent) entityA.getComponent(ComponentType.AI);
                     assert(ant != null);
 
-                    var phys = (PhysicComponent) entityB.getComponent(ComponentType.PHYSIC);
-                    assert (phys != null);
-
-                    ant.foodToPickup = phys.body;
+                    ant.foodToPickup = entityB;
                 } else {
                     AiComponent food = (AiComponent) entityA.getComponent(ComponentType.AI);
                     assert(food != null);
@@ -50,10 +47,7 @@ public class EntityContactListener extends ContactListener {
                     AiComponent ant = (AiComponent) entityB.getComponent(ComponentType.AI);
                     assert(ant != null);
 
-                    var phys = (PhysicComponent) entityA.getComponent(ComponentType.PHYSIC);
-                    assert (phys != null);
-
-                    ant.foodToPickup = phys.body;
+                    ant.foodToPickup = entityA;
                 }
             }
         }

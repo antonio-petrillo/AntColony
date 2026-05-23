@@ -2,12 +2,13 @@ package com.gdd.game.ecs.systems;
 
 import com.gdd.game.Box;
 import com.gdd.game.GameWorld;
+import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
 
 import java.util.List;
-public record WorldBoundSystem(GameWorld gw) implements System {
+public record GarbageCollectSystem(GameWorld gw) implements System {
 
     @Override
     public void update(List<Entity> entities, float dt) {
@@ -16,15 +17,18 @@ public record WorldBoundSystem(GameWorld gw) implements System {
         while (iter.hasNext()) {
             var entity = iter.next();
             var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
-            if (phys == null) continue;
+            if (phys != null) {
+                float x = phys.body.getPositionX();
+                float y = phys.body.getPositionY();
 
-            float x = phys.body.getPositionX();
-            float y = phys.body.getPositionY();
+                if (x < worldSize.xmin || x > worldSize.xmax || y < worldSize.ymin || y > worldSize.ymax) {
+                    iter.remove();
+                }
+            }
 
-            if (x < worldSize.xmin || x > worldSize.xmax || y < worldSize.ymin || y > worldSize.ymax) {
+            var ai = (AiComponent) entity.getComponent(ComponentType.AI);
+            if (ai != null && ai.canBeGarbageCollected) {
                 iter.remove();
-                if (phys.body.getPosition() != AiSystem.OUTSIDE_THE_WORLD)
-                    gw.world.destroyBody(phys.body);
             }
         }
     }

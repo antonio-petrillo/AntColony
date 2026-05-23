@@ -3,7 +3,6 @@ package com.gdd.game;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
@@ -14,10 +13,8 @@ import com.gdd.game.ecs.misc.EntityContactListener;
 import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
-import com.gdd.game.ecs.systems.WorldBoundSystem;
-import com.google.fpl.liquidfun.ContactListener;
+import com.gdd.game.ecs.systems.GarbageCollectSystem;
 import com.google.fpl.liquidfun.ParticleSystem;
-import com.google.fpl.liquidfun.ParticleSystemDef;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 
@@ -52,7 +49,7 @@ public class GameWorld {
     public final Activity activity; // just for loading bitmaps in game objects
 
     public final RenderSystem rsys;
-    public final WorldBoundSystem wbsys;
+    public final GarbageCollectSystem wbsys;
     public final AiSystem aisys;
 
     public final SpawnSystem spawnsys;
@@ -82,7 +79,7 @@ public class GameWorld {
         entities.add(nest);
 
         rsys = new RenderSystem(this);
-        wbsys = new WorldBoundSystem(this);
+        wbsys = new GarbageCollectSystem(this);
         aisys = new AiSystem(this, nestPosition, 1.0f);
         spawnsys = new SpawnSystem(this);
 

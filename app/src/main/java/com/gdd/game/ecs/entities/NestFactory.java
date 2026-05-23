@@ -10,30 +10,26 @@ import com.google.fpl.liquidfun.BodyDef;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.FixtureDef;
 import com.google.fpl.liquidfun.PolygonShape;
+import com.google.fpl.liquidfun.Vec2;
 
 public class NestFactory {
     private NestFactory() {}
 
-    private static int nestCount = 0;
-    private static Entity theNest = new Entity(Entity.Kind.NEST);
+    public static Entity makeNest(GameWorld gw, Vec2 nestPosition) {
 
-    public static Entity makeNest(GameWorld gw) {
-        if (nestCount > 0) {
-            throw new IllegalStateException("Only one Nest at a time is allowed!");
-        }
-
-        theNest.addComponent(new HealthComponent(1000));
+        var nest = new Entity(Entity.Kind.NEST);
+        nest.addComponent(new HealthComponent(1000));
 
         Paint paint = new Paint();
         paint.setARGB(255, 0, 255, 0);
         paint.setStyle(Paint.Style.STROKE);
-        theNest.addComponent(new RenderComponent(paint));
+        nest.addComponent(new RenderComponent(paint));
 
         final float SIDE = 0.25f;
 
         BodyDef bdef = new BodyDef();
         bdef.setType(BodyType.staticBody);
-        bdef.setPosition(0, 0);
+        bdef.setPosition(nestPosition.getX(), nestPosition.getY());
 
         var body = gw.world.createBody(bdef);
 
@@ -49,15 +45,10 @@ public class NestFactory {
         fdef.delete();
         shape.delete();
 
-        body.setUserData(theNest);
-        theNest.addComponent(new PhysicComponent(body));
+        body.setUserData(nest);
+        nest.addComponent(new PhysicComponent(body));
 
-        nestCount++;
-        return theNest;
+        return nest;
     }
 
-    public static void deleteNest() {
-        nestCount--;
-        theNest.components.clear();
-    }
 }

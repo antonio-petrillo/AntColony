@@ -18,6 +18,7 @@ import com.gdd.game.ecs.systems.WorldBoundSystem;
 import com.google.fpl.liquidfun.ContactListener;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.ParticleSystemDef;
+import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 
 import java.util.ArrayList;
@@ -76,13 +77,14 @@ public class GameWorld {
         this.objects = new ArrayList<>();
         this.canvas = new Canvas(buffer);
 
+        var nestPosition = new Vec2(0, 0);
+        var nest = NestFactory.makeNest(this, nestPosition);
+        entities.add(nest);
+
         rsys = new RenderSystem(this);
         wbsys = new WorldBoundSystem(this);
-        aisys = new AiSystem(this);
-        spawnsys = new SpawnSystem(this);
+        aisys = new AiSystem(this, nestPosition, 1.0f);
 
-        var nest = NestFactory.makeNest(this);
-        entities.add(nest);
 
         // spawn ants
         for (int i = 0; i < 100; i++) {

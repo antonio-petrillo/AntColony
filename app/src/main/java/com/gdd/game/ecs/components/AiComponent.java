@@ -32,7 +32,7 @@ public class AiComponent extends Component {
     public boolean pickedUp = false; // indicate whether the food is picked up or not
     public Joint joint = null;
 
-    public float timeBetweenAttacks = 1.0f;
+    public float timeBetweenAttacks = 0.25f;
     public float timeAttackAccumulator = 0.0f;
 
     public Entity enemyToAttack = null;

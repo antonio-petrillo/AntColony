@@ -52,11 +52,11 @@ public class EntityContactListener extends ContactListener {
             } else if (entityA.kind == Entity.Kind.ANT && entityB.kind == Entity.Kind.WASP
                     || entityA.kind == Entity.Kind.WASP && entityB.kind == Entity.Kind.ANT) {
 
-                var ant  = entityA.kind == Entity.Kind.ANT ? entityA : entityB;
+                var ant = entityA.kind == Entity.Kind.ANT ? entityA : entityB;
                 var wasp = entityA.kind == Entity.Kind.WASP ? entityA : entityB;
 
-                var antAi      = (AiComponent) ant.getComponent(ComponentType.AI);
-                var waspAi     = (AiComponent) wasp.getComponent(ComponentType.AI);
+                var antAi = (AiComponent) ant.getComponent(ComponentType.AI);
+                var waspAi = (AiComponent) wasp.getComponent(ComponentType.AI);
 
                 antAi.transition(AiComponent.State.COMBAT);
                 waspAi.transition(AiComponent.State.COMBAT);

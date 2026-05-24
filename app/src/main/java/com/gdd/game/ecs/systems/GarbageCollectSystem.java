@@ -22,7 +22,11 @@ public record GarbageCollectSystem(GameWorld gw) implements System {
                 float y = phys.body.getPositionY();
 
                 if (x < worldSize.xmin || x > worldSize.xmax || y < worldSize.ymin || y > worldSize.ymax) {
-                    iter.remove();
+                    var vel = phys.body.getLinearVelocity();
+                    vel.setX(x * -1);
+                    vel.setY(y * -1);
+                    phys.body.setLinearVelocity(vel);
+//                    iter.remove();
                 }
             }
 

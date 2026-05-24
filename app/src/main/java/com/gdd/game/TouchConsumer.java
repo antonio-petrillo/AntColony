@@ -74,20 +74,14 @@ public class TouchConsumer {
             Body touchedBody = touchedFixture.getBody();
             Object userData = touchedBody.getUserData();
             if (userData != null) {
-                if (userData instanceof GameObject touchedGO) {
-//                    GameObject touchedGO = (GameObject) userData;
-                    activePointerID = pointerId;
-                    Log.d("MultiTouchHandler", "touched game object " + touchedGO.name);
-                    setupMouseJoint(x, y, touchedBody);
-                    // splitBox(touchedGO, touchedBody);
-                } else if (userData instanceof Entity entity) {
-                    var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
-                    if (phys == null) return;
-
-                    activePointerID = pointerId;
-                    Log.d("MultiTouchHandler", "touched entity ");
-                    setupMouseJoint(x, y, touchedBody);
-                }
+//                if (userData instanceof Entity entity) {
+//                    var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
+//                    if (phys == null) return;
+//
+//                    activePointerID = pointerId;
+//                    Log.d("MultiTouchHandler", "touched entity ");
+//                    setupMouseJoint(x, y, touchedBody);
+//                }
             }
         }
     }

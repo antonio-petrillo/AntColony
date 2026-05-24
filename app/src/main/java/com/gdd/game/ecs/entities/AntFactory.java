@@ -58,7 +58,6 @@ public class AntFactory {
         shape.delete();
         var ant = new Entity(Entity.Kind.ANT);
 
-        ant.addComponent(new HealthComponent(25));
         ant.addComponent(new PhysicComponent(body));
         var paint = new Paint();
         paint.setARGB(255, 100, 0, 100);

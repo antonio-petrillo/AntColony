@@ -149,15 +149,14 @@ public final class AiSystem implements System {
                     var enemy = aiState.enemyToAttack;
                     var healthEnemy = (HealthComponent) enemy.getComponent(ComponentType.HEALTH);
                     assert(healthEnemy != null);
-                    Log.d("ANT", "COMBAT after attack");
                     healthEnemy.takeDamage(aiState.attackPower);
 
                     if (!healthEnemy.isAlive()) {
                         var enemyAi = (AiComponent) enemy.getComponent(ComponentType.AI);
                         enemyAi.canBeGarbageCollected = true;
                         aiState.restore();
+                        aiState.enemyToAttack = null;
                     }
-                    aiState.enemyToAttack = null;
                 }
             } break;
             case GATHER: {

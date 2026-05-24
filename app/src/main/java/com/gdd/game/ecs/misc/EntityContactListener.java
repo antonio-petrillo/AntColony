@@ -38,6 +38,7 @@ public class EntityContactListener extends ContactListener {
                     if (food.pickedUp) return;
                     AiComponent ant = (AiComponent) entityA.getComponent(ComponentType.AI);
                     assert(ant != null);
+                    if (ant.foodToPickup != null) return;
 
                     ant.foodToPickup = entityB;
                 } else {
@@ -46,6 +47,8 @@ public class EntityContactListener extends ContactListener {
                     if (food.pickedUp) return;
                     AiComponent ant = (AiComponent) entityB.getComponent(ComponentType.AI);
                     assert(ant != null);
+
+                    if (ant.foodToPickup != null) return;
 
                     ant.foodToPickup = entityA;
                 }

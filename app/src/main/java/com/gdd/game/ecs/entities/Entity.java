@@ -18,7 +18,7 @@ public final class Entity {
 
 
     public Map<ComponentType, Component> components = new EnumMap<>(ComponentType.class);
-    public  Kind kind;
+    public Kind kind;
 
     public Entity(Kind kind) {
         this.kind = kind;

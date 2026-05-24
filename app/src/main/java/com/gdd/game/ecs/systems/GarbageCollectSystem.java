@@ -24,7 +24,6 @@ public class GarbageCollectSystem implements System {
     @Override
     public void update(List<Entity> entities, float dt) {
         Box worldSize = gw.physicalSize;
-        var iter = entities.iterator();
         for (var entity : entities) {
             var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
             if (phys != null) {
@@ -43,13 +42,15 @@ public class GarbageCollectSystem implements System {
             if (ai != null && ai.canBeGarbageCollected) {
 
                 if (ai.joint != null) {
-                    gw.world.destroyJoint(ai.joint);
-                    var foodAi = (AiComponent) ai.foodToPickup.getComponent(ComponentType.AI);
-                    assert (foodAi != null);
-                    foodAi.pickedUp = false;
-                    ai.foodToPickup = null;
+//                    gw.world.destroyJoint(ai.joint);
+//                    ai.joint = null;
+                    if (ai.foodToPickup != null) {
+                        var foodAi = (AiComponent) ai.foodToPickup.getComponent(ComponentType.AI);
+                        assert (foodAi != null);
+                        foodAi.pickedUp = false;
+                        ai.foodToPickup = null;
+                    }
                 }
-
                 toRemove.add(entity);
             }
         }

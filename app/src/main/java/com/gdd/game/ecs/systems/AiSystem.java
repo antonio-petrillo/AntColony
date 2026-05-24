@@ -174,11 +174,16 @@ public final class AiSystem implements System {
                     aiState.transition(AiComponent.State.WANDER);
                     aiState.timeWanderAccumulator = 0f;
 
-                    gw.world.destroyJoint(aiState.joint);
+//                    gw.world.destroyJoint(aiState.joint);
                     var foodAi = (AiComponent) aiState.foodToPickup.getComponent(ComponentType.AI);
                     foodAi.canBeGarbageCollected = true;
                     aiState.foodToPickup = null;
-                    aiState.joint = null;
+//                    aiState.joint = null;
+                    var vel = phys.body.getLinearVelocity();
+                    vel.setX(0);
+                    vel.setY(0);
+                    phys.body.setLinearVelocity(vel);
+                    phys.body.setAngularVelocity(0);
 
                     phys.body.setTransform(x, y, rng.nextFloat(30.0f) - 15.0f);
                     aiState.timeWanderAccumulator = aiState.timeBetweenActions + 1.0f;

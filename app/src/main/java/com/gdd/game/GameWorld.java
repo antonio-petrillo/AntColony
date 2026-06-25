@@ -28,8 +28,9 @@ import java.util.List;
 import java.util.Random;
 
 public class GameWorld {
+
     // Rendering
-    public final static int bufferWidth = 400, bufferHeight = 600;    // actual pixels
+    public final static int bufferWidth = 400, bufferHeight = 600; // actual pixels
     public Bitmap buffer;
     private final Canvas canvas;
     private final Paint paint;
@@ -38,7 +39,7 @@ public class GameWorld {
     // Simulation
     public List<GameObject> objects;
     public World world;
-    public final Box physicalSize, screenSize, currentView;
+    public final Box physicalSize, screenSize, currentView, maxView;
     private final TouchConsumer touchConsumer;
     private final EntityContactListener entityContactListener;
     private TouchHandler touchHandler;
@@ -70,6 +71,7 @@ public class GameWorld {
         this.buffer = Bitmap.createBitmap(bufferWidth, bufferHeight, Bitmap.Config.ARGB_8888);
         this.world = new World(0, 0);  // gravity vector
 
+        this.maxView = new Box(physicalSize);
         this.currentView = new Box(physicalSize);
 
         // ***** UI TEST *****
@@ -82,7 +84,6 @@ public class GameWorld {
         uimanager = new UIManager();
         uimanager.add(new UIButton(0, 500, 100, 50));
         uimanager.add(new UIButton(300, 500, 100, 50));
-
 
         // *******************
 
@@ -133,20 +134,38 @@ public class GameWorld {
 
         // Handle collisions
         // Handle touch events
-        for (Input.TouchEvent event: touchHandler.getTouchEvents())
-            touchConsumer.consumeTouchEvent(event);
+        //for (Input.TouchEvent event: touchHandler.getTouchEvents())
+        //    touchConsumer.consumeTouchEvent(event);
+
+        // ***** INPUT TEST *****
+        for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
+
+            if(event.type == Input.TouchEvent.TOUCH_UP) {
+                // pulsante SX
+                if (event.x >= 0 && event.x <= 100 &&
+                        event.y >= 500 && event.y <= 550) {
+                    zoomIn();
+                }
+                // pulsante DX
+                else if (event.x >= 300 && event.x <= 400 &&
+                        event.y >= 500 && event.y <= 550) {
+                    zoomOut();
+                }
+            }
+        }
 
         wbsys.update(entities, elapsedTime);
         spawnsys.update(entities, elapsedTime);
         aisys.update(entities, elapsedTime);
+
     }
 
     public synchronized void render()
     {
         // clear the screen (with black)
         canvas.drawARGB(255, 0, 0, 0);
-        uimanager.draw(canvas, paint);
         rsys.update(entities, 0.0f);
+        uimanager.draw(canvas, paint);
     }
 
     // Conversions between screen coordinates and physical coordinates
@@ -184,5 +203,30 @@ public class GameWorld {
 
     public void setTouchHandler(TouchHandler touchHandler) {
         this.touchHandler = touchHandler;
+    }
+
+
+
+
+    public void zoomIn() {
+        currentView.width -= 2;
+        currentView.height -= 2;
+
+        // Lower limit
+        if(currentView.width < 5)
+            currentView.width = 5;
+        if(currentView.height < 5)
+            currentView.height = 5;
+    }
+
+    public void zoomOut() {
+        currentView.width += 2;
+        currentView.height += 2;
+
+        // Upper limit
+        if(currentView.width > maxView.width)
+            currentView.width = maxView.width;
+        if(currentView.height > maxView.height)
+            currentView.height = maxView.height;
     }
 }

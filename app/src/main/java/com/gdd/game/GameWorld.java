@@ -3,6 +3,8 @@ package com.gdd.game;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
@@ -15,6 +17,8 @@ import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
+import com.gdd.game.ui.UIButton;
+import com.gdd.game.ui.UIManager;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
@@ -28,6 +32,8 @@ public class GameWorld {
     public final static int bufferWidth = 400, bufferHeight = 600;    // actual pixels
     public Bitmap buffer;
     private final Canvas canvas;
+    private final Paint paint;
+    private final UIManager uimanager;
 
     // Simulation
     public List<GameObject> objects;
@@ -65,6 +71,20 @@ public class GameWorld {
         this.world = new World(0, 0);  // gravity vector
 
         this.currentView = new Box(physicalSize);
+
+        // ***** UI TEST *****
+
+        // ui paint
+        paint = new Paint();
+        paint.setColor(Color.YELLOW);
+        paint.setStyle(Paint.Style.FILL);
+
+        uimanager = new UIManager();
+        uimanager.add(new UIButton(0, 500, 100, 50));
+        uimanager.add(new UIButton(300, 500, 100, 50));
+
+
+        // *******************
 
         // stored to prevent GC
         touchConsumer = new TouchConsumer(this);
@@ -125,6 +145,7 @@ public class GameWorld {
     {
         // clear the screen (with black)
         canvas.drawARGB(255, 0, 0, 0);
+        uimanager.draw(canvas, paint);
         rsys.update(entities, 0.0f);
     }
 

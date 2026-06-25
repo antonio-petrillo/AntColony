@@ -63,8 +63,12 @@ public class MainActivity extends Activity {
         renderView = new AndroidFastRenderView(this, gw);
         setContentView(renderView);
 
+        // Scale for input coordinates (screen to framebuffer)
+        float scaleX = (float) GameWorld.bufferWidth / metrics.widthPixels;
+        float scaleY = (float) GameWorld.bufferHeight / metrics.heightPixels;
+
         // Touch
-        MultiTouchHandler touch = new MultiTouchHandler(renderView, 1, 1);
+        MultiTouchHandler touch = new MultiTouchHandler(renderView, scaleX, scaleY);
         // Setter needed due to cyclic dependency
         gw.setTouchHandler(touch);
     }

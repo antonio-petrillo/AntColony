@@ -130,20 +130,21 @@ public class GameWorld {
 
     // Conversions between screen coordinates and physical coordinates
 
+    /*
+    // Old version: convert screen coordinates to physics world
     public float toMetersX(float x) { return currentView.xmin + x * (currentView.width/screenSize.width); }
     public float toMetersY(float y) { return currentView.ymin + y * (currentView.height/screenSize.height); }
+    */
+
+    // New version: convert framebuffer coordinates to physics world
+    public float toMetersX(float x) { return currentView.xmin + x * (currentView.width/bufferWidth); }
+    public float toMetersY(float y) { return currentView.ymin + y * (currentView.height/bufferHeight); }
 
     public float toPixelsX(float x) { return (x-currentView.xmin)/currentView.width*bufferWidth; }
     public float toPixelsY(float y) { return (y-currentView.ymin)/currentView.height*bufferHeight; }
 
-    public float toPixelsXLength(float x)
-    {
-        return x/currentView.width*bufferWidth;
-    }
-    public float toPixelsYLength(float y)
-    {
-        return y/currentView.height*bufferHeight;
-    }
+    public float toPixelsXLength(float x) { return x/currentView.width*bufferWidth; }
+    public float toPixelsYLength(float y) { return y/currentView.height*bufferHeight; }
 
     public synchronized void setGravity(float x, float y)
     {

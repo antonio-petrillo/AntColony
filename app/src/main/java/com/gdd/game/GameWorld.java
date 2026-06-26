@@ -34,7 +34,7 @@ public class GameWorld {
     public Bitmap buffer;
     private final Canvas canvas;
     private final Paint paint;
-    private final UIManager uimanager;
+    private final UIManager uimanager = new UIManager();;
 
     // Simulation
     public List<GameObject> objects;
@@ -74,18 +74,11 @@ public class GameWorld {
         this.maxView = new Box(physicalSize);
         this.currentView = new Box(physicalSize);
 
-        // ***** UI TEST *****
-
-        // ui paint
+        // ***** UI *****
         paint = new Paint();
         paint.setColor(Color.YELLOW);
         paint.setStyle(Paint.Style.FILL);
-
-        uimanager = new UIManager();
-        uimanager.add(new UIButton(0, 500, 100, 50));
-        uimanager.add(new UIButton(300, 500, 100, 50));
-
-        // *******************
+        initUI();
 
         // stored to prevent GC
         touchConsumer = new TouchConsumer(this);
@@ -141,14 +134,34 @@ public class GameWorld {
         for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
 
             if(event.type == Input.TouchEvent.TOUCH_UP) {
-                // pulsante SX
-                if (event.x >= 0 && event.x <= 100 &&
-                        event.y >= 500 && event.y <= 550) {
+                // BUP
+                if (event.x >= 50 && event.x <= 100 &&
+                        event.y >= 420 && event.y <= 470) {
+
+                }
+                // BDOWN
+                if (event.x >= 50 && event.x <= 100 &&
+                        event.y >= 530 && event.y <= 580) {
+
+                }
+                // BLEFT
+                if (event.x >= 10 && event.x <= 60 &&
+                        event.y >= 475 && event.y <= 525) {
+
+                }
+                // BRIGHT
+                if (event.x >= 90 && event.x <= 140 &&
+                        event.y >= 475 && event.y <= 525) {
+
+                }
+                // BPLUS
+                if (event.x >= 270 && event.x <= 320 &&
+                        event.y >= 475 && event.y <= 525) {
                     zoomIn();
                 }
-                // pulsante DX
-                else if (event.x >= 300 && event.x <= 400 &&
-                        event.y >= 500 && event.y <= 550) {
+                // BMINUS
+                else if (event.x >= 345 && event.x <= 395 &&
+                        event.y >= 475 && event.y <= 525) {
                     zoomOut();
                 }
             }
@@ -167,6 +180,36 @@ public class GameWorld {
         rsys.update(entities, 0.0f);
         uimanager.draw(canvas, paint);
     }
+
+    public void initUI() {
+
+        UIButton button;
+
+        button = new UIButton(50, 420, 50, 50);
+        button.setBitmap(Assets.BUTTON_UP);
+        uimanager.add(button);
+
+        button = new UIButton(50, 530, 50, 50);
+        button.setBitmap(Assets.BUTTON_DOWN);
+        uimanager.add(button);
+
+        button = new UIButton(10, 475, 50, 50);
+        button.setBitmap(Assets.BUTTON_LEFT);
+        uimanager.add(button);
+
+        button = new UIButton(90, 475, 50, 50);
+        button.setBitmap(Assets.BUTTON_RIGHT);
+        uimanager.add(button);
+
+        button = new UIButton(270, 475, 50, 50);
+        button.setBitmap(Assets.BUTTON_PLUS);
+        uimanager.add(button);
+
+        button = new UIButton(345, 475, 50, 50);
+        button.setBitmap(Assets.BUTTON_MINUS);
+        uimanager.add(button);
+    }
+
 
     // Conversions between screen coordinates and physical coordinates
 

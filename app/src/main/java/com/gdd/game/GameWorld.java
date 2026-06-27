@@ -43,7 +43,9 @@ public class GameWorld {
     // Physics Simulation
     public List<GameObject> objects;
     public World world;
-    public final Box physicalSize, screenSize, currentView;
+    public final Box physicalSize, // physics world: x[-10,+10] y[-15,+15] (meters)
+            screenSize, // smartphone screen size (pixel)
+            currentView; // camera in the physics world (meters)
     private final TouchConsumer touchConsumer;
     private final EntityContactListener entityContactListener;
     private TouchHandler touchHandler;
@@ -129,47 +131,51 @@ public class GameWorld {
     }
 
     public void initUI() {
+
+        float scrollx = 1f, scrolly = 1f;
+        float zoom = 0.2f;
+
         UIButton button;
 
         button = new UIButton(50, 420, 50, 50);
         button.setBitmap(Assets.BUTTON_UP);
         button.setOnClickListener(btn -> {
-
+            cameraHandler.scroll(0, -scrolly);
         });
         uiManager.add(button);
 
         button = new UIButton(50, 530, 50, 50);
         button.setBitmap(Assets.BUTTON_DOWN);
         button.setOnClickListener(btn -> {
-
+            cameraHandler.scroll(0, scrolly);
         });
         uiManager.add(button);
 
         button = new UIButton(10, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_LEFT);
         button.setOnClickListener(btn -> {
-
+            cameraHandler.scroll(-scrollx, 0);
         });
         uiManager.add(button);
 
         button = new UIButton(90, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_RIGHT);
         button.setOnClickListener(btn -> {
-
+            cameraHandler.scroll(scrollx, 0);
         });
         uiManager.add(button);
 
         button = new UIButton(270, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_PLUS);
         button.setOnClickListener(btn -> {
-            cameraHandler.zoomIn();
+            cameraHandler.zoom(zoom);
         });
         uiManager.add(button);
 
         button = new UIButton(345, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_MINUS);
         button.setOnClickListener(btn -> {
-            cameraHandler.zoomOut();
+            cameraHandler.zoom(-zoom);
         });
         uiManager.add(button);
     }

@@ -40,7 +40,7 @@ public class RenderSystem implements System {
             float x = phys.body.getPositionX();
             float y = phys.body.getPositionY();
 
-            // don't draw this entity if it's outside the camera
+            // TODO: draw the entity if partially inside the camera
             if (x < view.xmin || x > view.xmax || y < view.ymin || y > view.ymax)
                 continue;
 

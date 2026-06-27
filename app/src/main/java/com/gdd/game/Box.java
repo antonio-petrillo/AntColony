@@ -14,6 +14,7 @@ public class Box {
         width = box.width;
         height = box.height;
     }
+
     public Box(float xmin, float ymin, float xmax, float ymax) {
         this.xmin = xmin;
         this.xmax = xmax;

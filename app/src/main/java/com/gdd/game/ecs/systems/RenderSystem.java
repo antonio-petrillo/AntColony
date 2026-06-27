@@ -17,6 +17,7 @@ import com.gdd.game.ecs.entities.FoodFactory;
 import java.util.List;
 
 public class RenderSystem implements System {
+
     public final GameWorld gw;
     private final Canvas canvas;
 
@@ -39,6 +40,7 @@ public class RenderSystem implements System {
             float x = phys.body.getPositionX();
             float y = phys.body.getPositionY();
 
+            // TODO: draw the entity if partially inside the camera
             if (x < view.xmin || x > view.xmax || y < view.ymin || y > view.ymax)
                 continue;
 
@@ -63,6 +65,7 @@ public class RenderSystem implements System {
         canvas.drawBitmap(Assets.FOOD_BITMAP, null, dst, rc.paint);
         canvas.restore();
     }
+
     private void renderNest(RenderComponent rc) {
         final float SIDE = 0.5f;
         float screenX = gw.toPixelsX(0);
@@ -91,6 +94,7 @@ public class RenderSystem implements System {
         canvas.drawBitmap(Assets.WASP_BITMAP, null, dst, rc.paint);
         canvas.restore();
     }
+
     private void renderAnt(float x, float y, float angle, RenderComponent rc) {
         float screenX = gw.toPixelsX(x);
         float screenY = gw.toPixelsY(y);

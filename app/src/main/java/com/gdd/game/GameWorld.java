@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
@@ -18,6 +19,7 @@ import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
 import com.gdd.game.ui.UIButton;
+import com.gdd.game.ui.UIElement;
 import com.gdd.game.ui.UIManager;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.Vec2;
@@ -120,57 +122,25 @@ public class GameWorld {
 
     private static final Random rng = new Random();
     private final float SPAWN_DIST = 1.0f;
+    boolean consumed;
 
     public synchronized void update(float elapsedTime)  {
+
         // advance the physics simulation
         world.step(elapsedTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
 
         // Handle collisions
-        // Handle touch events
         //for (Input.TouchEvent event: touchHandler.getTouchEvents())
         //    touchConsumer.consumeTouchEvent(event);
 
-        // ***** INPUT TEST *****
+        // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
-
-            if(event.type == Input.TouchEvent.TOUCH_UP) {
-                // BUP
-                if (event.x >= 50 && event.x <= 100 &&
-                        event.y >= 420 && event.y <= 470) {
-
-                }
-                // BDOWN
-                if (event.x >= 50 && event.x <= 100 &&
-                        event.y >= 530 && event.y <= 580) {
-
-                }
-                // BLEFT
-                if (event.x >= 10 && event.x <= 60 &&
-                        event.y >= 475 && event.y <= 525) {
-
-                }
-                // BRIGHT
-                if (event.x >= 90 && event.x <= 140 &&
-                        event.y >= 475 && event.y <= 525) {
-
-                }
-                // BPLUS
-                if (event.x >= 270 && event.x <= 320 &&
-                        event.y >= 475 && event.y <= 525) {
-                    zoomIn();
-                }
-                // BMINUS
-                else if (event.x >= 345 && event.x <= 395 &&
-                        event.y >= 475 && event.y <= 525) {
-                    zoomOut();
-                }
-            }
+            consumed = uimanager.handleInput(event);
         }
 
         wbsys.update(entities, elapsedTime);
         spawnsys.update(entities, elapsedTime);
         aisys.update(entities, elapsedTime);
-
     }
 
     public synchronized void render()
@@ -182,31 +152,48 @@ public class GameWorld {
     }
 
     public void initUI() {
-
         UIButton button;
 
         button = new UIButton(50, 420, 50, 50);
         button.setBitmap(Assets.BUTTON_UP);
+        button.setOnClickListener(btn -> {
+
+        });
         uimanager.add(button);
 
         button = new UIButton(50, 530, 50, 50);
         button.setBitmap(Assets.BUTTON_DOWN);
+        button.setOnClickListener(btn -> {
+
+        });
         uimanager.add(button);
 
         button = new UIButton(10, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_LEFT);
+        button.setOnClickListener(btn -> {
+
+        });
         uimanager.add(button);
 
         button = new UIButton(90, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_RIGHT);
+        button.setOnClickListener(btn -> {
+
+        });
         uimanager.add(button);
 
         button = new UIButton(270, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_PLUS);
+        button.setOnClickListener(btn -> {
+            zoomIn();
+        });
         uimanager.add(button);
 
         button = new UIButton(345, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_MINUS);
+        button.setOnClickListener(btn -> {
+            zoomOut();
+        });
         uimanager.add(button);
     }
 

@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
@@ -19,7 +18,6 @@ import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
 import com.gdd.game.ui.UIButton;
-import com.gdd.game.ui.UIElement;
 import com.gdd.game.ui.UIManager;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.Vec2;
@@ -36,15 +34,16 @@ public class GameWorld {
     public Bitmap buffer;
     private final Canvas canvas;
     private final Paint paint;
-    private final UIManager uimanager = new UIManager();;
+    private final UIManager uiManager = new UIManager();;
 
     // Simulation
     public List<GameObject> objects;
     public World world;
-    public final Box physicalSize, screenSize, currentView, maxView;
+    public final Box physicalSize, screenSize, currentView;
     private final TouchConsumer touchConsumer;
     private final EntityContactListener entityContactListener;
     private TouchHandler touchHandler;
+    private CameraHandler cameraHandler;
 
     // Particles
     public ParticleSystem particleSystem;
@@ -67,14 +66,15 @@ public class GameWorld {
     public List<Entity> entities = new ArrayList<>();
 
     public GameWorld(Box physicalSize, Box screenSize, Activity theActivity) {
+
         this.physicalSize = physicalSize;
         this.screenSize = screenSize;
         this.activity = theActivity;
         this.buffer = Bitmap.createBitmap(bufferWidth, bufferHeight, Bitmap.Config.ARGB_8888);
         this.world = new World(0, 0);  // gravity vector
 
-        this.maxView = new Box(physicalSize);
         this.currentView = new Box(physicalSize);
+        cameraHandler = new CameraHandler(currentView);
 
         // ***** UI *****
         paint = new Paint();
@@ -130,12 +130,14 @@ public class GameWorld {
         world.step(elapsedTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
 
         // Handle collisions
-        //for (Input.TouchEvent event: touchHandler.getTouchEvents())
-        //    touchConsumer.consumeTouchEvent(event);
 
         // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
-            consumed = uimanager.handleInput(event);
+            consumed = uiManager.handleInput(event);
+
+            // if(!consumed)
+            // eventualmente si può passare il controllo alla scena fisica
+            // touchConsumer.consumeTouchEvent(event);
         }
 
         wbsys.update(entities, elapsedTime);
@@ -148,7 +150,7 @@ public class GameWorld {
         // clear the screen (with black)
         canvas.drawARGB(255, 0, 0, 0);
         rsys.update(entities, 0.0f);
-        uimanager.draw(canvas, paint);
+        uiManager.draw(canvas, paint);
     }
 
     public void initUI() {
@@ -159,42 +161,42 @@ public class GameWorld {
         button.setOnClickListener(btn -> {
 
         });
-        uimanager.add(button);
+        uiManager.add(button);
 
         button = new UIButton(50, 530, 50, 50);
         button.setBitmap(Assets.BUTTON_DOWN);
         button.setOnClickListener(btn -> {
 
         });
-        uimanager.add(button);
+        uiManager.add(button);
 
         button = new UIButton(10, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_LEFT);
         button.setOnClickListener(btn -> {
 
         });
-        uimanager.add(button);
+        uiManager.add(button);
 
         button = new UIButton(90, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_RIGHT);
         button.setOnClickListener(btn -> {
 
         });
-        uimanager.add(button);
+        uiManager.add(button);
 
         button = new UIButton(270, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_PLUS);
         button.setOnClickListener(btn -> {
-            zoomIn();
+            cameraHandler.zoomIn();
         });
-        uimanager.add(button);
+        uiManager.add(button);
 
         button = new UIButton(345, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_MINUS);
         button.setOnClickListener(btn -> {
-            zoomOut();
+            cameraHandler.zoomOut();
         });
-        uimanager.add(button);
+        uiManager.add(button);
     }
 
 
@@ -235,28 +237,4 @@ public class GameWorld {
         this.touchHandler = touchHandler;
     }
 
-
-
-
-    public void zoomIn() {
-        currentView.width -= 2;
-        currentView.height -= 2;
-
-        // Lower limit
-        if(currentView.width < 5)
-            currentView.width = 5;
-        if(currentView.height < 5)
-            currentView.height = 5;
-    }
-
-    public void zoomOut() {
-        currentView.width += 2;
-        currentView.height += 2;
-
-        // Upper limit
-        if(currentView.width > maxView.width)
-            currentView.width = maxView.width;
-        if(currentView.height > maxView.height)
-            currentView.height = maxView.height;
-    }
 }

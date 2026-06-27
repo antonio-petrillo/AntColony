@@ -2,8 +2,6 @@ package com.gdd.game;
 
 public class CameraHandler {
 
-    //TODO: modificare completamente il funzionamento tenendo conto della classe Box
-
     public final Box currentView;
     public final Box maxView;
 

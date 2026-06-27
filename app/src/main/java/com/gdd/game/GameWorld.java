@@ -29,14 +29,18 @@ import java.util.Random;
 
 public class GameWorld {
 
+    public final Activity activity; // just for loading bitmaps in game objects
+
     // Rendering
     public final static int bufferWidth = 400, bufferHeight = 600; // actual pixels
     public Bitmap buffer;
     private final Canvas canvas;
-    private final Paint paint;
-    private final UIManager uiManager = new UIManager();;
 
-    // Simulation
+    // UI
+    private final Paint uiPaint;
+    private final UIManager uiManager;
+
+    // Physics Simulation
     public List<GameObject> objects;
     public World world;
     public final Box physicalSize, screenSize, currentView;
@@ -55,15 +59,18 @@ public class GameWorld {
     private static final int POSITION_ITERATIONS = 3;
     private static final int PARTICLE_ITERATIONS = 3;
 
-    public final Activity activity; // just for loading bitmaps in game objects
-
+    // Systems (ECS)
     public final RenderSystem rsys;
     public final GarbageCollectSystem wbsys;
     public final AiSystem aisys;
-
     public final SpawnSystem spawnsys;
 
     public List<Entity> entities = new ArrayList<>();
+
+    private static final Random rng = new Random();
+    private final float SPAWN_DIST = 1.0f;
+    boolean consumed;
+
 
     public GameWorld(Box physicalSize, Box screenSize, Activity theActivity) {
 
@@ -76,10 +83,11 @@ public class GameWorld {
         this.currentView = new Box(physicalSize);
         cameraHandler = new CameraHandler(currentView);
 
-        // ***** UI *****
-        paint = new Paint();
-        paint.setColor(Color.YELLOW);
-        paint.setStyle(Paint.Style.FILL);
+        // UI
+        uiPaint = new Paint();
+        uiPaint.setColor(Color.YELLOW);
+        uiPaint.setStyle(Paint.Style.FILL);
+        uiManager = new UIManager();
         initUI();
 
         // stored to prevent GC
@@ -118,39 +126,6 @@ public class GameWorld {
             float y = (float) Math.sin(angle) * dist;
             entities.add(WaspFactory.makeWasp(this, x, y, dist));
         }
-    }
-
-    private static final Random rng = new Random();
-    private final float SPAWN_DIST = 1.0f;
-    boolean consumed;
-
-    public synchronized void update(float elapsedTime)  {
-
-        // advance the physics simulation
-        world.step(elapsedTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
-
-        // Handle collisions
-
-        // Handle touch events
-        for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
-            consumed = uiManager.handleInput(event);
-
-            // if(!consumed)
-            // eventualmente si può passare il controllo alla scena fisica
-            // touchConsumer.consumeTouchEvent(event);
-        }
-
-        wbsys.update(entities, elapsedTime);
-        spawnsys.update(entities, elapsedTime);
-        aisys.update(entities, elapsedTime);
-    }
-
-    public synchronized void render()
-    {
-        // clear the screen (with black)
-        canvas.drawARGB(255, 0, 0, 0);
-        rsys.update(entities, 0.0f);
-        uiManager.draw(canvas, paint);
     }
 
     public void initUI() {
@@ -199,6 +174,37 @@ public class GameWorld {
         uiManager.add(button);
     }
 
+    public synchronized void update(float elapsedTime)  {
+
+        // Handle touch events
+        for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
+            consumed = uiManager.handleInput(event);
+
+            // if(!consumed)
+            // eventualmente si può passare il controllo alla scena fisica
+            // touchConsumer.consumeTouchEvent(event);
+        }
+
+        // Handle collisions: advance the physics simulation
+        world.step(elapsedTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
+
+        // Update Systems
+        wbsys.update(entities, elapsedTime);
+        spawnsys.update(entities, elapsedTime);
+        aisys.update(entities, elapsedTime);
+    }
+
+    public synchronized void render()
+    {
+        // background (clear the screen with black)
+        canvas.drawARGB(255, 0, 0, 0);
+
+        // scene
+        rsys.update(entities, 0.0f);
+
+        // ui
+        uiManager.draw(canvas, uiPaint);
+    }
 
     // Conversions between screen coordinates and physical coordinates
 

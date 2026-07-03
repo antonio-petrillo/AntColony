@@ -27,13 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GameWorld {
+public class Game {
 
     public final Activity activity; // just for loading bitmaps in game objects
 
     // Rendering
-    public final static int bufferWidth = 400, bufferHeight = 600; // actual pixels
-    public Bitmap buffer;
+    public static final int frameBufferWidth = GameSettings.frameBufferWidth,
+            frameBufferHeight = GameSettings.frameBufferHeight;
+    public Bitmap frameBuffer;
     private final Canvas canvas;
 
     // UI
@@ -43,9 +44,9 @@ public class GameWorld {
     // Physics Simulation
     public List<GameObject> objects;
     public World world;
-    public final Box physicalSize, // physics world: x[-10,+10] y[-15,+15] (meters)
-            screenSize, // smartphone screen size (pixel)
-            currentView; // camera in the physics world (meters)
+    public final Box worldSize, // physics world's size (in meters)
+            screenSize, // smartphone's screen size (in pixel)
+            worldCameraView; // camera position and size (in meters)
     private final TouchConsumer touchConsumer;
     private final EntityContactListener entityContactListener;
     private TouchHandler touchHandler;
@@ -74,16 +75,19 @@ public class GameWorld {
     boolean consumed;
 
 
-    public GameWorld(Box physicalSize, Box screenSize, Activity theActivity) {
+    /*
+     * Constructor.
+     */
+    public Game(Activity activity, Bitmap frameBuffer, Box physicalSize, Box screenSize) {
 
-        this.physicalSize = physicalSize;
+        this.worldSize = physicalSize;
         this.screenSize = screenSize;
-        this.activity = theActivity;
-        this.buffer = Bitmap.createBitmap(bufferWidth, bufferHeight, Bitmap.Config.ARGB_8888);
+        this.activity = activity;
+        this.frameBuffer = frameBuffer;
         this.world = new World(0, 0);  // gravity vector
 
-        this.currentView = new Box(physicalSize);
-        cameraHandler = new CameraHandler(currentView);
+        this.worldCameraView = new Box(physicalSize);
+        cameraHandler = new CameraHandler(worldCameraView);
 
         // UI
         uiPaint = new Paint();
@@ -99,7 +103,7 @@ public class GameWorld {
         this.world.setContactListener(entityContactListener);
 
         this.objects = new ArrayList<>();
-        this.canvas = new Canvas(buffer);
+        this.canvas = new Canvas(frameBuffer);
 
         var nestPosition = new Vec2(0, 0);
         var nest = NestFactory.makeNest(this, nestPosition);
@@ -110,25 +114,13 @@ public class GameWorld {
         aisys = new AiSystem(this, nestPosition, 1.0f);
         spawnsys = new SpawnSystem(this);
 
-        // spawn ants
-        for (int i = 0; i < 100; i++) {
-            float angle = rng.nextFloat(360.0f);
-            float x = (float) Math.cos(angle) * SPAWN_DIST;
-            float y = (float) Math.sin(angle) * SPAWN_DIST;
-
-            var ant = AntFactory.makeAnt(this, x, y, angle);
-            entities.add(ant);
-        }
-
-        // spawn wasps around the edges
-        for (int i = 0; i < 5; i++) {
-            float angle = rng.nextFloat(360.0f);
-            float dist  = 4.0f ; // spawn far from nest
-            float x = (float) Math.cos(angle) * dist;
-            float y = (float) Math.sin(angle) * dist;
-            entities.add(WaspFactory.makeWasp(this, x, y, dist));
-        }
+        initGameObjects();
     }
+
+
+    // *******************************************************************
+    //                           INITIALIZE
+    // ******************************************************************
 
     public void initUI() {
 
@@ -180,6 +172,42 @@ public class GameWorld {
         uiManager.add(button);
     }
 
+    public void initGameObjects() {
+
+        // spawn ants
+        for (int i = 0; i < 100; i++) {
+            float angle = rng.nextFloat(360.0f);
+            float x = (float) Math.cos(angle) * SPAWN_DIST;
+            float y = (float) Math.sin(angle) * SPAWN_DIST;
+
+            var ant = AntFactory.makeAnt(this, x, y, angle);
+            entities.add(ant);
+        }
+
+        // spawn wasps around the edges
+        for (int i = 0; i < 5; i++) {
+            float angle = rng.nextFloat(360.0f);
+            float dist  = 4.0f ; // spawn far from nest
+            float x = (float) Math.cos(angle) * dist;
+            float y = (float) Math.sin(angle) * dist;
+            entities.add(WaspFactory.makeWasp(this, x, y, dist));
+        }
+    }
+
+
+    // *******************************************************************
+    //                           SETTER
+    // ******************************************************************
+
+    public void setTouchHandler(TouchHandler touchHandler) {
+        this.touchHandler = touchHandler;
+    }
+
+
+    // *******************************************************************
+    //                           GAME LOOP
+    // ******************************************************************
+
     public synchronized void update(float elapsedTime)  {
 
         // Handle touch events
@@ -212,6 +240,12 @@ public class GameWorld {
         uiManager.draw(canvas, uiPaint);
     }
 
+
+
+    // *******************************************************************
+    //                            WORLD UTILS
+    // ******************************************************************
+
     // Conversions between screen coordinates and physical coordinates
 
     /*
@@ -221,19 +255,20 @@ public class GameWorld {
     */
 
     // New version: convert framebuffer coordinates to physics world
-    public float toMetersX(float x) { return currentView.xmin + x * (currentView.width/bufferWidth); }
-    public float toMetersY(float y) { return currentView.ymin + y * (currentView.height/bufferHeight); }
+    public float toMetersX(float x) { return worldCameraView.xmin + x * (worldCameraView.width / frameBufferWidth); }
+    public float toMetersY(float y) { return worldCameraView.ymin + y * (worldCameraView.height / frameBufferHeight); }
 
-    public float toPixelsX(float x) { return (x-currentView.xmin)/currentView.width*bufferWidth; }
-    public float toPixelsY(float y) { return (y-currentView.ymin)/currentView.height*bufferHeight; }
+    public float toPixelsX(float x) { return (x - worldCameraView.xmin) / worldCameraView.width * frameBufferWidth; }
+    public float toPixelsY(float y) { return (y - worldCameraView.ymin) / worldCameraView.height * frameBufferHeight; }
 
-    public float toPixelsXLength(float x) { return x/currentView.width*bufferWidth; }
-    public float toPixelsYLength(float y) { return y/currentView.height*bufferHeight; }
+    public float toPixelsXLength(float x) { return x / worldCameraView.width * frameBufferWidth; }
+    public float toPixelsYLength(float y) { return y / worldCameraView.height * frameBufferHeight; }
 
     public synchronized void setGravity(float x, float y)
     {
         world.setGravity(x, y);
     }
+
 
     @Override
     protected void finalize() throws Throwable
@@ -243,10 +278,6 @@ public class GameWorld {
         } finally {
             super.finalize();
         }
-    }
-
-    public void setTouchHandler(TouchHandler touchHandler) {
-        this.touchHandler = touchHandler;
     }
 
 }

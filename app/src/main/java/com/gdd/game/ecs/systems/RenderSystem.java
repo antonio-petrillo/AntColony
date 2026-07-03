@@ -1,13 +1,11 @@
 package com.gdd.game.ecs.systems;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.gdd.game.Assets;
 import com.gdd.game.Box;
-import com.gdd.game.GameWorld;
+import com.gdd.game.Game;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
@@ -18,18 +16,18 @@ import java.util.List;
 
 public class RenderSystem implements System {
 
-    public final GameWorld gw;
+    public final Game gw;
     private final Canvas canvas;
 
-    public RenderSystem(GameWorld gw) {
+    public RenderSystem(Game gw) {
         this.gw = gw;
-        canvas = new Canvas(gw.buffer);
+        canvas = new Canvas(gw.frameBuffer);
     }
 
     // TODO: bodge
     @Override
     public void update(List<Entity> entities, float dt) {
-        Box view = gw.currentView;
+        Box view = gw.worldCameraView;
 
         for (var entity : entities) {
             var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);

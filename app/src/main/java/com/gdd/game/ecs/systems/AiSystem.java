@@ -1,8 +1,6 @@
 package com.gdd.game.ecs.systems;
 
-import android.util.Log;
-
-import com.gdd.game.GameWorld;
+import com.gdd.game.Game;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.HealthComponent;
@@ -17,10 +15,10 @@ import java.util.Random;
 public final class AiSystem implements System {
 
     private static final Random rng = new Random();
-    public final GameWorld gw;
+    public final Game gw;
     private final Vec2 nestPosition;
     private final float dropFoodDistance;
-    public AiSystem(GameWorld gw, Vec2 nestPosition, float dropFoodDistance) {
+    public AiSystem(Game gw, Vec2 nestPosition, float dropFoodDistance) {
         this.gw = gw;
         this.nestPosition = nestPosition;
         this.dropFoodDistance = dropFoodDistance * dropFoodDistance;

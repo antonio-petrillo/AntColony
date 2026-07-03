@@ -3,9 +3,6 @@ package com.gdd.game;
 import android.util.Log;
 
 import com.badlogic.androidgames.framework.Input;
-import com.gdd.game.ecs.components.ComponentType;
-import com.gdd.game.ecs.components.PhysicComponent;
-import com.gdd.game.ecs.entities.Entity;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.Fixture;
 import com.google.fpl.liquidfun.MouseJoint;
@@ -23,7 +20,7 @@ public class TouchConsumer {
     private Fixture touchedFixture;
     private float lastX, lastY;
 
-    private GameWorld gw;
+    private Game gw;
     private QueryCallback touchQueryCallback = new TouchQueryCallback();
 
     // physical units, semi-side of a square around the touch point
@@ -39,7 +36,7 @@ public class TouchConsumer {
     /**
         scale{X,Y} are the scale factors from pixels to physics simulation coordinates
     */
-    public TouchConsumer(GameWorld gw) {
+    public TouchConsumer(Game gw) {
         this.gw = gw;
     }
 

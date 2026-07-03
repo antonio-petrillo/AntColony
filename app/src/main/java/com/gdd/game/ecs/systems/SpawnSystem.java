@@ -1,7 +1,7 @@
 package com.gdd.game.ecs.systems;
 
 import com.gdd.game.Box;
-import com.gdd.game.GameWorld;
+import com.gdd.game.Game;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.FoodFactory;
 
@@ -14,11 +14,11 @@ public class SpawnSystem  implements System {
     private static final float MIN_SPAWN_DIST_SQUARE = MIN_SPAWN_DIST * MIN_SPAWN_DIST;   // metres from origin (nest)
     public static final float BORDER_MARGIN = 0.5f;   // keep food away from world edges
 
-    private final GameWorld gw;
+    private final Game gw;
     private final Random rng = new Random();
     private float timer = 0f;
 
-    public SpawnSystem(GameWorld gw) {
+    public SpawnSystem(Game gw) {
         this.gw = gw;
     }
 
@@ -29,7 +29,7 @@ public class SpawnSystem  implements System {
         timer = 0f;
 
         float x, y;
-        Box world = gw.physicalSize;
+        Box world = gw.worldSize;
 
         // Retry until we find a position far enough from the nest
         do {

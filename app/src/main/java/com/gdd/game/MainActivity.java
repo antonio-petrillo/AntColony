@@ -3,30 +3,22 @@ package com.gdd.game;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.WindowMetrics;
 
 import com.badlogic.androidgames.framework.Audio;
 import com.badlogic.androidgames.framework.Music;
 import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.badlogic.androidgames.framework.impl.MultiTouchHandler;
 
-import java.io.IOException;
-
 public class MainActivity extends Activity {
 
     private AndroidFastRenderView renderView;
     private Music backgroundMusic;
-
-    // boundaries of the physical simulation
-    private static final float XMIN = -10, XMAX = 10, YMIN = -15, YMAX = 15;
 
     // the tag used for logging
     public static String TAG;
@@ -47,30 +39,37 @@ public class MainActivity extends Activity {
         var manager = getAssets();
         Assets.load(manager);
 
-        // Sound
+        // ***** GAME *****
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        Box screenSize   = new Box(0, 0, metrics.widthPixels, metrics.heightPixels);
+
+        // World: physical simulation
+        float halfWorldWidth = GameSettings.worldWidth / 2;
+        float halfWorldHeight = GameSettings.worldHeight / 2;
+        Box worldSize = new Box(-halfWorldWidth, -halfWorldHeight,
+                halfWorldWidth, halfWorldHeight);
+
+        Bitmap frameBuffer = Bitmap.createBitmap(GameSettings.frameBufferWidth, GameSettings.frameBufferHeight,
+                Bitmap.Config.ARGB_8888);
+        Game game = new Game(this, frameBuffer, worldSize, screenSize);
+
+        // ***** SURFACE VIEW *****
+        renderView = new AndroidFastRenderView(this, game);
+        setContentView(renderView);
+
+        // ***** INPUT (TOUCH) *****
+        // Scale for input coordinates (screen to framebuffer)
+        float scaleX = (float) GameSettings.frameBufferWidth / metrics.widthPixels;
+        float scaleY = (float) GameSettings.frameBufferHeight / metrics.heightPixels;
+        MultiTouchHandler touch = new MultiTouchHandler(renderView, scaleX, scaleY);
+        // Setter needed due to cyclic dependency
+        game.setTouchHandler(touch);
+
+        // ***** AUDIO *****
         Audio audio = new AndroidAudio(this);
         backgroundMusic = audio.newMusic("soundtrack.mp3");
         backgroundMusic.play();
-
-        // Game world
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        Box physicalSize = new Box(XMIN, YMIN, XMAX, YMAX),
-            screenSize   = new Box(0, 0, metrics.widthPixels, metrics.heightPixels);
-        GameWorld gw = new GameWorld(physicalSize, screenSize, this);
-
-        // View
-        renderView = new AndroidFastRenderView(this, gw);
-        setContentView(renderView);
-
-        // Scale for input coordinates (screen to framebuffer)
-        float scaleX = (float) GameWorld.bufferWidth / metrics.widthPixels;
-        float scaleY = (float) GameWorld.bufferHeight / metrics.heightPixels;
-
-        // Touch
-        MultiTouchHandler touch = new MultiTouchHandler(renderView, scaleX, scaleY);
-        // Setter needed due to cyclic dependency
-        gw.setTouchHandler(touch);
     }
 
     @Override

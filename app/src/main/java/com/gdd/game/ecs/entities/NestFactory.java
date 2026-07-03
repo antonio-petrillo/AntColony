@@ -2,7 +2,7 @@ package com.gdd.game.ecs.entities;
 
 import android.graphics.Paint;
 
-import com.gdd.game.GameWorld;
+import com.gdd.game.Game;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
@@ -15,7 +15,7 @@ import com.google.fpl.liquidfun.Vec2;
 public class NestFactory {
     private NestFactory() {}
 
-    public static Entity makeNest(GameWorld gw, Vec2 nestPosition) {
+    public static Entity makeNest(Game gw, Vec2 nestPosition) {
 
         var nest = new Entity(Entity.Kind.NEST);
         nest.addComponent(new HealthComponent(1000));

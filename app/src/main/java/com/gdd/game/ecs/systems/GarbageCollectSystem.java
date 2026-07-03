@@ -1,13 +1,12 @@
 package com.gdd.game.ecs.systems;
 
 import com.gdd.game.Box;
-import com.gdd.game.GameWorld;
+import com.gdd.game.Game;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,15 +14,15 @@ import java.util.Set;
 public class GarbageCollectSystem implements System {
 
     private final Set<Entity> toRemove = new HashSet<>(128);
-    private final GameWorld gw;
+    private final Game gw;
 
-    public GarbageCollectSystem(GameWorld gw) {
+    public GarbageCollectSystem(Game gw) {
         this.gw = gw;
     }
 
     @Override
     public void update(List<Entity> entities, float dt) {
-        Box worldSize = gw.physicalSize;
+        Box worldSize = gw.worldSize;
         for (var entity : entities) {
             var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
             if (phys != null) {

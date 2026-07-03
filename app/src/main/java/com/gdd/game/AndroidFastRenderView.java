@@ -12,13 +12,13 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
     private final Bitmap framebuffer;
     private Thread renderThread = null;
     private final SurfaceHolder holder;
-    private final GameWorld gameworld;
+    private final Game game;
     private volatile boolean running = false;
     
-    public AndroidFastRenderView(Context context, GameWorld gw) {
+    public AndroidFastRenderView(Context context, Game game) {
         super(context);
-        this.gameworld = gw;
-        this.framebuffer = gw.buffer;
+        this.game = game;
+        this.framebuffer = game.frameBuffer;
         this.holder = getHolder();
     }
 
@@ -62,8 +62,8 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
                   fpsDeltaTime = (currentTime-fpsTime) / 1000000000f;
             startTime = currentTime;
 
-            gameworld.update(deltaTime);
-            gameworld.render();
+            game.update(deltaTime);
+            game.render();
 
             // Draw framebuffer on screen
             Canvas canvas = holder.lockCanvas();

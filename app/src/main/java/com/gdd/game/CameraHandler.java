@@ -4,27 +4,22 @@ public class CameraHandler {
 
     //TODO: migliorare la gestione della classe, insieme ai nomi
 
-    // IN METRI
-    //   XMIN = -10, XMAX = 10, YMIN = -15, YMAX = 15;
+    public final Box worldCameraView; // camera
+    private final Box maxView; // 100% view
 
-    // 100% è di default => vedo tutto
-    // 200% vedo le cose grandi il doppio
-
-    public final Box currentView; // camera
-    private final Box maxBox; // 100% view
-
+    // Default: 100% (vedi tutta la scena)
+    // ZoomIn max: 200%
     private float currentZoom = 1; // range [1=100%, 2=200%]
     private float maxZoom = 2;
 
 
     public CameraHandler(Box currentView) {
-        this.maxBox = new Box(currentView);
-        this.currentView = currentView;
+        this.maxView = new Box(currentView);
+        this.worldCameraView = currentView;
     }
 
 
     /*
-     * // cerca di passare sempre multipli di 0.1 per ora
      * if value =  0.1 => zoom in  +10%
      * if value = -0.1 => zoom out -10%
      */
@@ -36,12 +31,12 @@ public class CameraHandler {
         else if (currentZoom > maxZoom) currentZoom = maxZoom;
 
         // calculate the new size
-        currentView.width = maxBox.width / currentZoom;
-        currentView.height = maxBox.height / currentZoom;
+        worldCameraView.width = maxView.width / currentZoom;
+        worldCameraView.height = maxView.height / currentZoom;
 
         // fix xmax-ymax
-        currentView.xmax = currentView.xmin + currentView.width;
-        currentView.ymax = currentView.ymin + currentView.height;
+        worldCameraView.xmax = worldCameraView.xmin + worldCameraView.width;
+        worldCameraView.ymax = worldCameraView.ymin + worldCameraView.height;
 
         //TODO: fix the zoom bug
 
@@ -60,23 +55,23 @@ public class CameraHandler {
         // case 1: scroll to left
         if(x < 0) {
             // esco dal bordo sinistro?
-            if( (currentView.xmin + x) < maxBox.xmin) {
+            if( (worldCameraView.xmin + x) < maxView.xmin) {
                 // da gestire
             }
             else { // non esco dal bordo
-                currentView.xmin += x;
-                currentView.xmax += x;
+                worldCameraView.xmin += x;
+                worldCameraView.xmax += x;
             }
         }
         // case 2: scroll to right
         else if(x > 0) {
             // esco dal bordo destro?
-            if( (currentView.xmax + x) > maxBox.xmax) {
+            if( (worldCameraView.xmax + x) > maxView.xmax) {
                 // da gestire
             }
             else { // non esco dal bordo
-                currentView.xmin += x;
-                currentView.xmax += x;
+                worldCameraView.xmin += x;
+                worldCameraView.xmax += x;
             }
         }
     }
@@ -86,23 +81,23 @@ public class CameraHandler {
         // case 1: scroll to up
         if(y < 0) {
             // esco dal bordo superiore?
-            if( (currentView.ymin + y) < maxBox.ymin) {
+            if( (worldCameraView.ymin + y) < maxView.ymin) {
                 // da gestire
             }
             else { // non esco dal bordo
-                currentView.ymin += y;
-                currentView.ymax += y;
+                worldCameraView.ymin += y;
+                worldCameraView.ymax += y;
             }
         }
         // case 2: scroll to down
         else if(y > 0) {
             // esco dal bordo inferiore?
-            if( (currentView.ymax + y) > maxBox.ymax) {
+            if( (worldCameraView.ymax + y) > maxView.ymax) {
                 // da gestire
             }
             else { // non esco dal bordo
-                currentView.ymin += y;
-                currentView.ymax += y;
+                worldCameraView.ymin += y;
+                worldCameraView.ymax += y;
             }
         }
     }

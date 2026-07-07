@@ -2,7 +2,7 @@ package com.gdd.game.ecs.entities;
 
 import android.graphics.Paint;
 
-import com.gdd.game.Game;
+import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
@@ -24,7 +24,7 @@ public class AntFactory {
     private static final Random rng = new Random();
     private  AntFactory() {}
 
-    public static Entity makeAnt(Game gw, float x, float y, float direction) {
+    public static Entity makeAnt(GameWorld gw, float x, float y, float direction) {
 
         BodyDef bdef = new BodyDef();
         bdef.setType(BodyType.dynamicBody);

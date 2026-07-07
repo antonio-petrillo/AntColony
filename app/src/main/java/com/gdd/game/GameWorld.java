@@ -17,8 +17,10 @@ import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
-import com.gdd.game.ui.UIButton;
+import com.gdd.game.ui.Button;
 import com.gdd.game.ui.UIManager;
+import com.gdd.game.ui.WidgetGroup;
+import com.gdd.game.ui.WidgetGroupImp;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
@@ -27,13 +29,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Game {
+public class GameWorld {
 
-    public final Activity activity; // just for loading bitmaps in game objects
+    enum State {READY, RUNNING, PAUSED}
+    State state = State.RUNNING;
+
+
+    public final Activity activity;
 
     // Rendering
-    public static final int frameBufferWidth = GameSettings.frameBufferWidth,
-            frameBufferHeight = GameSettings.frameBufferHeight;
+    public static final int fbufferWidth = GameSettings.fbufferWidth,
+            fbufferHeight = GameSettings.fbufferHeight;
     public Bitmap frameBuffer;
     private final Canvas canvas;
 
@@ -42,15 +48,17 @@ public class Game {
     private final UIManager uiManager;
 
     // Physics Simulation
-    public List<GameObject> objects;
     public World world;
     public final Box worldSize, // physics world's size (in meters)
             screenSize, // smartphone's screen size (in pixel)
-            worldCameraView; // camera position and size (in meters)
-    private final TouchConsumer touchConsumer;
-    private final EntityContactListener entityContactListener;
-    private TouchHandler touchHandler;
+            cameraView; // camera position and size (in meters)
     private CameraHandler cameraHandler;
+    public List<GameObject> objects;
+    private final EntityContactListener entityContactListener;
+
+    // Input
+    private final TouchConsumer touchConsumer;
+    private TouchHandler touchHandler;
 
     // Particles
     public ParticleSystem particleSystem;
@@ -78,7 +86,7 @@ public class Game {
     /*
      * Constructor.
      */
-    public Game(Activity activity, Bitmap frameBuffer, Box physicalSize, Box screenSize) {
+    public GameWorld(Activity activity, Bitmap frameBuffer, Box physicalSize, Box screenSize) {
 
         this.worldSize = physicalSize;
         this.screenSize = screenSize;
@@ -86,24 +94,24 @@ public class Game {
         this.frameBuffer = frameBuffer;
         this.world = new World(0, 0);  // gravity vector
 
-        this.worldCameraView = new Box(physicalSize);
-        cameraHandler = new CameraHandler(worldCameraView);
+        cameraView = new Box(physicalSize);
+        cameraHandler = new CameraHandler(cameraView);
 
         // UI
         uiPaint = new Paint();
         uiPaint.setColor(Color.YELLOW);
         uiPaint.setStyle(Paint.Style.FILL);
         uiManager = new UIManager();
-        initUI();
+        initUI2();
 
         // stored to prevent GC
         touchConsumer = new TouchConsumer(this);
         entityContactListener = new EntityContactListener();
 
-        this.world.setContactListener(entityContactListener);
+        world.setContactListener(entityContactListener);
 
-        this.objects = new ArrayList<>();
-        this.canvas = new Canvas(frameBuffer);
+        objects = new ArrayList<>();
+        canvas = new Canvas(frameBuffer);
 
         var nestPosition = new Vec2(0, 0);
         var nest = NestFactory.makeNest(this, nestPosition);
@@ -122,54 +130,89 @@ public class Game {
     //                           INITIALIZE
     // ******************************************************************
 
+
+    public void initUI2() {
+        WidgetGroup mainLayout = new WidgetGroupImp(0, 0, fbufferWidth, fbufferHeight);
+        Button pauseButton = new Button(50, 50, 200, 100, "PAUSE");
+        mainLayout.addWidget(pauseButton);
+        uiManager.setMainLayout(mainLayout);
+
+        WidgetGroup pauseLayout = new WidgetGroupImp(0, 0, fbufferWidth, fbufferHeight);
+        Button resumeButton = new Button(500, 500, 200, 100, "RESUME");
+        pauseLayout.addWidget(resumeButton);
+
+        //pauseButton.setOnClickListener(b -> uiManager.showPopup(pauseLayout)); // modale di default
+        //resumeButton.setOnClickListener(b -> uiManager.hideTopPopup());
+
+        pauseButton.setOnClickListener(b -> {
+            uiManager.showPopup(pauseLayout);
+            state = State.PAUSED;
+        });
+
+        resumeButton.setOnClickListener(b -> {
+            uiManager.hideTopPopup();
+            state = State.RUNNING;
+        });
+    }
+
     public void initUI() {
 
         float scrollx = 1f, scrolly = 1f;
         float zoom = 0.2f;
 
-        UIButton button;
 
-        button = new UIButton(50, 420, 50, 50);
+        /*
+        Button button;
+
+        button = new Button(10, 10, 50, 50);
+        button.setBitmap(Assets.BUTTON_PAUSE);
+        button.setOnClickListener(btn -> {
+            state = State.PAUSED;
+        });
+        //uiManager.add(button);
+
+        button = new Button(50, 420, 50, 50);
         button.setBitmap(Assets.BUTTON_UP);
         button.setOnClickListener(btn -> {
             cameraHandler.scroll(0, -scrolly);
         });
-        uiManager.add(button);
+        //uiManager.add(button);
 
-        button = new UIButton(50, 530, 50, 50);
+        button = new Button(50, 530, 50, 50);
         button.setBitmap(Assets.BUTTON_DOWN);
         button.setOnClickListener(btn -> {
             cameraHandler.scroll(0, scrolly);
         });
-        uiManager.add(button);
+        //uiManager.add(button);
 
-        button = new UIButton(10, 475, 50, 50);
+        button = new Button(10, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_LEFT);
         button.setOnClickListener(btn -> {
             cameraHandler.scroll(-scrollx, 0);
         });
-        uiManager.add(button);
+        //uiManager.add(button);
 
-        button = new UIButton(90, 475, 50, 50);
+        button = new Button(90, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_RIGHT);
         button.setOnClickListener(btn -> {
             cameraHandler.scroll(scrollx, 0);
         });
-        uiManager.add(button);
+        //uiManager.add(button);
 
-        button = new UIButton(270, 475, 50, 50);
+        button = new Button(270, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_PLUS);
         button.setOnClickListener(btn -> {
             cameraHandler.zoom(zoom);
         });
-        uiManager.add(button);
+        //uiManager.add(button);
 
-        button = new UIButton(345, 475, 50, 50);
+        button = new Button(345, 475, 50, 50);
         button.setBitmap(Assets.BUTTON_MINUS);
         button.setOnClickListener(btn -> {
             cameraHandler.zoom(-zoom);
         });
-        uiManager.add(button);
+        //uiManager.add(button);
+        */
     }
 
     public void initGameObjects() {
@@ -205,41 +248,46 @@ public class Game {
 
 
     // *******************************************************************
-    //                           GAME LOOP
+    //                      GAME LOOP - UPDATE
     // ******************************************************************
 
-    public synchronized void update(float elapsedTime)  {
+    public synchronized void update(float deltaTime)  {
 
         // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
-            consumed = uiManager.handleInput(event);
+            consumed = uiManager.processInput(event);
 
-            // if(!consumed)
-            // eventualmente si può passare il controllo alla scena fisica
-            // touchConsumer.consumeTouchEvent(event);
+             if(!consumed) {
+                 // touchConsumer.consumeTouchEvent(event);
+             }
         }
 
-        // Handle collisions: advance the physics simulation
-        world.step(elapsedTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
+        // Update ui
+        // uiManager.update(deltaTime);
 
-        // Update Systems
-        wbsys.update(entities, elapsedTime);
-        spawnsys.update(entities, elapsedTime);
-        aisys.update(entities, elapsedTime);
+        if(state == State.RUNNING) {
+            // Handle collisions: advance the physics simulation
+            world.step(deltaTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
+
+            // Update Systems
+            wbsys.update(entities, deltaTime);
+            spawnsys.update(entities, deltaTime);
+            aisys.update(entities, deltaTime);
+        }
     }
+
+
+    // *******************************************************************
+    //                      GAME LOOP - RENDER
+    // ******************************************************************
 
     public synchronized void render()
     {
         // background (clear the screen with black)
         canvas.drawARGB(255, 0, 0, 0);
-
-        // scene
         rsys.update(entities, 0.0f);
-
-        // ui
         uiManager.draw(canvas, uiPaint);
     }
-
 
 
     // *******************************************************************
@@ -255,14 +303,14 @@ public class Game {
     */
 
     // New version: convert framebuffer coordinates to physics world
-    public float toMetersX(float x) { return worldCameraView.xmin + x * (worldCameraView.width / frameBufferWidth); }
-    public float toMetersY(float y) { return worldCameraView.ymin + y * (worldCameraView.height / frameBufferHeight); }
+    public float toMetersX(float x) { return cameraView.xmin + x * (cameraView.width / fbufferWidth); }
+    public float toMetersY(float y) { return cameraView.ymin + y * (cameraView.height / fbufferHeight); }
 
-    public float toPixelsX(float x) { return (x - worldCameraView.xmin) / worldCameraView.width * frameBufferWidth; }
-    public float toPixelsY(float y) { return (y - worldCameraView.ymin) / worldCameraView.height * frameBufferHeight; }
+    public float toPixelsX(float x) { return (x - cameraView.xmin) / cameraView.width * fbufferWidth; }
+    public float toPixelsY(float y) { return (y - cameraView.ymin) / cameraView.height * fbufferHeight; }
 
-    public float toPixelsXLength(float x) { return x / worldCameraView.width * frameBufferWidth; }
-    public float toPixelsYLength(float y) { return y / worldCameraView.height * frameBufferHeight; }
+    public float toPixelsXLength(float x) { return x / cameraView.width * fbufferWidth; }
+    public float toPixelsYLength(float y) { return y / cameraView.height * fbufferHeight; }
 
     public synchronized void setGravity(float x, float y)
     {

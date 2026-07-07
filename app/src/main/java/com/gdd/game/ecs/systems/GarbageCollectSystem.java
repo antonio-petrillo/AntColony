@@ -1,7 +1,7 @@
 package com.gdd.game.ecs.systems;
 
 import com.gdd.game.Box;
-import com.gdd.game.Game;
+import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
@@ -14,9 +14,9 @@ import java.util.Set;
 public class GarbageCollectSystem implements System {
 
     private final Set<Entity> toRemove = new HashSet<>(128);
-    private final Game gw;
+    private final GameWorld gw;
 
-    public GarbageCollectSystem(Game gw) {
+    public GarbageCollectSystem(GameWorld gw) {
         this.gw = gw;
     }
 

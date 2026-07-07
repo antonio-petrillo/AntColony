@@ -2,7 +2,7 @@ package com.gdd.game.ecs.entities;
 
 import android.graphics.Paint;
 
-import com.gdd.game.Game;
+import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
@@ -16,7 +16,7 @@ public class FoodFactory {
     public static final float RADIUS = 0.2f;
     private FoodFactory() {}
 
-    public static Entity makeFood(Game gw, float x, float y) {
+    public static Entity makeFood(GameWorld gw, float x, float y) {
 
         var paint = new Paint();
         paint.setARGB(100, 80, 80, 80);

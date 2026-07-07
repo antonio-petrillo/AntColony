@@ -7,10 +7,10 @@ import com.google.fpl.liquidfun.Body;
 public abstract class GameObject {
     public Body body;
     public String name;
-    protected Game gw;
+    protected GameWorld gw;
 
 
-    public GameObject(Game gw) {
+    public GameObject(GameWorld gw) {
         this.gw = gw;
     }
     public boolean draw(Bitmap buffer)
@@ -22,7 +22,7 @@ public abstract class GameObject {
                   angle = body.getAngle();
             // Log.d("GameObject", "x=" + x + "\t y=" + y);
             // Cropping
-            Box view = gw.worldCameraView;
+            Box view = gw.cameraView;
             if (x > view.xmin && x < view.xmax &&
                 y > view.ymin && y < view.ymax) {
                 // Screen position

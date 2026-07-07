@@ -50,21 +50,21 @@ public class MainActivity extends Activity {
         Box worldSize = new Box(-halfWorldWidth, -halfWorldHeight,
                 halfWorldWidth, halfWorldHeight);
 
-        Bitmap frameBuffer = Bitmap.createBitmap(GameSettings.frameBufferWidth, GameSettings.frameBufferHeight,
+        Bitmap frameBuffer = Bitmap.createBitmap(GameSettings.fbufferWidth, GameSettings.fbufferHeight,
                 Bitmap.Config.ARGB_8888);
-        Game game = new Game(this, frameBuffer, worldSize, screenSize);
+        GameWorld gw = new GameWorld(this, frameBuffer, worldSize, screenSize);
 
         // ***** SURFACE VIEW *****
-        renderView = new AndroidFastRenderView(this, game);
+        renderView = new AndroidFastRenderView(this, gw);
         setContentView(renderView);
 
         // ***** INPUT (TOUCH) *****
         // Scale for input coordinates (screen to framebuffer)
-        float scaleX = (float) GameSettings.frameBufferWidth / metrics.widthPixels;
-        float scaleY = (float) GameSettings.frameBufferHeight / metrics.heightPixels;
+        float scaleX = (float) GameSettings.fbufferWidth / metrics.widthPixels;
+        float scaleY = (float) GameSettings.fbufferHeight / metrics.heightPixels;
         MultiTouchHandler touch = new MultiTouchHandler(renderView, scaleX, scaleY);
         // Setter needed due to cyclic dependency
-        game.setTouchHandler(touch);
+        gw.setTouchHandler(touch);
 
         // ***** AUDIO *****
         Audio audio = new AndroidAudio(this);

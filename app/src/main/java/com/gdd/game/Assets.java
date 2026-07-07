@@ -65,6 +65,7 @@ public class Assets {
         }
 
         try {
+            BUTTON_PAUSE = BitmapFactory.decodeStream( manager.open("bpause.png") );
             BUTTON_UP = BitmapFactory.decodeStream( manager.open("bup.png") );
             BUTTON_DOWN = BitmapFactory.decodeStream( manager.open("bdown.png") );
             BUTTON_LEFT = BitmapFactory.decodeStream( manager.open("bleft.png") );
@@ -86,6 +87,7 @@ public class Assets {
     public static Bitmap TERRAIN_BITMAP;
 
     // UI TEST
+    public static Bitmap BUTTON_PAUSE;
     public static Bitmap BUTTON_UP;
     public static Bitmap BUTTON_DOWN;
     public static Bitmap BUTTON_LEFT;

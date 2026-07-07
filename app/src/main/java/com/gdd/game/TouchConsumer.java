@@ -20,7 +20,7 @@ public class TouchConsumer {
     private Fixture touchedFixture;
     private float lastX, lastY;
 
-    private Game gw;
+    private GameWorld gw;
     private QueryCallback touchQueryCallback = new TouchQueryCallback();
 
     // physical units, semi-side of a square around the touch point
@@ -36,7 +36,7 @@ public class TouchConsumer {
     /**
         scale{X,Y} are the scale factors from pixels to physics simulation coordinates
     */
-    public TouchConsumer(Game gw) {
+    public TouchConsumer(GameWorld gw) {
         this.gw = gw;
     }
 

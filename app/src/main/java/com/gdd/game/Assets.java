@@ -64,18 +64,6 @@ public class Assets {
             throw new RuntimeException("Can't load bitmap: " + WASP_BITMAP_PATH);
         }
 
-        try {
-            BUTTON_PAUSE = BitmapFactory.decodeStream( manager.open("bpause.png") );
-            BUTTON_UP = BitmapFactory.decodeStream( manager.open("bup.png") );
-            BUTTON_DOWN = BitmapFactory.decodeStream( manager.open("bdown.png") );
-            BUTTON_LEFT = BitmapFactory.decodeStream( manager.open("bleft.png") );
-            BUTTON_RIGHT = BitmapFactory.decodeStream( manager.open("bright.png") );
-            BUTTON_PLUS = BitmapFactory.decodeStream( manager.open("bplus.png") );
-            BUTTON_MINUS = BitmapFactory.decodeStream( manager.open("bminus.png") );
-        } catch (IOException e) {
-            throw new RuntimeException("Assets loading failed: ", e);
-        }
-
         loaded = true;
     }
 
@@ -85,14 +73,5 @@ public class Assets {
     public static Bitmap FOOD_BITMAP;
     public static Bitmap WASP_BITMAP;
     public static Bitmap TERRAIN_BITMAP;
-
-    // UI TEST
-    public static Bitmap BUTTON_PAUSE;
-    public static Bitmap BUTTON_UP;
-    public static Bitmap BUTTON_DOWN;
-    public static Bitmap BUTTON_LEFT;
-    public static Bitmap BUTTON_RIGHT;
-    public static Bitmap BUTTON_PLUS;
-    public static Bitmap BUTTON_MINUS;
 
 }

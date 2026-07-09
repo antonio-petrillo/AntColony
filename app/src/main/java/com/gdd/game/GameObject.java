@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.google.fpl.liquidfun.Body;
 
 public abstract class GameObject {
+
     public Body body;
     public String name;
     protected GameWorld gw;
@@ -13,6 +14,7 @@ public abstract class GameObject {
     public GameObject(GameWorld gw) {
         this.gw = gw;
     }
+
     public boolean draw(Bitmap buffer)
     {
         if (body!=null) {

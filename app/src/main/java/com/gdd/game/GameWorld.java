@@ -18,7 +18,7 @@ import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
 import com.gdd.game.ui.Button;
-import com.gdd.game.ui.UIManager;
+import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
 import com.gdd.game.ui.WidgetGroupImp;
 import com.google.fpl.liquidfun.ParticleSystem;
@@ -43,21 +43,24 @@ public class GameWorld {
     public Bitmap frameBuffer;
     private final Canvas canvas;
 
+    // Scene
+    private SceneController sceneController;
+    private WorldCameraController worldCameraController;
+
     // UI
     private final Paint uiPaint;
-    private final UIManager uiManager;
+    private final UIController uiController;
 
     // Physics Simulation
     public World world;
     public final Box worldSize, // physics world's size (in meters)
             screenSize, // smartphone's screen size (in pixel)
             cameraView; // camera position and size (in meters)
-    private CameraHandler cameraHandler;
     public List<GameObject> objects;
     private final EntityContactListener entityContactListener;
 
     // Input
-    private final TouchConsumer touchConsumer;
+    // private final TouchConsumer touchConsumer;
     private TouchHandler touchHandler;
 
     // Particles
@@ -86,26 +89,31 @@ public class GameWorld {
     /*
      * Constructor.
      */
-    public GameWorld(Activity activity, Bitmap frameBuffer, Box physicalSize, Box screenSize) {
+    public GameWorld(Activity activity, Bitmap frameBuffer, Box worldSize, Box screenSize) {
 
-        this.worldSize = physicalSize;
+        this.worldSize = worldSize;
         this.screenSize = screenSize;
         this.activity = activity;
         this.frameBuffer = frameBuffer;
         this.world = new World(0, 0);  // gravity vector
+        cameraView = new Box(worldSize); // di default vede l'intero mondo
 
-        cameraView = new Box(physicalSize);
-        cameraHandler = new CameraHandler(cameraView);
+        // SCENE
+        worldCameraController = new WorldCameraController(cameraView,
+                GameSettings.worldWidth, GameSettings.worldHeight, // worldWidth, worldHeight in metri
+                GameSettings.fbufferWidth, GameSettings.fbufferHeight // pixel, fisso, lo conosci già
+        );
+        sceneController = new SceneController(worldCameraController);
 
         // UI
         uiPaint = new Paint();
         uiPaint.setColor(Color.YELLOW);
         uiPaint.setStyle(Paint.Style.FILL);
-        uiManager = new UIManager();
-        initUI2();
+        uiController = new UIController();
+        initUI();
 
         // stored to prevent GC
-        touchConsumer = new TouchConsumer(this);
+        //touchConsumer = new TouchConsumer(this);
         entityContactListener = new EntityContactListener();
 
         world.setContactListener(entityContactListener);
@@ -131,89 +139,27 @@ public class GameWorld {
     // ******************************************************************
 
 
-    public void initUI2() {
+    public void initUI() {
         WidgetGroup mainLayout = new WidgetGroupImp(0, 0, fbufferWidth, fbufferHeight);
         Button pauseButton = new Button(50, 50, 200, 100, "PAUSE");
         mainLayout.addWidget(pauseButton);
-        uiManager.setMainLayout(mainLayout);
+        uiController.setMainLayout(mainLayout);
 
         WidgetGroup pauseLayout = new WidgetGroupImp(0, 0, fbufferWidth, fbufferHeight);
         Button resumeButton = new Button(500, 500, 200, 100, "RESUME");
         pauseLayout.addWidget(resumeButton);
 
-        //pauseButton.setOnClickListener(b -> uiManager.showPopup(pauseLayout)); // modale di default
-        //resumeButton.setOnClickListener(b -> uiManager.hideTopPopup());
-
         pauseButton.setOnClickListener(b -> {
-            uiManager.showPopup(pauseLayout);
+            uiController.showPopup(pauseLayout);
             state = State.PAUSED;
         });
 
         resumeButton.setOnClickListener(b -> {
-            uiManager.hideTopPopup();
+            uiController.hideTopPopup();
             state = State.RUNNING;
         });
     }
 
-    public void initUI() {
-
-        float scrollx = 1f, scrolly = 1f;
-        float zoom = 0.2f;
-
-
-        /*
-        Button button;
-
-        button = new Button(10, 10, 50, 50);
-        button.setBitmap(Assets.BUTTON_PAUSE);
-        button.setOnClickListener(btn -> {
-            state = State.PAUSED;
-        });
-        //uiManager.add(button);
-
-        button = new Button(50, 420, 50, 50);
-        button.setBitmap(Assets.BUTTON_UP);
-        button.setOnClickListener(btn -> {
-            cameraHandler.scroll(0, -scrolly);
-        });
-        //uiManager.add(button);
-
-        button = new Button(50, 530, 50, 50);
-        button.setBitmap(Assets.BUTTON_DOWN);
-        button.setOnClickListener(btn -> {
-            cameraHandler.scroll(0, scrolly);
-        });
-        //uiManager.add(button);
-
-        button = new Button(10, 475, 50, 50);
-        button.setBitmap(Assets.BUTTON_LEFT);
-        button.setOnClickListener(btn -> {
-            cameraHandler.scroll(-scrollx, 0);
-        });
-        //uiManager.add(button);
-
-        button = new Button(90, 475, 50, 50);
-        button.setBitmap(Assets.BUTTON_RIGHT);
-        button.setOnClickListener(btn -> {
-            cameraHandler.scroll(scrollx, 0);
-        });
-        //uiManager.add(button);
-
-        button = new Button(270, 475, 50, 50);
-        button.setBitmap(Assets.BUTTON_PLUS);
-        button.setOnClickListener(btn -> {
-            cameraHandler.zoom(zoom);
-        });
-        //uiManager.add(button);
-
-        button = new Button(345, 475, 50, 50);
-        button.setBitmap(Assets.BUTTON_MINUS);
-        button.setOnClickListener(btn -> {
-            cameraHandler.zoom(-zoom);
-        });
-        //uiManager.add(button);
-        */
-    }
 
     public void initGameObjects() {
 
@@ -248,22 +194,22 @@ public class GameWorld {
 
 
     // *******************************************************************
-    //                      GAME LOOP - UPDATE
+    //                           GAME LOOP
     // ******************************************************************
 
     public synchronized void update(float deltaTime)  {
 
         // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
-            consumed = uiManager.processInput(event);
-
-             if(!consumed) {
-                 // touchConsumer.consumeTouchEvent(event);
-             }
+            consumed = uiController.processInput(event);
+             if(!consumed)
+                 sceneController.processInput(event);
+             // touchConsumer.consumeTouchEvent(event);
         }
 
-        // Update ui
-        // uiManager.update(deltaTime);
+        // Update
+        // uiController.update(deltaTime);
+        // sceneController.update(deltaTime);
 
         if(state == State.RUNNING) {
             // Handle collisions: advance the physics simulation
@@ -277,21 +223,19 @@ public class GameWorld {
     }
 
 
-    // *******************************************************************
-    //                      GAME LOOP - RENDER
-    // ******************************************************************
-
     public synchronized void render()
     {
         // background (clear the screen with black)
         canvas.drawARGB(255, 0, 0, 0);
+        // mapController.applyCameraTransform(canvas);
         rsys.update(entities, 0.0f);
-        uiManager.draw(canvas, uiPaint);
+        // ui
+        uiController.draw(canvas, uiPaint);
     }
 
 
     // *******************************************************************
-    //                            WORLD UTILS
+    //                            UTILS
     // ******************************************************************
 
     // Conversions between screen coordinates and physical coordinates

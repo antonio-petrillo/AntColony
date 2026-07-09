@@ -7,7 +7,6 @@ import com.badlogic.androidgames.framework.Input;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * UIManager coordina l'intero ciclo di vita della UI:
@@ -32,7 +31,7 @@ import java.util.Stack;
  * pausa): l'evento viene consumato lo stesso, per non far scivolare il
  * dito sulla scena sotto mentre il gioco è in pausa.
  */
-public class UIManager {
+public class UIController {
 
     private static final int NO_POINTER = -1;
 
@@ -177,6 +176,8 @@ public class UIManager {
      * riferimento oltre il frame corrente.
      */
     public boolean processInput(Input.TouchEvent event) {
+        if(event == null) return false;
+
         boolean consumed = false;
 
         switch (event.type) {
@@ -189,8 +190,6 @@ public class UIManager {
             case Input.TouchEvent.TOUCH_UP:
                 consumed = handleTouchUp(event);
                 break;
-            //default:
-            //    consumed = false;
         }
 
         return consumed;

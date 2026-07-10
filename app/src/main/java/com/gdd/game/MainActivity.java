@@ -45,12 +45,12 @@ public class MainActivity extends Activity {
         Box screenSize   = new Box(0, 0, metrics.widthPixels, metrics.heightPixels);
 
         // World: physical simulation
-        float halfWorldWidth = GameSettings.worldWidth / 2;
-        float halfWorldHeight = GameSettings.worldHeight / 2;
+        float halfWorldWidth = Settings.worldWidth / 2;
+        float halfWorldHeight = Settings.worldHeight / 2;
         Box worldSize = new Box(-halfWorldWidth, -halfWorldHeight,
                 halfWorldWidth, halfWorldHeight);
 
-        Bitmap frameBuffer = Bitmap.createBitmap(GameSettings.fbufferWidth, GameSettings.fbufferHeight,
+        Bitmap frameBuffer = Bitmap.createBitmap(Settings.fbufferWidth, Settings.fbufferHeight,
                 Bitmap.Config.ARGB_8888);
         GameWorld gw = new GameWorld(this, frameBuffer, worldSize, screenSize);
 
@@ -60,13 +60,14 @@ public class MainActivity extends Activity {
 
         // ***** INPUT (TOUCH) *****
         // Scale for input coordinates (screen to framebuffer)
-        float scaleX = (float) GameSettings.fbufferWidth / metrics.widthPixels;
-        float scaleY = (float) GameSettings.fbufferHeight / metrics.heightPixels;
+        float scaleX = (float) Settings.fbufferWidth / metrics.widthPixels;
+        float scaleY = (float) Settings.fbufferHeight / metrics.heightPixels;
         MultiTouchHandler touch = new MultiTouchHandler(renderView, scaleX, scaleY);
         // Setter needed due to cyclic dependency
         gw.setTouchHandler(touch);
 
         // ***** AUDIO *****
+        //TODO va gestito in GameWorld
         Audio audio = new AndroidAudio(this);
         backgroundMusic = audio.newMusic("soundtrack.mp3");
         backgroundMusic.play();

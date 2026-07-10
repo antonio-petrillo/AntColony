@@ -96,7 +96,7 @@ public class Button extends Widget {
     }
 
     @Override
-    public void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas) {
         Paint background = !enabled
                 ? paintDisabled
                 : (state == State.PRESSED ? paintPressed : paintUp);

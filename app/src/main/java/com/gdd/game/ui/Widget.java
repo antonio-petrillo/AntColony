@@ -29,9 +29,7 @@ public abstract class Widget {
 
     public abstract void update(float deltaTime);
 
-    public abstract void draw(Canvas canvas, Paint paint);
-    // Gestione Input (Ritorna true se l'evento è stato "consumato")
-    // public abstract boolean handleInput(Input.TouchEvent event);
+    public abstract void draw(Canvas canvas);
 
     // Ritorna true se il touch è dentro i confini dell'elemento (Collision Box)
     public boolean contains(float px, float py) {
@@ -77,6 +75,5 @@ public abstract class Widget {
 
     public WidgetGroup getParent() { return parent; }
     public void setParent(WidgetGroup parent) { this.parent = parent; }
-
 
 }

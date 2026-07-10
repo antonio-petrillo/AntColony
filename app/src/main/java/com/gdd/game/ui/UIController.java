@@ -146,9 +146,9 @@ public class UIController {
         }
     }
 
-    public void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas) {
         if (mainLayout != null) {
-            mainLayout.draw(canvas, paint);
+            mainLayout.draw(canvas);
         }
 
         int n = popups.size();
@@ -158,7 +158,7 @@ public class UIController {
                 // Oscura ciò che sta sotto per dare risalto al popup.
                 canvas.drawColor(0x99000000);
             }
-            entry.layout.draw(canvas, paint);
+            entry.layout.draw(canvas);
         }
     }
 

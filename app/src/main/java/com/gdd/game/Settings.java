@@ -1,6 +1,6 @@
 package com.gdd.game;
 
-public class GameSettings {
+public class Settings {
 
     // LANDSCAPE MODE (horizontal screen orientation)
 

@@ -1,98 +1,111 @@
 package com.gdd.game;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
+public class Camera {
 
-public class WorldCameraController implements CameraController {
-
-    private final Box cameraView;
-    private final float worldWidth, worldHeight;
+    private final Box cameraView; // camera in World (in metri)
+    private final float worldWidth, worldHeight; // dimensione di World (in metri)
+    private final int fbufferWidth, fbufferHeight; // dimensione framebuffer (in pixel)
 
     private float centerX = 0f, centerY = 0f;
-    private float zoom = 1f;
-    private float minZoom = 1f;
-    private float maxZoom = 6f;
+    private float minZoom = 1f; // zoom = 1 (100%) significa "vedi tutto il World"
+    private float maxZoom = 3f; // zoom > 1 significa "più vicino" (ingrandisci)
+    private float zoom = 2f;
 
-    private final int viewportWidthPx, viewportHeightPx;
-
+    // stato del pinch in corso, in metri/pixel framebuffer
     private boolean pinching = false;
     private float pinchStartDistancePx;
     private float zoomAtPinchStart;
     private float anchorWorldX, anchorWorldY;
 
-    public WorldCameraController(Box cameraView, float worldWidth, float worldHeight,
-                                 int viewportWidthPx, int viewportHeightPx) {
+
+    /*
+     * Constructor.
+     */
+    public Camera(Box cameraView, float worldWidth, float worldHeight,
+                  int viewportWidthPx, int viewportHeightPx) {
         this.cameraView = cameraView;
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
-        this.viewportWidthPx = Math.max(viewportWidthPx, 1);
-        this.viewportHeightPx = Math.max(viewportHeightPx, 1);
-        applyToCameraView();
+        this.fbufferWidth = Math.max(viewportWidthPx, 1);
+        this.fbufferHeight = Math.max(viewportHeightPx, 1);
+        update();
     }
 
     // ------------------------------------------------------------------
-    // Configurazione
+    // Getter / Setter
     // ------------------------------------------------------------------
-
-    public void setZoomLimits(float minZoom, float maxZoom) {
-        this.minZoom = minZoom;
-        this.maxZoom = maxZoom;
-        zoom = clamp(zoom, minZoom, maxZoom);
-        applyToCameraView();
-    }
-
-    public void setCamera(float centerX, float centerY, float zoom) {
-        this.centerX = centerX;
-        this.centerY = centerY;
-        this.zoom = clamp(zoom, minZoom, maxZoom);
-        applyToCameraView();
-    }
 
     public float getCenterX() { return centerX; }
     public float getCenterY() { return centerY; }
 
-    @Override
     public float getZoom() { return zoom; }
 
-    // ------------------------------------------------------------------
-    // Conversioni framebuffer (pixel) <-> mondo (metri)
-    // ------------------------------------------------------------------
+    public void setZoom(float zoom) {
+        if(zoom < minZoom || zoom > maxZoom)
+            return;
 
-    @Override
-    public float screenToWorldX(float framebufferX) {
-        return cameraView.xmin + (framebufferX / viewportWidthPx) * cameraView.width;
+        this.zoom = zoom;
+        update();
     }
 
-    @Override
-    public float screenToWorldY(float framebufferY) {
-        return cameraView.ymin + (framebufferY / viewportHeightPx) * cameraView.height;
+    public void setZoomLimits(float minZoom, float maxZoom) {
+        if(minZoom < 1)
+            minZoom = 1f;
+        if(maxZoom < 1)
+            maxZoom = 1f;
+        this.minZoom = minZoom;
+        this.maxZoom = maxZoom;
+        zoom = clamp(zoom, minZoom, maxZoom);
+        update();
+    }
+
+    /*
+     * Riposiziona la camera manualmente.
+     */
+    public void setCamera(float centerX, float centerY, float zoom) {
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.zoom = clamp(zoom, minZoom, maxZoom);
+        update();
+    }
+
+    // ------------------------------------------------------------------
+    // Conversioni framebuffer (pixel) <-> world (metri)
+    // ------------------------------------------------------------------
+
+    public float fbufferToWorldX(float fbufferX) {
+        return cameraView.xmin + (fbufferX / fbufferWidth) * cameraView.width;
+    }
+
+    public float fbufferToWorldY(float fbufferY) {
+        return cameraView.ymin + (fbufferY / fbufferHeight) * cameraView.height;
     }
 
     // ------------------------------------------------------------------
     // Pan
     // ------------------------------------------------------------------
 
-    @Override
-    public void pan(float dxFb, float dyFb) {
-        centerX -= dxFb * (cameraView.width / viewportWidthPx);
-        centerY -= dyFb * (cameraView.height / viewportHeightPx);
-        applyToCameraView();
+    /*
+     * Sposta la camera di quantità delta(x,y) in pixel.
+     */
+    public void pan(float deltaX, float deltaY) {
+        centerX -= deltaX * (cameraView.width / fbufferWidth);
+        centerY -= deltaY * (cameraView.height / fbufferHeight);
+        update();
     }
 
     // ------------------------------------------------------------------
     // Pinch zoom, ancorato al punto medio delle due dita
     // ------------------------------------------------------------------
 
-    @Override
     public void beginPinch(float midFbX, float midFbY, float initialDistance) {
         pinching = true;
         pinchStartDistancePx = Math.max(initialDistance, 1f);
         zoomAtPinchStart = zoom;
-        anchorWorldX = screenToWorldX(midFbX);
-        anchorWorldY = screenToWorldY(midFbY);
+        anchorWorldX = fbufferToWorldX(midFbX);
+        anchorWorldY = fbufferToWorldY(midFbY);
     }
 
-    @Override
     public void updatePinch(float midFbX, float midFbY, float currentDistance) {
         if (!pinching || currentDistance < 1f) return;
 
@@ -101,36 +114,30 @@ public class WorldCameraController implements CameraController {
         float width = worldWidth / zoom;
         float height = worldHeight / zoom;
 
-        float tx = midFbX / viewportWidthPx;
-        float ty = midFbY / viewportHeightPx;
+        float tx = midFbX / fbufferWidth; // 0..1 da sinistra a destra
+        float ty = midFbY / fbufferHeight; // 0..1 dall'alto in basso
 
+        //  Risolve il nuovo centro imponendo che il punto mondo agganciato
+        //  all'inizio del pinch resti sotto il punto medio corrente delle dita
         centerX = anchorWorldX + width * (0.5f - tx);
         centerY = anchorWorldY + height * (0.5f - ty);
 
         applyWithSize(width, height);
     }
 
-    @Override
     public void endPinch() {
         pinching = false;
     }
 
     // ------------------------------------------------------------------
-    // Rendering
+    // Metodi per aggiornare il Box cameraView a partire da centro/zoom correnti
     // ------------------------------------------------------------------
 
-    @Override
-    public void applyTransform(Canvas canvas) {
-        float scaleX = viewportWidthPx / cameraView.width;
-        float scaleY = viewportHeightPx / cameraView.height;
-
-        Matrix matrix = new Matrix();
-        matrix.postTranslate(-cameraView.xmin, -cameraView.ymin);
-        matrix.postScale(scaleX, scaleY);
-        canvas.concat(matrix);
-    }
-
-    private void applyToCameraView() {
+    /*
+     * Applica le nuove impostazioni alla camera.
+     * Richiamato in automatico.
+     */
+    private void update() {
         applyWithSize(worldWidth / zoom, worldHeight / zoom);
     }
 
@@ -145,6 +152,10 @@ public class WorldCameraController implements CameraController {
         cameraView.ymax = centerY + height / 2f;
     }
 
+    /*
+     * Assicura che il centro della camera non faccia uscire cameraView
+     * dai bordi del World.
+     */
     private void clampCenter(float viewWidth, float viewHeight) {
         float worldXmin = -worldWidth / 2f;
         float worldXmax = worldWidth / 2f;

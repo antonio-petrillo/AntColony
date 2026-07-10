@@ -50,14 +50,14 @@ public abstract class WidgetGroup extends Widget {
     // ***************************************
 
     @Override
-    public void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas) {
         if (!visible) return;
 
         int n = children.size();
         for (int i = 0; i < n; i++) {
             Widget child = children.get(i);
             if (child.isVisible()) {
-                child.draw(canvas, paint);
+                child.draw(canvas);
             }
         }
     }

@@ -32,24 +32,20 @@ import java.util.Random;
 public class GameWorld {
 
     enum State {READY, RUNNING, PAUSED}
+
     State state = State.RUNNING;
-
-
     public final Activity activity;
 
     // Rendering
-    public static final int fbufferWidth = GameSettings.fbufferWidth,
-            fbufferHeight = GameSettings.fbufferHeight;
+    public static final int fbufferWidth = Settings.fbufferWidth,
+            fbufferHeight = Settings.fbufferHeight;
     public Bitmap frameBuffer;
     private final Canvas canvas;
 
-    // Scene
-    private SceneController sceneController;
-    private WorldCameraController worldCameraController;
-
-    // UI
-    private final Paint uiPaint;
+    // Controller
     private final UIController uiController;
+    private SceneController sceneController;
+    private Camera camera;
 
     // Physics Simulation
     public World world;
@@ -99,16 +95,13 @@ public class GameWorld {
         cameraView = new Box(worldSize); // di default vede l'intero mondo
 
         // SCENE
-        worldCameraController = new WorldCameraController(cameraView,
-                GameSettings.worldWidth, GameSettings.worldHeight, // worldWidth, worldHeight in metri
-                GameSettings.fbufferWidth, GameSettings.fbufferHeight // pixel, fisso, lo conosci già
+        camera = new Camera(cameraView,
+                Settings.worldWidth, Settings.worldHeight, // worldWidth, worldHeight in metri
+                Settings.fbufferWidth, Settings.fbufferHeight // pixel, fisso, lo conosci già
         );
-        sceneController = new SceneController(worldCameraController);
+        sceneController = new SceneController(camera);
 
         // UI
-        uiPaint = new Paint();
-        uiPaint.setColor(Color.YELLOW);
-        uiPaint.setStyle(Paint.Style.FILL);
         uiController = new UIController();
         initUI();
 
@@ -134,10 +127,9 @@ public class GameWorld {
     }
 
 
-    // *******************************************************************
-    //                           INITIALIZE
-    // ******************************************************************
-
+    // ------------------------------------------------------------------
+    // Initialize
+    // ------------------------------------------------------------------
 
     public void initUI() {
         WidgetGroup mainLayout = new WidgetGroupImp(0, 0, fbufferWidth, fbufferHeight);
@@ -184,18 +176,18 @@ public class GameWorld {
     }
 
 
-    // *******************************************************************
-    //                           SETTER
-    // ******************************************************************
+    // ------------------------------------------------------------------
+    // Getter / Setter
+    // ------------------------------------------------------------------
 
     public void setTouchHandler(TouchHandler touchHandler) {
         this.touchHandler = touchHandler;
     }
 
 
-    // *******************************************************************
-    //                           GAME LOOP
-    // ******************************************************************
+    // ------------------------------------------------------------------
+    // Game Loop
+    // ------------------------------------------------------------------
 
     public synchronized void update(float deltaTime)  {
 
@@ -204,7 +196,6 @@ public class GameWorld {
             consumed = uiController.processInput(event);
              if(!consumed)
                  sceneController.processInput(event);
-             // touchConsumer.consumeTouchEvent(event);
         }
 
         // Update
@@ -230,13 +221,13 @@ public class GameWorld {
         // mapController.applyCameraTransform(canvas);
         rsys.update(entities, 0.0f);
         // ui
-        uiController.draw(canvas, uiPaint);
+        uiController.draw(canvas);
     }
 
 
-    // *******************************************************************
-    //                            UTILS
-    // ******************************************************************
+    // ------------------------------------------------------------------
+    // Utils
+    // ------------------------------------------------------------------
 
     // Conversions between screen coordinates and physical coordinates
 

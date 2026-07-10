@@ -1,8 +1,6 @@
 package com.gdd.game;
 
 import com.badlogic.androidgames.framework.Input;
-import android.util.Log;
-import java.util.List;
 
 public class SceneController {
 
@@ -25,7 +23,7 @@ public class SceneController {
 
 
     private GestureState state = GestureState.IDLE;
-    private final CameraController camera;
+    private final Camera camera;
 
     private static final int NO_POINTER = -1;
     private static final float PAN_THRESHOLD = 20f;
@@ -39,7 +37,10 @@ public class SceneController {
     private SceneInteractable draggedTarget;
 
 
-    public SceneController(CameraController camera) {
+    /*
+     * Constructor.
+     */
+    public SceneController(Camera camera) {
         this.camera = camera;
     }
 
@@ -51,7 +52,7 @@ public class SceneController {
         return state;
     }
 
-    public CameraController getCamera() {
+    public Camera getCamera() {
         return camera;
     }
 
@@ -61,7 +62,7 @@ public class SceneController {
 
 
     // ------------------------------------------------------------------
-    // Reset esplicito (es. chiamato dal bottone pausa)
+    // Reset esplicito
     // ------------------------------------------------------------------
 
     public void reset() {

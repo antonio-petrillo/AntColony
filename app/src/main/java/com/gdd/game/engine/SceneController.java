@@ -6,6 +6,9 @@ import com.badlogic.androidgames.framework.Input;
 import com.gdd.game.Game;
 import com.gdd.game.Settings;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SceneController {
 
     private Game game;
@@ -15,6 +18,8 @@ public class SceneController {
     private SceneGraphics sGraphics;
     private SceneAudio sAudio;
     private ScenePhysics sPhysics;
+
+    private List<Actor> actors;
 
 
     // ------------------------------------------------------------------
@@ -34,8 +39,15 @@ public class SceneController {
         sGraphics = new SceneGraphics();
         sAudio = new SceneAudio();
         sPhysics = new ScenePhysics();
+
+        actors = new ArrayList<>();
+        initActors();
     }
 
+
+    public void initActors() {
+
+    }
 
     // ------------------------------------------------------------------
     // Game Loop

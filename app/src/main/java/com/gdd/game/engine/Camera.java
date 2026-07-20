@@ -1,4 +1,6 @@
-package com.gdd.game;
+package com.gdd.game.engine;
+
+import com.gdd.game.Box;
 
 public class Camera {
 
@@ -8,8 +10,8 @@ public class Camera {
 
     private float centerX = 0f, centerY = 0f;
     private float minZoom = 1f; // zoom = 1 (100%) significa "vedi tutto il World"
-    private float maxZoom = 3f; // zoom > 1 significa "più vicino" (ingrandisci)
-    private float zoom = 2f;
+    private float maxZoom = 5f; // zoom > 1 significa "più vicino" (ingrandisci)
+    private float zoom = 1f;
 
     // stato del pinch in corso, in metri/pixel framebuffer
     private boolean pinching = false;
@@ -178,4 +180,37 @@ public class Camera {
     private static float clamp(float v, float min, float max) {
         return Math.max(min, Math.min(max, v));
     }
+
+
+
+
+    // ------------------------------------------------------------------
+    // Utils
+    // ------------------------------------------------------------------
+
+    // coordinate fisiche
+    public boolean isVisible(float x, float y, float halfW, float halfH) {
+
+        return (x + halfW) >= cameraView.xmin  && (x - halfW) <= cameraView.xmax
+                && (y - halfH) >= cameraView.ymin  && (y + halfH) <= cameraView.ymax;
+    }
+
+
+    // Conversions between screen coordinates and physical coordinates
+
+    /*
+    // Old version: convert screen coordinates to physics world
+    public float toMetersX(float x) { return currentView.xmin + x * (currentView.width/screenSize.width); }
+    public float toMetersY(float y) { return currentView.ymin + y * (currentView.height/screenSize.height); }
+    */
+
+    // New version: convert framebuffer coordinates to physics world
+    public float toMetersX(float x) { return cameraView.xmin + x * (cameraView.width / fbufferWidth); }
+    public float toMetersY(float y) { return cameraView.ymin + y * (cameraView.height / fbufferHeight); }
+
+    public float toPixelsX(float x) { return (x - cameraView.xmin) / cameraView.width * fbufferWidth; }
+    public float toPixelsY(float y) { return (y - cameraView.ymin) / cameraView.height * fbufferHeight; }
+
+    public float toPixelsXLength(float x) { return x / cameraView.width * fbufferWidth; }
+    public float toPixelsYLength(float y) { return y / cameraView.height * fbufferHeight; }
 }

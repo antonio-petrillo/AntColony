@@ -52,10 +52,10 @@ public class MainActivity extends Activity {
 
         Bitmap frameBuffer = Bitmap.createBitmap(Settings.fbufferWidth, Settings.fbufferHeight,
                 Bitmap.Config.ARGB_8888);
-        GameWorld gw = new GameWorld(this, frameBuffer, worldSize, screenSize);
+        Game game = new Game(this, frameBuffer, worldSize, screenSize);
 
         // ***** SURFACE VIEW *****
-        renderView = new AndroidFastRenderView(this, gw);
+        renderView = new AndroidFastRenderView(this, game);
         setContentView(renderView);
 
         // ***** INPUT (TOUCH) *****
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
         float scaleY = (float) Settings.fbufferHeight / metrics.heightPixels;
         MultiTouchHandler touch = new MultiTouchHandler(renderView, scaleX, scaleY);
         // Setter needed due to cyclic dependency
-        gw.setTouchHandler(touch);
+        game.setTouchHandler(touch);
 
         // ***** AUDIO *****
         //TODO va gestito in GameWorld

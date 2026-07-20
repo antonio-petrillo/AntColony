@@ -3,26 +3,24 @@ package com.gdd.game;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
+import com.gdd.game.engine.Camera;
+import com.gdd.game.engine.SceneController;
+import com.gdd.game.engine.SceneInput;
 import com.gdd.game.ui.Button;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
 import com.gdd.game.ui.WidgetGroupImp;
 import com.google.fpl.liquidfun.ParticleSystem;
-import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-public class GameWorld {
+public class Game {
 
-    enum State {READY, RUNNING, PAUSED}
+    enum State { RUNNING, PAUSED }
 
     State state = State.RUNNING;
     public final Activity activity;
@@ -31,62 +29,38 @@ public class GameWorld {
     public static final int fbufferWidth = Settings.fbufferWidth,
             fbufferHeight = Settings.fbufferHeight;
     public Bitmap frameBuffer;
-    private final Canvas canvas;
+    public final Canvas canvas;
 
     // Controller
     private final UIController uiController;
     private SceneController sceneController;
-    private Camera camera;
 
-    // Physics Simulation
-    public World world;
     public final Box worldSize, // physics world's size (in meters)
             screenSize, // smartphone's screen size (in pixel)
             cameraView; // camera position and size (in meters)
 
     // Input
-    // private final TouchConsumer touchConsumer;
     private TouchHandler touchHandler;
-
-    // Particles
-    public ParticleSystem particleSystem;
-    private static final int MAXPARTICLECOUNT = 1000;
-    private static final float PARTICLE_RADIUS = 0.3f;
-
-    // Parameters for world simulation
-    private static final int VELOCITY_ITERATIONS = 8;
-    private static final int POSITION_ITERATIONS = 3;
-    private static final int PARTICLE_ITERATIONS = 3;
-
-    private static final Random rng = new Random();
-    private final float SPAWN_DIST = 1.0f;
     boolean consumed;
 
 
     /*
      * Constructor.
      */
-    public GameWorld(Activity activity, Bitmap frameBuffer, Box worldSize, Box screenSize) {
+    public Game(Activity activity, Bitmap frameBuffer, Box worldSize, Box screenSize) {
 
         this.worldSize = worldSize;
         this.screenSize = screenSize;
         this.activity = activity;
         this.frameBuffer = frameBuffer;
-        this.world = new World(0, 0);  // gravity vector
+
         cameraView = new Box(worldSize); // di default vede l'intero mondo
+        canvas = new Canvas(frameBuffer);
 
-        // SCENE
-        camera = new Camera(cameraView,
-                Settings.worldWidth, Settings.worldHeight, // worldWidth, worldHeight in metri
-                Settings.fbufferWidth, Settings.fbufferHeight // pixel, fisso, lo conosci già
-        );
-        sceneController = new SceneController(camera);
+        sceneController = new SceneController(this);
 
-        // UI
         uiController = new UIController();
         initUI();
-
-        canvas = new Canvas(frameBuffer);
     }
 
 
@@ -134,58 +108,29 @@ public class GameWorld {
         // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
             consumed = uiController.processInput(event);
-             if(!consumed)
-                 sceneController.processInput(event);
+            if(!consumed && state == State.RUNNING)
+                sceneController.processInput(event);
         }
 
-        // Update
-        // uiController.update(deltaTime);
-        // sceneController.update(deltaTime);
-
+        // update scene state
         if(state == State.RUNNING) {
-            // Handle collisions: advance the physics simulation
-            world.step(deltaTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
+            sceneController.update(deltaTime);
         }
     }
 
 
     public synchronized void render()
     {
-        // background (clear the screen with black)
+        // clear the screen with black
         canvas.drawARGB(255, 0, 0, 0);
-        // ui
+        // render scene
+        sceneController.render(canvas);
+        // render ui
         uiController.draw(canvas);
     }
 
 
-    // ------------------------------------------------------------------
-    // Utils
-    // ------------------------------------------------------------------
-
-    // Conversions between screen coordinates and physical coordinates
-
     /*
-    // Old version: convert screen coordinates to physics world
-    public float toMetersX(float x) { return currentView.xmin + x * (currentView.width/screenSize.width); }
-    public float toMetersY(float y) { return currentView.ymin + y * (currentView.height/screenSize.height); }
-    */
-
-    // New version: convert framebuffer coordinates to physics world
-    public float toMetersX(float x) { return cameraView.xmin + x * (cameraView.width / fbufferWidth); }
-    public float toMetersY(float y) { return cameraView.ymin + y * (cameraView.height / fbufferHeight); }
-
-    public float toPixelsX(float x) { return (x - cameraView.xmin) / cameraView.width * fbufferWidth; }
-    public float toPixelsY(float y) { return (y - cameraView.ymin) / cameraView.height * fbufferHeight; }
-
-    public float toPixelsXLength(float x) { return x / cameraView.width * fbufferWidth; }
-    public float toPixelsYLength(float y) { return y / cameraView.height * fbufferHeight; }
-
-    public synchronized void setGravity(float x, float y)
-    {
-        world.setGravity(x, y);
-    }
-
-
     @Override
     protected void finalize() throws Throwable
     {
@@ -195,5 +140,6 @@ public class GameWorld {
             super.finalize();
         }
     }
+    */
 
 }

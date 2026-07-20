@@ -1,8 +1,8 @@
-package com.gdd.game;
+package com.gdd.game.engine;
 
 import com.badlogic.androidgames.framework.Input;
 
-public class SceneController {
+public class SceneInput {
 
     public enum GestureState { IDLE, PENDING, PANNING, PINCH_ZOOM, OBJECT_DRAG }
 
@@ -40,7 +40,7 @@ public class SceneController {
     /*
      * Constructor.
      */
-    public SceneController(Camera camera) {
+    public SceneInput(Camera camera) {
         this.camera = camera;
     }
 

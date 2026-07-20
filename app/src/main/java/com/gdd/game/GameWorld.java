@@ -8,15 +8,6 @@ import android.graphics.Paint;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
-import com.gdd.game.ecs.entities.AntFactory;
-import com.gdd.game.ecs.entities.Entity;
-import com.gdd.game.ecs.entities.NestFactory;
-import com.gdd.game.ecs.entities.WaspFactory;
-import com.gdd.game.ecs.misc.EntityContactListener;
-import com.gdd.game.ecs.systems.AiSystem;
-import com.gdd.game.ecs.systems.RenderSystem;
-import com.gdd.game.ecs.systems.SpawnSystem;
-import com.gdd.game.ecs.systems.GarbageCollectSystem;
 import com.gdd.game.ui.Button;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
@@ -52,8 +43,6 @@ public class GameWorld {
     public final Box worldSize, // physics world's size (in meters)
             screenSize, // smartphone's screen size (in pixel)
             cameraView; // camera position and size (in meters)
-    public List<GameObject> objects;
-    private final EntityContactListener entityContactListener;
 
     // Input
     // private final TouchConsumer touchConsumer;
@@ -68,14 +57,6 @@ public class GameWorld {
     private static final int VELOCITY_ITERATIONS = 8;
     private static final int POSITION_ITERATIONS = 3;
     private static final int PARTICLE_ITERATIONS = 3;
-
-    // Systems (ECS)
-    public final RenderSystem rsys;
-    public final GarbageCollectSystem wbsys;
-    public final AiSystem aisys;
-    public final SpawnSystem spawnsys;
-
-    public List<Entity> entities = new ArrayList<>();
 
     private static final Random rng = new Random();
     private final float SPAWN_DIST = 1.0f;
@@ -105,25 +86,7 @@ public class GameWorld {
         uiController = new UIController();
         initUI();
 
-        // stored to prevent GC
-        //touchConsumer = new TouchConsumer(this);
-        entityContactListener = new EntityContactListener();
-
-        world.setContactListener(entityContactListener);
-
-        objects = new ArrayList<>();
         canvas = new Canvas(frameBuffer);
-
-        var nestPosition = new Vec2(0, 0);
-        var nest = NestFactory.makeNest(this, nestPosition);
-        entities.add(nest);
-
-        rsys = new RenderSystem(this);
-        wbsys = new GarbageCollectSystem(this);
-        aisys = new AiSystem(this, nestPosition, 1.0f);
-        spawnsys = new SpawnSystem(this);
-
-        initGameObjects();
     }
 
 
@@ -150,29 +113,6 @@ public class GameWorld {
             uiController.hideTopPopup();
             state = State.RUNNING;
         });
-    }
-
-
-    public void initGameObjects() {
-
-        // spawn ants
-        for (int i = 0; i < 100; i++) {
-            float angle = rng.nextFloat(360.0f);
-            float x = (float) Math.cos(angle) * SPAWN_DIST;
-            float y = (float) Math.sin(angle) * SPAWN_DIST;
-
-            var ant = AntFactory.makeAnt(this, x, y, angle);
-            entities.add(ant);
-        }
-
-        // spawn wasps around the edges
-        for (int i = 0; i < 5; i++) {
-            float angle = rng.nextFloat(360.0f);
-            float dist  = 4.0f ; // spawn far from nest
-            float x = (float) Math.cos(angle) * dist;
-            float y = (float) Math.sin(angle) * dist;
-            entities.add(WaspFactory.makeWasp(this, x, y, dist));
-        }
     }
 
 
@@ -205,11 +145,6 @@ public class GameWorld {
         if(state == State.RUNNING) {
             // Handle collisions: advance the physics simulation
             world.step(deltaTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
-
-            // Update Systems
-            wbsys.update(entities, deltaTime);
-            spawnsys.update(entities, deltaTime);
-            aisys.update(entities, deltaTime);
         }
     }
 
@@ -218,8 +153,6 @@ public class GameWorld {
     {
         // background (clear the screen with black)
         canvas.drawARGB(255, 0, 0, 0);
-        // mapController.applyCameraTransform(canvas);
-        rsys.update(entities, 0.0f);
         // ui
         uiController.draw(canvas);
     }

@@ -14,6 +14,7 @@ import com.badlogic.androidgames.framework.Audio;
 import com.badlogic.androidgames.framework.Music;
 import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.badlogic.androidgames.framework.impl.MultiTouchHandler;
+import com.gdd.game.engine.Box;
 
 public class MainActivity extends Activity {
 
@@ -52,10 +53,10 @@ public class MainActivity extends Activity {
 
         Bitmap frameBuffer = Bitmap.createBitmap(Settings.fbufferWidth, Settings.fbufferHeight,
                 Bitmap.Config.ARGB_8888);
-        Game game = new Game(this, frameBuffer, worldSize, screenSize);
+        Game gw = new Game(this, frameBuffer, worldSize, screenSize);
 
         // ***** SURFACE VIEW *****
-        renderView = new AndroidFastRenderView(this, game);
+        renderView = new AndroidFastRenderView(this, gw);
         setContentView(renderView);
 
         // ***** INPUT (TOUCH) *****
@@ -64,7 +65,7 @@ public class MainActivity extends Activity {
         float scaleY = (float) Settings.fbufferHeight / metrics.heightPixels;
         MultiTouchHandler touch = new MultiTouchHandler(renderView, scaleX, scaleY);
         // Setter needed due to cyclic dependency
-        game.setTouchHandler(touch);
+        gw.setTouchHandler(touch);
 
         // ***** AUDIO *****
         //TODO va gestito in GameWorld

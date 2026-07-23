@@ -1,6 +1,6 @@
 package com.gdd.game.engine.components;
 
-import com.gdd.game.engine.Actor;
+import com.gdd.game.engine.core.Actor;
 
 public abstract class Component {
 

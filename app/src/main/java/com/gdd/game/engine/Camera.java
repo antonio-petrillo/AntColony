@@ -1,7 +1,5 @@
 package com.gdd.game.engine;
 
-import com.gdd.game.Box;
-
 public class Camera {
 
     private final Box cameraView; // camera in World (in metri)

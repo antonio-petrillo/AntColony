@@ -6,17 +6,12 @@ import android.graphics.Canvas;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
-import com.gdd.game.engine.Camera;
+import com.gdd.game.engine.Box;
 import com.gdd.game.engine.SceneController;
-import com.gdd.game.engine.SceneInput;
 import com.gdd.game.ui.Button;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
 import com.gdd.game.ui.WidgetGroupImp;
-import com.google.fpl.liquidfun.ParticleSystem;
-import com.google.fpl.liquidfun.World;
-
-import java.util.Random;
 
 public class Game {
 
@@ -69,6 +64,7 @@ public class Game {
     // ------------------------------------------------------------------
 
     public void initUI() {
+
         WidgetGroup mainLayout = new WidgetGroupImp(0, 0, fbufferWidth, fbufferHeight);
         Button pauseButton = new Button(50, 50, 200, 100, "PAUSE");
         mainLayout.addWidget(pauseButton);
@@ -121,8 +117,8 @@ public class Game {
 
     public synchronized void render()
     {
-        // clear the screen with black
-        canvas.drawARGB(255, 0, 0, 0);
+        // clear the screen with white
+        canvas.drawARGB(255, 255, 255, 255);
         // render scene
         sceneController.render(canvas);
         // render ui
@@ -141,5 +137,4 @@ public class Game {
         }
     }
     */
-
 }

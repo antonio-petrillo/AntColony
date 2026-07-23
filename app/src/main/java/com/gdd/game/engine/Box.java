@@ -1,4 +1,4 @@
-package com.gdd.game;
+package com.gdd.game.engine;
 
 /**
  * Created by mfaella on 05/03/16.

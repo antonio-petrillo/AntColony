@@ -10,7 +10,7 @@ import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
 import com.gdd.game.ecs.entities.Entity;
-import com.gdd.game.ecs.entities.FoodFactory;
+import com.gdd.game.ecs.factories.FoodFactory;
 
 import java.util.List;
 
@@ -42,21 +42,20 @@ public class RenderSystem implements System {
             if (x < view.xmin || x > view.xmax || y < view.ymin || y > view.ymax)
                 continue;
 
-            switch (entity.kind) {
+            switch (entity.tag) {
                 case ANT: renderAnt(x, y, phys.body.getAngle(), render); break;
                 case NEST: renderNest(render); break;
                 case FOOD: renderFood(x, y, render); break;
                 case WASP: renderWasp(x, y, phys.body.getAngle(), render); break;
-                case CARD: break;
             }
         }
     }
 
     private final RectF dst = new RectF(); // allocate once and used for every drawBitmap
     private void renderFood(float x, float y, RenderComponent rc) {
-        float screenX = gw.toPixelsX(x);
-        float screenY = gw.toPixelsY(y);
-        float half = gw.toPixelsXLength(FoodFactory.RADIUS);
+        float screenX = gw.camera.toPixelsX(x);
+        float screenY = gw.camera.toPixelsY(y);
+        float half = gw.camera.toPixelsXLength(FoodFactory.RADIUS);
 
         dst.set(screenX - half, screenY - half, screenX + half, screenY + half);
         canvas.save();
@@ -66,10 +65,10 @@ public class RenderSystem implements System {
 
     private void renderNest(RenderComponent rc) {
         final float SIDE = 0.5f;
-        float screenX = gw.toPixelsX(0);
-        float screenY = gw.toPixelsY(0);
-        float halfWidth = gw.toPixelsXLength(SIDE * 2);
-        float halfHeight = gw.toPixelsYLength(SIDE);
+        float screenX = gw.camera.toPixelsX(0);
+        float screenY = gw.camera.toPixelsY(0);
+        float halfWidth = gw.camera.toPixelsXLength(SIDE * 2);
+        float halfHeight = gw.camera.toPixelsYLength(SIDE);
 
         dst.set(screenX - halfWidth, screenY - halfHeight, screenX + halfWidth, screenY + halfHeight);
         canvas.save();
@@ -78,11 +77,11 @@ public class RenderSystem implements System {
     }
 
     private void renderWasp(float x, float y, float angle, RenderComponent rc) {
-        float screenX = gw.toPixelsX(x);
-        float screenY = gw.toPixelsY(y);
+        float screenX = gw.camera.toPixelsX(x);
+        float screenY = gw.camera.toPixelsY(y);
 
-        final float halfWidth = gw.toPixelsXLength(0.3f);
-        final float halfHeight = gw.toPixelsYLength(0.3f);
+        final float halfWidth = gw.camera.toPixelsXLength(0.3f);
+        final float halfHeight = gw.camera.toPixelsYLength(0.3f);
 
         dst.set(-halfWidth, -halfHeight, halfWidth, halfHeight);
 
@@ -94,11 +93,11 @@ public class RenderSystem implements System {
     }
 
     private void renderAnt(float x, float y, float angle, RenderComponent rc) {
-        float screenX = gw.toPixelsX(x);
-        float screenY = gw.toPixelsY(y);
+        float screenX = gw.camera.toPixelsX(x);
+        float screenY = gw.camera.toPixelsY(y);
 
-        final float halfWidth = gw.toPixelsXLength(0.3f);
-        final float halfHeight = gw.toPixelsYLength(0.3f);
+        final float halfWidth = gw.camera.toPixelsXLength(0.3f);
+        final float halfHeight = gw.camera.toPixelsYLength(0.3f);
 
         dst.set(-halfWidth, -halfHeight, halfWidth, halfHeight);
 

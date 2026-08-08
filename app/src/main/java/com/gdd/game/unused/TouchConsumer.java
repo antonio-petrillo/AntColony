@@ -61,7 +61,8 @@ public class TouchConsumer {
         // if we are already dragging with another finger, discard this event
         if (mouseJoint != null) return;
 
-        float x = gw.toMetersX(event.x), y = gw.toMetersY(event.y);
+        float x = 0; // gw.toMetersX(event.x)
+        float y = 0; // gw.toMetersY(event.y);
 
         Log.d("MultiTouchHandler", "touch down at " + x + ", " + y);
 
@@ -104,7 +105,8 @@ public class TouchConsumer {
     }
 
     private void consumeTouchMove(Input.TouchEvent event) {
-        float x = gw.toMetersX(event.x), y = gw.toMetersY(event.y);
+        float x = 0; //gw.toMetersX(event.x)
+        float y = 0; // y = gw.toMetersY(event.y);
         if (mouseJoint!=null && event.pointer == activePointerID) {
             Log.d("MultiTouchHandler", "active pointer moved to " + x + ", " + y);
             mouseJoint.setTarget(x, y);

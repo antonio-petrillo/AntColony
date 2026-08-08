@@ -30,8 +30,8 @@ public abstract class GameObject {
             if (x > view.xmin && x < view.xmax &&
                 y > view.ymin && y < view.ymax) {
                 // Screen position
-                float screen_x = gw.toPixelsX(x),
-                      screen_y = gw.toPixelsY(y);
+                float screen_x = 0; // gw.toPixelsX(x),
+                float screen_y = 0; // gw.toPixelsY(y);
                 this.draw(buffer, screen_x, screen_y, angle);
                 return true;
             } else

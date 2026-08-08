@@ -68,9 +68,11 @@ public class MainActivity extends Activity {
 
         // ***** AUDIO *****
         //TODO va gestito in GameWorld
+        /*
         Audio audio = new AndroidAudio(this);
         backgroundMusic = audio.newMusic("soundtrack.mp3");
         backgroundMusic.play();
+        */
     }
 
     @Override
@@ -78,7 +80,7 @@ public class MainActivity extends Activity {
         super.onPause();
         Log.i("Main thread", "pause");
         renderView.pause(); // stops the main loop
-        backgroundMusic.pause();
+        //backgroundMusic.pause();
     }
 
     @Override
@@ -93,7 +95,7 @@ public class MainActivity extends Activity {
         Log.i("Main thread", "resume");
 
         renderView.resume(); // starts game loop in a separate thread
-        backgroundMusic.play();
+        //backgroundMusic.play();
 
         // persistence example
         SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);

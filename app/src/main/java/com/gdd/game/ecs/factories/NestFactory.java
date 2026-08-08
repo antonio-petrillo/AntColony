@@ -1,4 +1,4 @@
-package com.gdd.game.ecs.entities;
+package com.gdd.game.ecs.factories;
 
 import android.graphics.Paint;
 
@@ -6,6 +6,8 @@ import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
+import com.gdd.game.ecs.entities.Entity;
+import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.BodyDef;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.FixtureDef;
@@ -17,7 +19,7 @@ public class NestFactory {
 
     public static Entity makeNest(GameWorld gw, Vec2 nestPosition) {
 
-        var nest = new Entity(Entity.Kind.NEST);
+        var nest = new Entity(EntityTag.NEST);
         nest.addComponent(new HealthComponent(1000));
 
         Paint paint = new Paint();

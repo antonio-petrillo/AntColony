@@ -1,4 +1,4 @@
-package com.gdd.game.ecs.entities;
+package com.gdd.game.ecs.factories;
 
 import android.graphics.Paint;
 
@@ -7,6 +7,8 @@ import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
+import com.gdd.game.ecs.entities.Entity;
+import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.BodyDef;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.CircleShape;
@@ -15,16 +17,16 @@ import com.google.fpl.liquidfun.Vec2;
 
 import java.util.Random;
 
-public class AntFactory {
+public class WaspFactory {
 
     private static final float DENSITY     = 1.0f;
     private static final float FRICTION    = 0.3f;
     private static final float RESTITUTION = 0.2f;
-    private static final float RADIUS = 0.1f;
+    private static final float RADIUS = 0.15f;
     private static final Random rng = new Random();
-    private  AntFactory() {}
+    private WaspFactory() {}
 
-    public static Entity makeAnt(GameWorld gw, float x, float y, float direction) {
+    public static Entity makeWasp(GameWorld gw, float x, float y, float direction) {
 
         BodyDef bdef = new BodyDef();
         bdef.setType(BodyType.dynamicBody);
@@ -56,21 +58,21 @@ public class AntFactory {
         fdef.delete();
         bdef.delete();
         shape.delete();
-        var ant = new Entity(Entity.Kind.ANT);
+        var wasp = new Entity(EntityTag.WASP);
 
-        ant.addComponent(new PhysicComponent(body));
+        wasp.addComponent(new HealthComponent(50));
+        wasp.addComponent(new PhysicComponent(body));
         var paint = new Paint();
-        paint.setARGB(255, 100, 0, 100);
-        ant.addComponent(new RenderComponent(paint));
+        paint.setARGB(255, 255, 200, 0);
+        wasp.addComponent(new RenderComponent(paint));
 
-        float timeBetweenActions = rng.nextFloat(1.5f, 5.0f);
+        float timeBetweenActions = rng.nextFloat(0.5f, 5.0f);
 
-        ant.addComponent(new HealthComponent(20));
-        ant.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 10));
+        wasp.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 15));
 
-        body.setUserData(ant);
+        body.setUserData(wasp);
 
-        return  ant;
+        return  wasp;
     }
 
     public static final float ATTACK_COOLDOWN = 1.0f;

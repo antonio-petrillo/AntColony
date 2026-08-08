@@ -1,4 +1,4 @@
-package com.gdd.game.ecs.entities;
+package com.gdd.game.ecs.factories;
 
 import android.graphics.Paint;
 
@@ -6,6 +6,8 @@ import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
+import com.gdd.game.ecs.entities.Entity;
+import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.BodyDef;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.CircleShape;
@@ -44,7 +46,7 @@ public class FoodFactory {
         shape.delete();;
         bdef.delete();
 
-        var food = new Entity(Entity.Kind.FOOD);
+        var food = new Entity(EntityTag.FOOD);
         food.addComponent(new PhysicComponent(body));
         food.addComponent(new AiComponent(AiComponent.State.NONE));
         food.addComponent(new RenderComponent(paint));

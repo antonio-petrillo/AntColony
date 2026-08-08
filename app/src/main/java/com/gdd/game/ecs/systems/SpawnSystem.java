@@ -3,7 +3,7 @@ package com.gdd.game.ecs.systems;
 import com.gdd.game.Box;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.entities.Entity;
-import com.gdd.game.ecs.entities.FoodFactory;
+import com.gdd.game.ecs.factories.FoodFactory;
 
 import java.util.List;
 import java.util.Random;

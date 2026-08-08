@@ -6,10 +6,10 @@ import android.graphics.Canvas;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
-import com.gdd.game.ecs.entities.AntFactory;
+import com.gdd.game.ecs.factories.AntFactory;
 import com.gdd.game.ecs.entities.Entity;
-import com.gdd.game.ecs.entities.NestFactory;
-import com.gdd.game.ecs.entities.WaspFactory;
+import com.gdd.game.ecs.factories.NestFactory;
+import com.gdd.game.ecs.factories.WaspFactory;
 import com.gdd.game.ecs.misc.EntityContactListener;
 import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
@@ -19,7 +19,6 @@ import com.gdd.game.ui.Button;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
 import com.gdd.game.ui.WidgetGroupImp;
-import com.gdd.game.unused.GameObject;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
@@ -30,7 +29,7 @@ import java.util.Random;
 
 public class GameWorld {
 
-    enum State {READY, RUNNING, PAUSED}
+    enum State { RUNNING, PAUSE }
 
     State state = State.RUNNING;
     public final Activity activity;
@@ -43,19 +42,17 @@ public class GameWorld {
 
     // Controller
     private final UIController uiController;
-    private SceneController sceneController;
-    private Camera camera;
+    private InputSystem inputSystem;
+    public Camera camera;
 
     // Physics Simulation
     public World world;
     public final Box worldSize, // physics world's size (in meters)
             screenSize, // smartphone's screen size (in pixel)
             cameraView; // camera position and size (in meters)
-    public List<GameObject> objects;
     private final EntityContactListener entityContactListener;
 
     // Input
-    // private final TouchConsumer touchConsumer;
     private TouchHandler touchHandler;
 
     // Particles
@@ -98,7 +95,7 @@ public class GameWorld {
                 Settings.worldWidth, Settings.worldHeight, // worldWidth, worldHeight in metri
                 Settings.fbufferWidth, Settings.fbufferHeight // pixel, fisso, lo conosci già
         );
-        sceneController = new SceneController(camera);
+        inputSystem = new InputSystem(camera);
 
         // UI
         uiController = new UIController();
@@ -110,7 +107,6 @@ public class GameWorld {
 
         world.setContactListener(entityContactListener);
 
-        objects = new ArrayList<>();
         canvas = new Canvas(frameBuffer);
 
         var nestPosition = new Vec2(0, 0);
@@ -142,7 +138,7 @@ public class GameWorld {
 
         pauseButton.setOnClickListener(b -> {
             uiController.showPopup(pauseLayout);
-            state = State.PAUSED;
+            state = State.PAUSE;
         });
 
         resumeButton.setOnClickListener(b -> {
@@ -193,13 +189,9 @@ public class GameWorld {
         // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
             consumed = uiController.processInput(event);
-             if(!consumed)
-                 sceneController.processInput(event);
+             if(!consumed && state == State.RUNNING)
+                 inputSystem.processInput(event);
         }
-
-        // Update
-        // uiController.update(deltaTime);
-        // sceneController.update(deltaTime);
 
         if(state == State.RUNNING) {
             // Handle collisions: advance the physics simulation
@@ -222,29 +214,6 @@ public class GameWorld {
         // ui
         uiController.draw(canvas);
     }
-
-
-    // ------------------------------------------------------------------
-    // Utils
-    // ------------------------------------------------------------------
-
-    // Conversions between screen coordinates and physical coordinates
-
-    /*
-    // Old version: convert screen coordinates to physics world
-    public float toMetersX(float x) { return currentView.xmin + x * (currentView.width/screenSize.width); }
-    public float toMetersY(float y) { return currentView.ymin + y * (currentView.height/screenSize.height); }
-    */
-
-    // New version: convert framebuffer coordinates to physics world
-    public float toMetersX(float x) { return cameraView.xmin + x * (cameraView.width / fbufferWidth); }
-    public float toMetersY(float y) { return cameraView.ymin + y * (cameraView.height / fbufferHeight); }
-
-    public float toPixelsX(float x) { return (x - cameraView.xmin) / cameraView.width * fbufferWidth; }
-    public float toPixelsY(float y) { return (y - cameraView.ymin) / cameraView.height * fbufferHeight; }
-
-    public float toPixelsXLength(float x) { return x / cameraView.width * fbufferWidth; }
-    public float toPixelsYLength(float y) { return y / cameraView.height * fbufferHeight; }
 
     public synchronized void setGravity(float x, float y)
     {

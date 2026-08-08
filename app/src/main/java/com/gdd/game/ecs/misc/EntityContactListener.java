@@ -2,9 +2,8 @@ package com.gdd.game.ecs.misc;
 
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
-import com.gdd.game.ecs.components.HealthComponent;
-import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
+import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.Contact;
 import com.google.fpl.liquidfun.ContactListener;
@@ -20,7 +19,7 @@ public class EntityContactListener extends ContactListener {
         Object userDataA = ba.getUserData(), userDataB = bb.getUserData();
 
         if (userDataA instanceof Entity entityA && userDataB instanceof Entity entityB) {
-            if (entityA.kind == entityB.kind && entityA.kind == Entity.Kind.ANT) {
+            if (entityA.tag == entityB.tag && entityA.tag == EntityTag.ANT) {
                 AiComponent aiA = (AiComponent) entityA.getComponent(ComponentType.AI);
                 AiComponent aiB = (AiComponent) entityB.getComponent(ComponentType.AI);
 
@@ -29,10 +28,10 @@ public class EntityContactListener extends ContactListener {
 
                 aiA.isColliding = true;
                 aiB.isColliding = true;
-            } else if (entityA.kind == Entity.Kind.ANT && entityB.kind == Entity.Kind.FOOD
-                    || entityA.kind == Entity.Kind.FOOD && entityB.kind == Entity.Kind.ANT) {
+            } else if (entityA.tag == EntityTag.ANT && entityB.tag == EntityTag.FOOD
+                    || entityA.tag == EntityTag.FOOD && entityB.tag == EntityTag.ANT) {
 
-                if (entityA.kind == Entity.Kind.ANT) {
+                if (entityA.tag == EntityTag.ANT) {
                     AiComponent food = (AiComponent) entityB.getComponent(ComponentType.AI);
                     assert(food != null);
                     if (food.pickedUp) return;
@@ -52,11 +51,11 @@ public class EntityContactListener extends ContactListener {
 
                     ant.foodToPickup = entityA;
                 }
-            } else if (entityA.kind == Entity.Kind.ANT && entityB.kind == Entity.Kind.WASP
-                    || entityA.kind == Entity.Kind.WASP && entityB.kind == Entity.Kind.ANT) {
+            } else if (entityA.tag == EntityTag.ANT && entityB.tag == EntityTag.WASP
+                    || entityA.tag == EntityTag.WASP && entityB.tag == EntityTag.ANT) {
 
-                var ant = entityA.kind == Entity.Kind.ANT ? entityA : entityB;
-                var wasp = entityA.kind == Entity.Kind.WASP ? entityA : entityB;
+                var ant = entityA.tag == EntityTag.ANT ? entityA : entityB;
+                var wasp = entityA.tag == EntityTag.WASP ? entityA : entityB;
 
                 var antAi = (AiComponent) ant.getComponent(ComponentType.AI);
                 var waspAi = (AiComponent) wasp.getComponent(ComponentType.AI);

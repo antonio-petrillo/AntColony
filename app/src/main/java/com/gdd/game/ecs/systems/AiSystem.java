@@ -32,12 +32,11 @@ public final class AiSystem implements System {
 
             if (aiState == null) continue;
 
-            switch (entity.kind) {
+            switch (entity.tag) {
                 case ANT: ant(entity, phys, aiState, dt); break;
                 case NEST: nest(dt); break;
                 case WASP: wasp(entity, phys, aiState, dt); break;
                 case FOOD: break;
-                case CARD: break;
             }
         }
     }

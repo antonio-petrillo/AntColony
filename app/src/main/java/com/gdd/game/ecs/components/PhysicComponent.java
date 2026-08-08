@@ -3,6 +3,7 @@ package com.gdd.game.ecs.components;
 import com.google.fpl.liquidfun.Body;
 
 public class PhysicComponent extends Component {
+
     public Body body;
 
     public PhysicComponent(Body body) {
@@ -12,5 +13,11 @@ public class PhysicComponent extends Component {
     @Override
     public ComponentType type() {
         return ComponentType.PHYSIC;
+    }
+
+    public void syncTransform() {
+        owner.transform.x = body.getPositionX();
+        owner.transform.y = body.getPositionY();
+        owner.transform.angle = body.getAngle();
     }
 }

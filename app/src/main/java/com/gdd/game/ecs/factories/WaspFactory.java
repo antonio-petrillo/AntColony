@@ -1,12 +1,15 @@
 package com.gdd.game.ecs.factories;
 
+import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.gdd.game.Assets;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
+import com.gdd.game.ecs.components.BitmapRenderComp;
+import com.gdd.game.ecs.components.CircleRenderComp;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
-import com.gdd.game.ecs.components.RenderComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.BodyDef;
@@ -58,13 +61,17 @@ public class WaspFactory {
         fdef.delete();
         bdef.delete();
         shape.delete();
-        var wasp = new Entity(EntityTag.WASP);
 
+        var wasp = new Entity(EntityTag.WASP);
+        wasp.transform.halfWidth = RADIUS;
+        wasp.transform.halfHeight = RADIUS;
+
+        // wasp.addComponent(new BitmapRenderComp(Assets.WASP_BITMAP));
+        wasp.addComponent(new CircleRenderComp(Color.YELLOW, true));
         wasp.addComponent(new HealthComponent(50));
         wasp.addComponent(new PhysicComponent(body));
         var paint = new Paint();
         paint.setARGB(255, 255, 200, 0);
-        wasp.addComponent(new RenderComponent(paint));
 
         float timeBetweenActions = rng.nextFloat(0.5f, 5.0f);
 

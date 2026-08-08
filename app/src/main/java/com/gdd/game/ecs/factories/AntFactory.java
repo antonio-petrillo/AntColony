@@ -1,12 +1,16 @@
 package com.gdd.game.ecs.factories;
 
+import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.gdd.game.Assets;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
+import com.gdd.game.ecs.components.BitmapRenderComp;
+import com.gdd.game.ecs.components.CircleRenderComp;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
-import com.gdd.game.ecs.components.RenderComponent;
+import com.gdd.game.ecs.components.BoxRenderComp;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.BodyDef;
@@ -23,6 +27,8 @@ public class AntFactory {
     private static final float FRICTION    = 0.3f;
     private static final float RESTITUTION = 0.2f;
     private static final float RADIUS = 0.1f;
+
+
     private static final Random rng = new Random();
     private  AntFactory() {}
 
@@ -58,12 +64,16 @@ public class AntFactory {
         fdef.delete();
         bdef.delete();
         shape.delete();
+
         var ant = new Entity(EntityTag.ANT);
+        ant.transform.halfWidth = RADIUS/2;
+        ant.transform.halfHeight = RADIUS/2;
 
         ant.addComponent(new PhysicComponent(body));
         var paint = new Paint();
         paint.setARGB(255, 100, 0, 100);
-        ant.addComponent(new RenderComponent(paint));
+        //ant.addComponent(new BitmapRenderComp(Assets.ANT_BITMAP));
+        ant.addComponent(new CircleRenderComp(Color.RED, true));
 
         float timeBetweenActions = rng.nextFloat(1.5f, 5.0f);
 

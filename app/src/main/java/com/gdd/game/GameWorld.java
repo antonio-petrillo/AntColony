@@ -6,6 +6,8 @@ import android.graphics.Canvas;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
+import com.gdd.game.ecs.components.ComponentType;
+import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.factories.AntFactory;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.factories.NestFactory;
@@ -38,7 +40,7 @@ public class GameWorld {
     public static final int fbufferWidth = Settings.fbufferWidth,
             fbufferHeight = Settings.fbufferHeight;
     public Bitmap frameBuffer;
-    private final Canvas canvas;
+    public final Canvas canvas;
 
     // Controller
     private final UIController uiController;
@@ -88,37 +90,37 @@ public class GameWorld {
         this.activity = activity;
         this.frameBuffer = frameBuffer;
         this.world = new World(0, 0);  // gravity vector
+
         cameraView = new Box(worldSize); // di default vede l'intero mondo
+        canvas = new Canvas(frameBuffer);
 
         // SCENE
         camera = new Camera(cameraView,
                 Settings.worldWidth, Settings.worldHeight, // worldWidth, worldHeight in metri
                 Settings.fbufferWidth, Settings.fbufferHeight // pixel, fisso, lo conosci già
         );
-        inputSystem = new InputSystem(camera);
 
-        // UI
-        uiController = new UIController();
-        initUI();
+        // SYSTEMS
+        inputSystem = new InputSystem(camera);
+        rsys = new RenderSystem(this, camera);
+        wbsys = new GarbageCollectSystem(this);
+        spawnsys = new SpawnSystem(this);
 
         // stored to prevent GC
-        //touchConsumer = new TouchConsumer(this);
         entityContactListener = new EntityContactListener();
-
         world.setContactListener(entityContactListener);
-
-        canvas = new Canvas(frameBuffer);
 
         var nestPosition = new Vec2(0, 0);
         var nest = NestFactory.makeNest(this, nestPosition);
         entities.add(nest);
 
-        rsys = new RenderSystem(this);
-        wbsys = new GarbageCollectSystem(this);
         aisys = new AiSystem(this, nestPosition, 1.0f);
-        spawnsys = new SpawnSystem(this);
 
         initGameObjects();
+
+        // UI
+        uiController = new UIController();
+        initUI();
     }
 
 
@@ -127,6 +129,7 @@ public class GameWorld {
     // ------------------------------------------------------------------
 
     public void initUI() {
+
         WidgetGroup mainLayout = new WidgetGroupImp(0, 0, fbufferWidth, fbufferHeight);
         Button pauseButton = new Button(50, 50, 200, 100, "PAUSE");
         mainLayout.addWidget(pauseButton);
@@ -196,6 +199,7 @@ public class GameWorld {
         if(state == State.RUNNING) {
             // Handle collisions: advance the physics simulation
             world.step(deltaTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
+            syncTransform(); // update transform components
 
             // Update Systems
             wbsys.update(entities, deltaTime);
@@ -205,12 +209,12 @@ public class GameWorld {
     }
 
 
-    public synchronized void render()
+    public synchronized void render(float deltaTime)
     {
         // background (clear the screen with black)
         canvas.drawARGB(255, 0, 0, 0);
-        // mapController.applyCameraTransform(canvas);
-        rsys.update(entities, 0.0f);
+        // entities
+        rsys.update(entities, deltaTime);
         // ui
         uiController.draw(canvas);
     }
@@ -228,6 +232,19 @@ public class GameWorld {
             world.delete();
         } finally {
             super.finalize();
+        }
+    }
+
+    private void syncTransform() {
+
+        int n = entities.size();
+        for(int i=0; i<n; i++)  {
+
+            Entity e = entities.get(i);
+            PhysicComponent pc = (PhysicComponent) e.getComponent(ComponentType.PHYSIC);
+            if(pc != null) {
+                pc.syncTransform();
+            }
         }
     }
 

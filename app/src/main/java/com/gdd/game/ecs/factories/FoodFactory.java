@@ -1,11 +1,14 @@
 package com.gdd.game.ecs.factories;
 
+import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.gdd.game.Assets;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
+import com.gdd.game.ecs.components.BitmapRenderComp;
+import com.gdd.game.ecs.components.CircleRenderComp;
 import com.gdd.game.ecs.components.PhysicComponent;
-import com.gdd.game.ecs.components.RenderComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.BodyDef;
@@ -16,6 +19,7 @@ import com.google.fpl.liquidfun.FixtureDef;
 public class FoodFactory {
 
     public static final float RADIUS = 0.2f;
+
     private FoodFactory() {}
 
     public static Entity makeFood(GameWorld gw, float x, float y) {
@@ -47,9 +51,14 @@ public class FoodFactory {
         bdef.delete();
 
         var food = new Entity(EntityTag.FOOD);
+
+        food.transform.halfWidth = RADIUS;
+        food.transform.halfHeight = RADIUS;
+
         food.addComponent(new PhysicComponent(body));
         food.addComponent(new AiComponent(AiComponent.State.NONE));
-        food.addComponent(new RenderComponent(paint));
+        // food.addComponent(new BitmapRenderComp(Assets.FOOD_BITMAP));
+        food.addComponent(new CircleRenderComp(Color.WHITE, true));
 
         body.setUserData(food);
 

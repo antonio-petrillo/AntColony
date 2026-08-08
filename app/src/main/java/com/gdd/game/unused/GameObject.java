@@ -1,7 +1,9 @@
-package com.gdd.game;
+package com.gdd.game.unused;
 
 import android.graphics.Bitmap;
 
+import com.gdd.game.Box;
+import com.gdd.game.GameWorld;
 import com.google.fpl.liquidfun.Body;
 
 public abstract class GameObject {

@@ -3,8 +3,6 @@ package com.gdd.game;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
@@ -21,6 +19,7 @@ import com.gdd.game.ui.Button;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
 import com.gdd.game.ui.WidgetGroupImp;
+import com.gdd.game.unused.GameObject;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;

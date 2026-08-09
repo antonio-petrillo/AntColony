@@ -22,7 +22,10 @@ import com.gdd.game.ui.Button;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
 import com.gdd.game.ui.WidgetGroupImp;
+import com.google.fpl.liquidfun.BodyDef;
+import com.google.fpl.liquidfun.FixtureDef;
 import com.google.fpl.liquidfun.ParticleSystem;
+import com.google.fpl.liquidfun.PolygonShape;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 
@@ -118,6 +121,7 @@ public class GameWorld {
         aisys = new AiSystem(this, nestPosition, 1.0f);
 
         initGameObjects();
+        addWorldBoundaries();
 
         // UI
         uiController = new UIController();
@@ -213,8 +217,7 @@ public class GameWorld {
     public synchronized void render(float deltaTime)
     {
         // background (clear the screen with black)
-        // canvas.drawARGB(255, 0, 0, 0);
-        canvas.drawARGB(255, 255, 255, 255);
+        canvas.drawARGB(255, 0, 0, 0);
         // entities
         rsys.update(entities, deltaTime);
         // ui
@@ -248,6 +251,46 @@ public class GameWorld {
                 pc.syncTransform();
             }
         }
+    }
+
+    private void addWorldBoundaries() {
+
+        float THICKNESS = 1f;
+        float xmax = worldSize.width / 2;
+        float xmin = -xmax;
+        float ymax = worldSize.height / 2;
+        float ymin = -ymax;
+
+        BodyDef bdef = new BodyDef();
+
+        var body = world.createBody(bdef);
+        body.setSleepingAllowed(false);
+
+        PolygonShape shape = new PolygonShape();
+
+        FixtureDef fdef = new FixtureDef();
+        fdef.setShape(shape);
+        fdef.setDensity(0.f);
+        fdef.setFriction(0.f);
+        fdef.setRestitution(0.8f);
+
+        // top
+        shape.setAsBox(xmax-xmin, THICKNESS, xmin+(xmax-xmin)/2, ymin, 0);
+        body.createFixture(fdef);
+        // bottom
+        shape.setAsBox(xmax-xmin, THICKNESS, xmin+(xmax-xmin)/2, ymax, 0);
+        body.createFixture(fdef);
+        // left
+        shape.setAsBox(THICKNESS, ymax-ymin, xmin, ymin+(ymax-ymin)/2, 0);
+        body.createFixture(fdef);
+        // right
+        shape.setAsBox(THICKNESS, ymax-ymin, xmax, ymin+(ymax-ymin)/2, 0);
+        body.createFixture(fdef);
+
+        // clean up native objects
+        bdef.delete();
+        shape.delete();
+        fdef.delete();
     }
 
 }

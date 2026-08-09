@@ -190,7 +190,7 @@ public class Camera {
     public boolean isVisible(float x, float y, float halfW, float halfH) {
 
         return (x + halfW) >= cameraView.xmin  && (x - halfW) <= cameraView.xmax
-                && (y - halfH) >= cameraView.ymin  && (y + halfH) <= cameraView.ymax;
+                && (y + halfH) >= cameraView.ymin  && (y - halfH) <= cameraView.ymax;
     }
 
 

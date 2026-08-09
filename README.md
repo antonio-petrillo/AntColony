@@ -15,6 +15,10 @@ Progetto per il corso GameDesign and Development della Federico II, anno accadem
 - [ ] Add sounds:
   - background
   - combat
+- [ ] Game mechanics
+- [ ] Texture/Bitmap
 
-# BUGS
+# BUGS to fix
+- [ ] Handle World boundaries appropriately
 - [ ] WASP hit food apply to much velocity
+  WASP shouldn't hit the food, they don't apply or collide with them

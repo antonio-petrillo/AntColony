@@ -22,11 +22,9 @@ public class BoxRenderComp extends RenderComponent {
 
         canvas.save();
         canvas.translate(t.screenX, t.screenY);
-
         dst.set(-t.halfWidthPx, -t.halfHeightPx, t.halfWidthPx, t.halfHeightPx);
         canvas.rotate(t.rotation);
         canvas.drawRect(dst, paint);
-
         canvas.restore();
     }
 

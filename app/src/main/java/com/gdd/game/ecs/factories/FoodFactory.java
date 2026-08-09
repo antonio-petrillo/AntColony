@@ -24,9 +24,13 @@ public class FoodFactory {
 
     public static Entity makeFood(GameWorld gw, float x, float y) {
 
-        var paint = new Paint();
-        paint.setARGB(100, 80, 80, 80);
-        paint.setStyle(Paint.Style.STROKE);
+        var food = new Entity(EntityTag.FOOD);
+        food.transform.halfWidth = RADIUS;
+        food.transform.halfHeight = RADIUS;
+        food.addComponent(new CircleRenderComp(Color.WHITE, true));
+        food.addComponent(new AiComponent(AiComponent.State.NONE));
+
+        // ***** PHYSICS
 
         BodyDef bdef = new BodyDef();
         bdef.setType(BodyType.dynamicBody);
@@ -50,17 +54,8 @@ public class FoodFactory {
         shape.delete();;
         bdef.delete();
 
-        var food = new Entity(EntityTag.FOOD);
-
-        food.transform.halfWidth = RADIUS;
-        food.transform.halfHeight = RADIUS;
-
-        food.addComponent(new PhysicComponent(body));
-        food.addComponent(new AiComponent(AiComponent.State.NONE));
-        // food.addComponent(new BitmapRenderComp(Assets.FOOD_BITMAP));
-        food.addComponent(new CircleRenderComp(Color.WHITE, true));
-
         body.setUserData(food);
+        food.addComponent(new PhysicComponent(body));
 
         return food;
     }

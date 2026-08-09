@@ -28,11 +28,24 @@ public class AntFactory {
     private static final float RESTITUTION = 0.2f;
     private static final float RADIUS = 0.1f;
 
+    public static final float ATTACK_COOLDOWN = 1.0f;
 
     private static final Random rng = new Random();
+
     private  AntFactory() {}
 
     public static Entity makeAnt(GameWorld gw, float x, float y, float direction) {
+
+        var ant = new Entity(EntityTag.ANT);
+        ant.transform.halfWidth = RADIUS/2;
+        ant.transform.halfHeight = RADIUS/2;
+        ant.addComponent(new CircleRenderComp(Color.RED, true));
+        ant.addComponent(new HealthComponent(20));
+
+        float timeBetweenActions = rng.nextFloat(1.5f, 5.0f);
+        ant.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 10));
+
+        // ***** PHYSICS
 
         BodyDef bdef = new BodyDef();
         bdef.setType(BodyType.dynamicBody);
@@ -65,25 +78,10 @@ public class AntFactory {
         bdef.delete();
         shape.delete();
 
-        var ant = new Entity(EntityTag.ANT);
-        ant.transform.halfWidth = RADIUS/2;
-        ant.transform.halfHeight = RADIUS/2;
-
-        ant.addComponent(new PhysicComponent(body));
-        var paint = new Paint();
-        paint.setARGB(255, 100, 0, 100);
-        //ant.addComponent(new BitmapRenderComp(Assets.ANT_BITMAP));
-        ant.addComponent(new CircleRenderComp(Color.RED, true));
-
-        float timeBetweenActions = rng.nextFloat(1.5f, 5.0f);
-
-        ant.addComponent(new HealthComponent(20));
-        ant.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 10));
-
         body.setUserData(ant);
+        ant.addComponent(new PhysicComponent(body));
 
         return  ant;
     }
 
-    public static final float ATTACK_COOLDOWN = 1.0f;
 }

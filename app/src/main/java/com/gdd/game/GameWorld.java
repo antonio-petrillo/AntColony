@@ -14,6 +14,7 @@ import com.gdd.game.ecs.factories.NestFactory;
 import com.gdd.game.ecs.factories.WaspFactory;
 import com.gdd.game.ecs.misc.EntityContactListener;
 import com.gdd.game.ecs.systems.AiSystem;
+import com.gdd.game.ecs.systems.InputSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;

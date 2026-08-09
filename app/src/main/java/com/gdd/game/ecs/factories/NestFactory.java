@@ -28,17 +28,12 @@ public class NestFactory {
     public static Entity makeNest(GameWorld gw, Vec2 nestPosition) {
 
         var nest = new Entity(EntityTag.NEST);
-        nest.addComponent(new HealthComponent(1000));
-
-        Paint paint = new Paint();
-        paint.setARGB(255, 0, 255, 0);
-        paint.setStyle(Paint.Style.STROKE);
-
         nest.transform.halfWidth = SIDE;
         nest.transform.halfHeight = SIDE;
-
-        // nest.addComponent(new BitmapRenderComp(Assets.NEST_BITMAP));
         nest.addComponent(new BoxRenderComp(Color.BLUE, true));
+        nest.addComponent(new HealthComponent(1000));
+
+        // ***** PHYSICS
 
         BodyDef bdef = new BodyDef();
         bdef.setType(BodyType.staticBody);

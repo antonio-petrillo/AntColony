@@ -1,6 +1,7 @@
-package com.gdd.game;
+package com.gdd.game.ecs.systems;
 
 import com.badlogic.androidgames.framework.Input;
+import com.gdd.game.Camera;
 
 public class InputSystem {
 

@@ -27,9 +27,23 @@ public class WaspFactory {
     private static final float RESTITUTION = 0.2f;
     private static final float RADIUS = 0.15f;
     private static final Random rng = new Random();
+
+    public static final float ATTACK_COOLDOWN = 1.0f;
+
     private WaspFactory() {}
 
     public static Entity makeWasp(GameWorld gw, float x, float y, float direction) {
+
+        var wasp = new Entity(EntityTag.WASP);
+        wasp.transform.halfWidth = RADIUS;
+        wasp.transform.halfHeight = RADIUS;
+        wasp.addComponent(new CircleRenderComp(Color.YELLOW, true));
+        wasp.addComponent(new HealthComponent(50));
+
+        float timeBetweenActions = rng.nextFloat(0.5f, 5.0f);
+        wasp.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 15));
+
+        // ***** PHYSICS
 
         BodyDef bdef = new BodyDef();
         bdef.setType(BodyType.dynamicBody);
@@ -62,25 +76,10 @@ public class WaspFactory {
         bdef.delete();
         shape.delete();
 
-        var wasp = new Entity(EntityTag.WASP);
-        wasp.transform.halfWidth = RADIUS;
-        wasp.transform.halfHeight = RADIUS;
-
-        // wasp.addComponent(new BitmapRenderComp(Assets.WASP_BITMAP));
-        wasp.addComponent(new CircleRenderComp(Color.YELLOW, true));
-        wasp.addComponent(new HealthComponent(50));
-        wasp.addComponent(new PhysicComponent(body));
-        var paint = new Paint();
-        paint.setARGB(255, 255, 200, 0);
-
-        float timeBetweenActions = rng.nextFloat(0.5f, 5.0f);
-
-        wasp.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 15));
-
         body.setUserData(wasp);
+        wasp.addComponent(new PhysicComponent(body));
 
         return  wasp;
     }
 
-    public static final float ATTACK_COOLDOWN = 1.0f;
 }

@@ -22,9 +22,7 @@ public class CircleRenderComp extends RenderComponent {
 
         canvas.save();
         canvas.translate(t.screenX, t.screenY);
-
         canvas.drawCircle(0, 0, t.halfWidthPx, paint);
-
         canvas.restore();
     }
 

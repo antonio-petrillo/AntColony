@@ -9,12 +9,12 @@ Progetto per il corso GameDesign and Development della Federico II, anno accadem
 - [x] implement fsm
 - [x] implement ant wander system
 - [x] implement food (spawn & gather)
-- [ ] implement enemies (wasp, spawn & gather)
+- [x] implement enemies (wasp, spawn & gather)
 - [ ] implement card system
-- [ ] implement camera view (pan & zoom)
+- [x] implement camera view (pan & zoom)
+- [ ] Add sounds:
+  - background
+  - combat
 
-# To improve
-- [ ] garbage collector system for entities
-- [ ] object pools 
-- [ ] clean up on fsm, when they are completed can be refactored easy, also with a complete overview it will be easy
-
+# BUGS
+- [ ] WASP hit food apply to much velocity

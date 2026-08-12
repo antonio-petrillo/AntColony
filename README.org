@@ -1,0 +1,30 @@
+#+title: AntColony README
+#+author: Antonio Petrillo & Alessandro Petrella
+
+* AntColony
+Progetto per il corso GameDesign and Development della Federico II, anno accademico 2025/2026.
+
+* Progress [66%]
+- [X] fork from [[https://github.com/mfaella/DragMe.git][DragMe]]
+- [X] basic nest + ant simultation
+- [X] implement ecs 
+- [X] implement fsm
+- [X] implement ant wander system
+- [X] implement food (spawn & gather)
+- [X] implement enemies (wasp, spawn & gather)
+- [ ] implement card system
+- [X] implement camera view (pan & zoom)
+- [ ] Add sounds:
+  - background
+  - combat
+- [ ] Game mechanics
+- [ ] Texture/Bitmap
+
+* BUGS to fix [50%]
+- [X] Handle World boundaries appropriately
+- [ ] WASP hit food apply to much velocity
+  WASP shouldn't hit the food, they don't apply or collide with them
+
+* Improvments [0/2]
+- [ ] add objects pool (Poor Objects Oriented Linear-allocator)
+- [ ] instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects

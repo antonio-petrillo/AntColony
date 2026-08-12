@@ -2,6 +2,7 @@ package com.gdd.game.ecs.misc;
 
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
+import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.Body;
@@ -28,6 +29,27 @@ public class EntityContactListener extends ContactListener {
 
                 aiA.isColliding = true;
                 aiB.isColliding = true;
+            } else if (entityA.tag == EntityTag.WASP && entityB.tag == EntityTag.FOOD
+                    || entityA.tag == EntityTag.FOOD && entityB.tag == EntityTag.WASP) {
+               AiComponent food;
+               HealthComponent wasp;
+               if (entityA.tag == EntityTag.WASP) {
+                   wasp = (HealthComponent) entityA.getComponent(ComponentType.HEALTH);
+                   food = (AiComponent) entityB.getComponent(ComponentType.AI);
+               } else {
+                   food = (AiComponent) entityA.getComponent(ComponentType.AI);
+                   wasp = (HealthComponent) entityB.getComponent(ComponentType.HEALTH);
+               }
+               assert(wasp != null);
+               assert(food != null);
+
+               if (food.pickedUp) return;
+
+               food.pickedUp = true;
+               food.canBeGarbageCollected = true;
+               // TODO: remove hardcode values
+               wasp.heal(10);
+
             } else if (entityA.tag == EntityTag.ANT && entityB.tag == EntityTag.FOOD
                     || entityA.tag == EntityTag.FOOD && entityB.tag == EntityTag.ANT) {
 

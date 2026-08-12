@@ -25,6 +25,18 @@ Progetto per il corso GameDesign and Development della Federico II, anno accadem
 - [ ] WASP hit food apply to much velocity
   WASP shouldn't hit the food, they don't apply or collide with them
 
-* Improvments [0/2]
+* Improvements [0/2]
 - [ ] add objects pool (Poor Objects Oriented Linear-allocator)
 - [ ] instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects
+
+* Mechanics
+- Ants wanders into the world
+  - if they pick a food they go back home
+  - if they find a wasp they fight
+- Wasp wanders into the world
+  - if they find an ant they fight
+  - if they find a food they eat them instantaneously
+- Food just spawn randomly into the world
+- Ant Nest ???
+    
+

@@ -17,7 +17,7 @@ Progetto per il corso GameDesign and Development della Federico II, anno accadem
 - [ ] Add sounds:
   - background
   - combat
-- [ ] Game mechanics
+- [ ] Game mechanics:
 - [ ] Texture/Bitmap
 
 * BUGS to fix [100%]
@@ -26,9 +26,13 @@ Progetto per il corso GameDesign and Development della Federico II, anno accadem
   WASP shouldn't hit the food, they don't apply or collide with them
 - [X] Makes *Ants* and *Wasps* fight still standing
 
-* Improvements [0/2]
-- [ ] add objects pool (Poor Objects Oriented Linear-allocator)
+* Improvements [0/3]
+- [ ] add objects POOL (Poor Objects Oriented Linear-allocator)
 - [ ] instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects
+- [ ] add field of view to *Ants* and *Wasps*:
+  - both should steer toward food and enemies
+  - enemies have priority
+- [ ] add pheromones
 
 * Mechanics
 - Ants wanders into the world

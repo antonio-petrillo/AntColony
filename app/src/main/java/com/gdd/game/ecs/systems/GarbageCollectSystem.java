@@ -24,12 +24,14 @@ public class GarbageCollectSystem implements System {
     public void update(List<Entity> entities, float dt) {
         for (var entity : entities) {
             var ai = (AiComponent) entity.getComponent(ComponentType.AI);
-            if (ai != null && ai.canBeGarbageCollected && ai.joint != null) {
-                if (ai.foodToPickup != null) {
-                    var foodAi = (AiComponent) ai.foodToPickup.getComponent(ComponentType.AI);
-                    assert (foodAi != null);
-                    foodAi.pickedUp = false;
-                    ai.foodToPickup = null;
+            if (ai != null && ai.canBeGarbageCollected) {
+                if (ai.joint != null) {
+                    if (ai.foodToPickup != null) {
+                        var foodAi = (AiComponent) ai.foodToPickup.getComponent(ComponentType.AI);
+                        assert (foodAi != null);
+                        foodAi.pickedUp = false;
+                        ai.foodToPickup = null;
+                    }
                 }
                 toRemove.add(entity);
             }

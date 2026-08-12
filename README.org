@@ -20,10 +20,11 @@ Progetto per il corso GameDesign and Development della Federico II, anno accadem
 - [ ] Game mechanics
 - [ ] Texture/Bitmap
 
-* BUGS to fix [50%]
+* BUGS to fix [100%]
 - [X] Handle World boundaries appropriately
-- [ ] WASP hit food apply to much velocity
+- [X] WASP hit food apply to much velocity
   WASP shouldn't hit the food, they don't apply or collide with them
+- [X] Makes *Ants* and *Wasps* fight still standing
 
 * Improvements [0/2]
 - [ ] add objects pool (Poor Objects Oriented Linear-allocator)

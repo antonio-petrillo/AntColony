@@ -62,6 +62,10 @@ public final class AiSystem implements System {
             } break;
             case COMBAT: {
                 // fight standing like a true here (more like die like an idiot)
+                var vel = phys.body.getLinearVelocity();
+                vel.set(0, 0);
+                phys.body.setLinearVelocity(vel);
+                phys.body.setAngularVelocity(0);
                 aiState.timeAttackAccumulator += dt;
                 if (aiState.timeAttackAccumulator >= aiState.timeBetweenAttacks) {
                     aiState.timeAttackAccumulator = 0;
@@ -139,6 +143,11 @@ public final class AiSystem implements System {
             } break;
             case COMBAT: {
                 // go toward enemy and fight like a true ant
+                var vel = phys.body.getLinearVelocity();
+                vel.set(0, 0);
+                phys.body.setLinearVelocity(vel);
+                phys.body.setAngularVelocity(0);
+
                 aiState.timeAttackAccumulator += dt;
                 if (aiState.timeAttackAccumulator >= aiState.timeBetweenAttacks ) {
                     aiState.timeAttackAccumulator = 0;

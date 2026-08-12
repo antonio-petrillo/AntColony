@@ -28,6 +28,7 @@ import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.PolygonShape;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
+import com.google.fpl.liquidfun.Body;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.Random;
 
 public class GameWorld {
 
-    enum State { RUNNING, PAUSE }
+    public enum State { RUNNING, PAUSE }
 
     State state = State.RUNNING;
     public final Activity activity;
@@ -53,6 +54,8 @@ public class GameWorld {
 
     // Physics Simulation
     public World world;
+    // Used to constraint the moving objects in the world, see `addWorldBoundaries`
+    public Body  worldBoundaries;
     public final Box worldSize, // physics world's size (in meters)
             screenSize, // smartphone's screen size (in pixel)
             cameraView; // camera position and size (in meters)
@@ -263,8 +266,8 @@ public class GameWorld {
 
         BodyDef bdef = new BodyDef();
 
-        var body = world.createBody(bdef);
-        body.setSleepingAllowed(false);
+        worldBoundaries = world.createBody(bdef);
+        worldBoundaries.setSleepingAllowed(false);
 
         PolygonShape shape = new PolygonShape();
 
@@ -272,20 +275,20 @@ public class GameWorld {
         fdef.setShape(shape);
         fdef.setDensity(0.f);
         fdef.setFriction(0.f);
-        fdef.setRestitution(0.8f);
+        fdef.setRestitution(0.0f);
 
         // top
         shape.setAsBox(xmax-xmin, THICKNESS, xmin+(xmax-xmin)/2, ymin, 0);
-        body.createFixture(fdef);
+        worldBoundaries.createFixture(fdef);
         // bottom
         shape.setAsBox(xmax-xmin, THICKNESS, xmin+(xmax-xmin)/2, ymax, 0);
-        body.createFixture(fdef);
+        worldBoundaries.createFixture(fdef);
         // left
         shape.setAsBox(THICKNESS, ymax-ymin, xmin, ymin+(ymax-ymin)/2, 0);
-        body.createFixture(fdef);
+        worldBoundaries.createFixture(fdef);
         // right
         shape.setAsBox(THICKNESS, ymax-ymin, xmax, ymin+(ymax-ymin)/2, 0);
-        body.createFixture(fdef);
+        worldBoundaries.createFixture(fdef);
 
         // clean up native objects
         bdef.delete();

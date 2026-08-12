@@ -22,46 +22,25 @@ public class GarbageCollectSystem implements System {
 
     @Override
     public void update(List<Entity> entities, float dt) {
-        Box worldSize = gw.worldSize;
         for (var entity : entities) {
-            var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
-            if (phys != null) {
-                float x = phys.body.getPositionX();
-                float y = phys.body.getPositionY();
-
-                if (x < worldSize.xmin || x > worldSize.xmax || y < worldSize.ymin || y > worldSize.ymax) {
-                    var vel = phys.body.getLinearVelocity();
-                    vel.setX(x * -1);
-                    vel.setY(y * -1);
-                    phys.body.setLinearVelocity(vel);
-                }
-            }
-
             var ai = (AiComponent) entity.getComponent(ComponentType.AI);
-            if (ai != null && ai.canBeGarbageCollected) {
-
-                if (ai.joint != null) {
-//                    gw.world.destroyJoint(ai.joint);
-//                    ai.joint = null;
-                    if (ai.foodToPickup != null) {
-                        var foodAi = (AiComponent) ai.foodToPickup.getComponent(ComponentType.AI);
-                        assert (foodAi != null);
-                        foodAi.pickedUp = false;
-                        ai.foodToPickup = null;
-                    }
+            if (ai != null && ai.canBeGarbageCollected && ai.joint != null) {
+                if (ai.foodToPickup != null) {
+                    var foodAi = (AiComponent) ai.foodToPickup.getComponent(ComponentType.AI);
+                    assert (foodAi != null);
+                    foodAi.pickedUp = false;
+                    ai.foodToPickup = null;
                 }
                 toRemove.add(entity);
             }
         }
         if (!toRemove.isEmpty()) {
-
             for (var entity : toRemove) {
                 var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
                 if (phys == null) continue;
 
                 gw.world.destroyBody(phys.body);
             }
-
             entities.removeAll(toRemove);
             toRemove.clear();
         }

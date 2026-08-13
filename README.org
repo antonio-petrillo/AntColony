@@ -2,11 +2,11 @@
 #+author: Antonio Petrillo & Alessandro Petrella
 
 * AntColony
-Progetto per il corso GameDesign and Development della Federico II, anno accademico 2025/2026.
+Progetto per il corso Game Design and Development della Federico II, anno accademico 2025/2026.
 
 * Progress [66%]
 - [X] fork from [[https://github.com/mfaella/DragMe.git][DragMe]]
-- [X] basic nest + ant simultation
+- [X] basic nest + ant simulation
 - [X] implement ecs 
 - [X] implement fsm
 - [X] implement ant wander system

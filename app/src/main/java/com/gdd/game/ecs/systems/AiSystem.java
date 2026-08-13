@@ -99,6 +99,7 @@ public final class AiSystem implements System {
             case GATHER: {
                 if (aiState.foodInSight == null) {
                     aiState.transition(AiComponent.State.WANDER, true);
+                    break;
                 }
                 var foodPhys = (PhysicComponent) aiState.foodInSight.getComponent(ComponentType.PHYSIC);
                 assert(foodPhys != null);
@@ -198,6 +199,7 @@ public final class AiSystem implements System {
             case GATHER: {
                 if (aiState.foodInSight == null) {
                     aiState.transition(AiComponent.State.WANDER, true);
+                    break;
                 }
                 var foodPhys = (PhysicComponent) aiState.foodInSight.getComponent(ComponentType.PHYSIC);
                 assert(foodPhys != null);

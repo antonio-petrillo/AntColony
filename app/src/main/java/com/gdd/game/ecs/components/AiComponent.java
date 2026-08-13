@@ -57,7 +57,7 @@ public class AiComponent extends Component {
         current = state;
     }
     public void transition(State state, boolean override) {
-        if (!override) transition(state);
+        if (!override)  { transition(state); return; }
         previous = state;
         current = state;
     }

@@ -49,7 +49,7 @@ public class PerceptionSystem implements System {
 
                 if (distSquared > ctx.range * ctx.range) return true;
 
-                if (true) return true;
+                if (!inFieldOfView(ctx.facing, dx, dy, ctx.angle)) return true;
 
                 if (other.tag == ctx.enemyTag
                     && distSquared < ctx.enemyDistSquared) {
@@ -70,11 +70,11 @@ public class PerceptionSystem implements System {
     @Override
     public void update(List<Entity> entities, float dt) {
         for (var entity : entities) {
-            var ai = (AiComponent) entity.getComponent(ComponentType.AI);
-            if (ai == null) continue;
+            var state = (AiComponent) entity.getComponent(ComponentType.AI);
+            if (state == null) continue;
 
-            if (ai.current != AiComponent.State.WANDER
-                && ai.current != AiComponent.State.CHASE) continue;
+            if (state.current != AiComponent.State.WANDER
+                && state.current != AiComponent.State.CHASE) continue;
 
             var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
             if (phys == null) continue;
@@ -101,6 +101,7 @@ public class PerceptionSystem implements System {
             ctx.y = phys.body.getPositionY();
             ctx.facing = phys.body.getAngle();
 
+            doQuery(state);
         }
     }
 
@@ -113,13 +114,30 @@ public class PerceptionSystem implements System {
         return Math.abs(diff) <= angle * 0.5f;
     }
 
-    private void doQuery() {
+    private void doQuery(AiComponent state) {
+        // clear ctx for query
+        ctx.enemy = null;
+        ctx.enemyDistSquared = Float.POSITIVE_INFINITY;
+        ctx.food = null;
+        ctx.foodDistSquared = Float.POSITIVE_INFINITY;
+
         gw.world.queryAABB(callback,
                            ctx.x - ctx.range, ctx.y - ctx.range,
                            ctx.x + ctx.range, ctx.y + ctx.range);
 
         if (ctx.enemy != null) {
-
+            state.foodInSight = null;
+            state.enemyInSight = ctx.enemy;
+            state.transition(AiComponent.State.CHASE, true);
+        } else if (ctx.food != null) {
+            state.foodInSight = ctx.food;
+            state.enemyInSight = null;
+            state.transition(AiComponent.State.GATHER, true);
+        } else if (state.current == AiComponent.State.CHASE
+        || state.current == AiComponent.State.GATHER) {
+            state.enemyInSight = null;
+            state.foodInSight = null;
+            state.transition(AiComponent.State.WANDER, true);
         }
     }
 }

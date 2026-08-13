@@ -20,11 +20,12 @@ Progetto per il corso GameDesign and Development della Federico II, anno accadem
 - [ ] Game mechanics:
 - [ ] Texture/Bitmap
 
-* BUGS to fix [100%]
+* BUGS to fix [75%]
 - [X] Handle World boundaries appropriately
 - [X] WASP hit food apply to much velocity
   WASP shouldn't hit the food, they don't apply or collide with them
 - [X] Makes *Ants* and *Wasps* fight still standing
+- [ ] If pinch to zoom start on button *PAUSE* and on release is still on button *PAUSE* the game gets paused while zooming and panning.
 
 * Improvements [0/3]
 - [ ] add objects POOL (Poor Objects Oriented Linear-allocator)

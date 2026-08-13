@@ -175,7 +175,7 @@ public class GameWorld {
         }
 
         // spawn wasps around the edges
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 15; i++) {
             float angle = rng.nextFloat(360.0f);
             float dist  = 4.0f ; // spawn far from nest
             float x = (float) Math.cos(angle) * dist;

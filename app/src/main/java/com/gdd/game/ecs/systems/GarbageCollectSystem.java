@@ -31,6 +31,8 @@ public class GarbageCollectSystem implements System {
                         foodAi.pickedUp = false;
                         ai.foodToPickup = null;
                     }
+                    gw.world.destroyJoint(ai.joint);
+                    ai.joint = null;
                 }
                 toRemove.add(entity);
             }

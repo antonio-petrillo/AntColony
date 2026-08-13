@@ -54,15 +54,15 @@ public class EntityContactListener extends ContactListener {
                     || entityA.tag == EntityTag.FOOD && entityB.tag == EntityTag.ANT) {
 
                 var ant = entityA.tag == EntityTag.ANT ? entityA : entityB;
-                var food = entityA.tag == EntityTag.FOOD ? entityB : entityA;
-                var antAi = (AiComponent) entityB.getComponent(ComponentType.AI);
-                var foodAi = (AiComponent) entityB.getComponent(ComponentType.AI);
+                var food = entityA.tag == EntityTag.FOOD ? entityA : entityB;
+                var antAi = (AiComponent) ant.getComponent(ComponentType.AI);
+                var foodAi = (AiComponent) food.getComponent(ComponentType.AI);
                 if (foodAi.pickedUp) return;
                 assert(antAi != null);
 
                 if (antAi.foodToPickup != null) return;
                 foodAi.pickedUp = true;
-                antAi.foodToPickup = entityA;
+                antAi.foodToPickup = food;
             } else if (entityA.tag == EntityTag.ANT && entityB.tag == EntityTag.WASP
                     || entityA.tag == EntityTag.WASP && entityB.tag == EntityTag.ANT) {
 

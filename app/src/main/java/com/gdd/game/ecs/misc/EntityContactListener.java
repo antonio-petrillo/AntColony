@@ -53,26 +53,16 @@ public class EntityContactListener extends ContactListener {
             } else if (entityA.tag == EntityTag.ANT && entityB.tag == EntityTag.FOOD
                     || entityA.tag == EntityTag.FOOD && entityB.tag == EntityTag.ANT) {
 
-                if (entityA.tag == EntityTag.ANT) {
-                    AiComponent food = (AiComponent) entityB.getComponent(ComponentType.AI);
-                    assert(food != null);
-                    if (food.pickedUp) return;
-                    AiComponent ant = (AiComponent) entityA.getComponent(ComponentType.AI);
-                    assert(ant != null);
-                    if (ant.foodToPickup != null) return;
+                var ant = entityA.tag == EntityTag.ANT ? entityA : entityB;
+                var food = entityA.tag == EntityTag.FOOD ? entityB : entityA;
+                var antAi = (AiComponent) entityB.getComponent(ComponentType.AI);
+                var foodAi = (AiComponent) entityB.getComponent(ComponentType.AI);
+                if (foodAi.pickedUp) return;
+                assert(antAi != null);
 
-                    ant.foodToPickup = entityB;
-                } else {
-                    AiComponent food = (AiComponent) entityA.getComponent(ComponentType.AI);
-                    assert(food != null);
-                    if (food.pickedUp) return;
-                    AiComponent ant = (AiComponent) entityB.getComponent(ComponentType.AI);
-                    assert(ant != null);
-
-                    if (ant.foodToPickup != null) return;
-
-                    ant.foodToPickup = entityA;
-                }
+                if (antAi.foodToPickup != null) return;
+                foodAi.pickedUp = true;
+                antAi.foodToPickup = entityA;
             } else if (entityA.tag == EntityTag.ANT && entityB.tag == EntityTag.WASP
                     || entityA.tag == EntityTag.WASP && entityB.tag == EntityTag.ANT) {
 

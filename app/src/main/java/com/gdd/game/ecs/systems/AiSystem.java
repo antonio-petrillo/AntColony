@@ -119,30 +119,29 @@ public final class AiSystem implements System {
     }
 
     public void ant(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
+        if (aiState.foodToPickup != null && aiState.joint == null) {
+            var jointDef = new DistanceJointDef();
+            jointDef.setBodyA(phys.body);
+
+            var foodPhys = (PhysicComponent) aiState.foodToPickup.getComponent(ComponentType.PHYSIC);
+            assert (foodPhys != null);
+
+            jointDef.setBodyB(foodPhys.body);
+            jointDef.setLocalAnchorA(0, 0);
+            jointDef.setLocalAnchorB(0, 0);
+            jointDef.setLength(0.3f);
+            jointDef.setFrequencyHz(4.0f);
+            jointDef.setDampingRatio(0.5f);
+
+            aiState.joint = gw.world.createJoint(jointDef);
+
+            jointDef.delete();
+
+            aiState.transition(AiComponent.State.RETURN);
+            return;
+        }
         switch (aiState.current) {
             case WANDER: {
-                if (aiState.foodToPickup != null) {
-                    var jointDef = new DistanceJointDef();
-                    jointDef.setBodyA(phys.body);
-
-                    var foodPhys = (PhysicComponent) aiState.foodToPickup.getComponent(ComponentType.PHYSIC);
-                    assert (foodPhys != null);
-
-                    jointDef.setBodyB(foodPhys.body);
-                    jointDef.setLocalAnchorA(0, 0);
-                    jointDef.setLocalAnchorB(0, 0);
-                    jointDef.setLength(0.3f);
-                    jointDef.setFrequencyHz(4.0f);
-                    jointDef.setDampingRatio(0.5f);
-
-                    aiState.joint = gw.world.createJoint(jointDef);
-
-                    jointDef.delete();
-
-                    aiState.transition(AiComponent.State.RETURN);
-                    return;
-                }
-
                 if (aiState.isColliding) {
                     aiState.isColliding = false;
 
@@ -226,11 +225,11 @@ public final class AiSystem implements System {
                     aiState.transition(AiComponent.State.WANDER);
                     aiState.timeWanderAccumulator = 0f;
 
-//                    gw.world.destroyJoint(aiState.joint);
+                    gw.world.destroyJoint(aiState.joint);
                     var foodAi = (AiComponent) aiState.foodToPickup.getComponent(ComponentType.AI);
                     foodAi.canBeGarbageCollected = true;
                     aiState.foodToPickup = null;
-//                    aiState.joint = null;
+                    aiState.joint = null;
                     var vel = phys.body.getLinearVelocity();
                     vel.setX(0);
                     vel.setY(0);

@@ -74,7 +74,8 @@ public class PerceptionSystem implements System {
             if (state == null) continue;
 
             if (state.current != AiComponent.State.WANDER
-                && state.current != AiComponent.State.CHASE) continue;
+                    && state.current != AiComponent.State.GATHER
+                    && state.current != AiComponent.State.CHASE) continue;
 
             var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
             if (phys == null) continue;

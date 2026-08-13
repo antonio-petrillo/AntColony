@@ -8,12 +8,12 @@ import com.google.fpl.liquidfun.Vec2;
 public class AiComponent extends Component {
 
     public enum State {
-        NONE, // for food
+        NONE,
         WANDER,
         COMBAT,
         GATHER,
-        RETURN;
-
+        RETURN,
+        CHASE;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class AiComponent extends Component {
         return ComponentType.AI;
     }
 
-    public State previous = State.GATHER;
+    public State previous = State.WANDER;
     public State current;
     public boolean isColliding = false;
     public float timeWanderAccumulator = 0.0f;
@@ -31,6 +31,9 @@ public class AiComponent extends Component {
     public Entity foodToPickup = null; // ref to the food to pickup
     public boolean pickedUp = false; // indicate whether the food is picked up or not
     public Joint joint = null;
+
+    public Entity enemyInSight = null;
+    public Entity foodInSight = null;
 
     public float timeBetweenAttacks = 0.25f;
     public float timeAttackAccumulator = 0.0f;
@@ -51,6 +54,11 @@ public class AiComponent extends Component {
     public void transition(State state) {
         if (state == current) return;
         previous = current;
+        current = state;
+    }
+    public void transition(State state, boolean override) {
+        if (!override) transition(state);
+        previous = state;
         current = state;
     }
 

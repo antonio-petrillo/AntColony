@@ -18,6 +18,7 @@ import com.gdd.game.ecs.systems.InputSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
+import com.gdd.game.ecs.systems.PerceptionSystem;
 import com.gdd.game.ui.Button;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
@@ -79,6 +80,7 @@ public class GameWorld {
     public final GarbageCollectSystem wbsys;
     public final AiSystem aisys;
     public final SpawnSystem spawnsys;
+    public final PerceptionSystem perceptionsys;
 
     public List<Entity> entities = new ArrayList<>();
 
@@ -122,6 +124,7 @@ public class GameWorld {
         entities.add(nest);
 
         aisys = new AiSystem(this, nestPosition, 1.0f);
+        perceptionsys = new PerceptionSystem(this);
 
         initGameObjects();
         addWorldBoundaries();
@@ -211,6 +214,7 @@ public class GameWorld {
 
             // Update Systems
             wbsys.update(entities, deltaTime);
+            perceptionsys.update(entities, deltaTime);
             spawnsys.update(entities, deltaTime);
             aisys.update(entities, deltaTime);
         }

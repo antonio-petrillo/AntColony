@@ -1,6 +1,5 @@
 package com.gdd.game.ecs.systems;
 
-import com.gdd.game.Box;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;

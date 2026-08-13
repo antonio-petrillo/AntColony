@@ -10,15 +10,18 @@ public final class Entity {
 
     public static final float ANT_SPEED = 0.5f;
     public static final float ANT_MAX_STEERING_ANGLE = 1.0f;
+    public static final float ANT_VIEW_ANGLE = (float) Math.toRadians(296); // From web search
+    public static final float ANT_VIEW_RANGE = 0.5f;
+
     public static final float WASP_SPEED = 0.8f;
     public static final float WASP_MAX_STEERING_ANGLE = 1.2f;
-
+    public static final float WASP_VIEW_ANGLE = (float) Math.toRadians(300); // From web search
+    public static final float WASP_VIEW_RANGE = 0.7f;
 
     public EntityTag tag;
     public final Transform transform = new Transform();
 
     public Map<ComponentType, Component> components = new EnumMap<>(ComponentType.class);
-
 
     public Entity(EntityTag tag) {
         this.tag = tag;

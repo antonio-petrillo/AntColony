@@ -41,6 +41,19 @@ public final class AiSystem implements System {
         }
     }
 
+    public void steerToward(PhysicComponent phys, float targetX, float targetY, float speed) {
+        var x = phys.body.getPositionX();
+        var y = phys.body.getPositionY();
+        var angle = (float) Math.atan2(targetY - y, targetX - x);
+        phys.body.setTransform(x, y, angle);
+
+        var vel = phys.body.getLinearVelocity();
+        vel.setX(speed * (float) Math.cos(angle));
+        vel.setY(speed * (float) Math.sin(angle));
+        phys.body.setLinearVelocity(vel);
+        phys.body.setAngularVelocity(0);
+    }
+
     public void wasp(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
         switch (aiState.current) {
             case WANDER: {
@@ -82,6 +95,23 @@ public final class AiSystem implements System {
                         aiState.enemyToAttack = null;
                     }
                 }
+            } break;
+            case GATHER: {
+                if (aiState.foodInSight == null) {
+                    aiState.transition(AiComponent.State.WANDER, true);
+                }
+                var foodPhys = (PhysicComponent) aiState.foodInSight.getComponent(ComponentType.PHYSIC);
+                assert(foodPhys != null);
+                steerToward(phys, foodPhys.body.getPositionX(), foodPhys.body.getPositionY(), Entity.ANT_SPEED);
+            } break;
+            case CHASE: {
+               if (aiState.enemyInSight == null) {
+                  aiState.transition(AiComponent.State.WANDER, true);
+                  break;
+               }
+               var enemyPhys = (PhysicComponent) aiState.enemyInSight.getComponent(ComponentType.PHYSIC);
+               assert(enemyPhys != null);
+               steerToward(phys, enemyPhys.body.getPositionX(), enemyPhys.body.getPositionY(), Entity.WASP_SPEED);
             } break;
             default: break;
         }
@@ -166,7 +196,21 @@ public final class AiSystem implements System {
                 }
             } break;
             case GATHER: {
-               // go toward object
+                if (aiState.foodInSight == null) {
+                    aiState.transition(AiComponent.State.WANDER, true);
+                }
+                var foodPhys = (PhysicComponent) aiState.foodInSight.getComponent(ComponentType.PHYSIC);
+                assert(foodPhys != null);
+                steerToward(phys, foodPhys.body.getPositionX(), foodPhys.body.getPositionY(), Entity.ANT_SPEED);
+            } break;
+            case CHASE: {
+                if (aiState.enemyInSight == null) {
+                    aiState.transition(AiComponent.State.WANDER, true);
+                    break;
+                }
+                var enemyPhys = (PhysicComponent) aiState.enemyInSight.getComponent(ComponentType.PHYSIC);
+                assert(enemyPhys != null);
+                steerToward(phys, enemyPhys.body.getPositionX(), enemyPhys.body.getPositionY(), Entity.ANT_SPEED);
             } break;
             case RETURN: {
                // calc arctan with respect to nest pos and change direction of ant

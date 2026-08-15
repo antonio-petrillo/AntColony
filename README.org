@@ -27,13 +27,15 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] Makes *Ants* and *Wasps* fight still standing
 - [ ] If pinch to zoom start on button *PAUSE* and on release is still on button *PAUSE* the game gets paused while zooming and panning.
 
-* Improvements [0/3]
-- [ ] add objects POOL (Poor Objects Oriented Linear-allocator)
-- [ ] instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects
-- [ ] add field of view to *Ants* and *Wasps*:
+* Improvements [1/4]
+- MAYBE [ ] add objects POOL (Poor Objects Oriented Linear-allocator)
+- MAYBE [ ] instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects
+- [X] add field of view to *Ants* and *Wasps*:
   - both should steer toward food and enemies
   - enemies have priority
-- [ ] add pheromones
+- MAYBE [ ] add pheromones:
+  - steer ant toward pheromones
+  - spawn food near pheromones (like 60% near them 40% random on the map)
 
 * Mechanics
 - Ants wanders into the world

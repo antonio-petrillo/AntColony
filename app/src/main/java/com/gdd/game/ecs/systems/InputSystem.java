@@ -5,24 +5,7 @@ import com.gdd.game.Camera;
 
 public class InputSystem {
 
-    public enum GestureState { IDLE, PENDING, PANNING, PINCH_ZOOM, OBJECT_DRAG }
-
-    public interface SceneInteractable {
-        boolean isDraggable();
-
-        void onTap();
-        void onDragStart(float worldX, float worldY);
-        void onDrag(float worldX, float worldY);
-        void onDragEnd(float worldX, float worldY);
-
-        void onDragCancel();
-    }
-
-    public interface SceneInteractableLocator {
-        SceneInteractable hit(float worldX, float worldY);
-    }
-
-
+    public enum GestureState { IDLE, PENDING, PANNING, PINCH_ZOOM }
     private GestureState state = GestureState.IDLE;
     private final Camera camera;
 
@@ -32,10 +15,6 @@ public class InputSystem {
     private int pointer1 = NO_POINTER, pointer2 = NO_POINTER;
     private float p1x, p1y, p2x, p2y;
     private float p1StartX, p1StartY;
-
-    private SceneInteractableLocator locator;
-    private SceneInteractable tappableCandidate;
-    private SceneInteractable draggedTarget;
 
 
     /*
@@ -57,26 +36,16 @@ public class InputSystem {
         return camera;
     }
 
-    public void setInteractableLocator(SceneInteractableLocator locator) {
-        this.locator = locator;
-    }
-
-
     // ------------------------------------------------------------------
     // Reset esplicito
     // ------------------------------------------------------------------
 
     public void reset() {
-        if (draggedTarget != null) {
-            draggedTarget.onDragCancel();
-        }
         if (state == GestureState.PINCH_ZOOM) {
             camera.endPinch();
         }
         pointer1 = NO_POINTER;
         pointer2 = NO_POINTER;
-        tappableCandidate = null;
-        draggedTarget = null;
         state = GestureState.IDLE;
     }
 
@@ -101,34 +70,12 @@ public class InputSystem {
     }
 
     private void handleDown(Input.TouchEvent e) {
-        if (state == GestureState.OBJECT_DRAG) {
-            return;
-        }
 
         if (pointer1 == NO_POINTER) {
-            /*
-            float worldX = camera.screenToWorldX(e.x);
-            float worldY = camera.screenToWorldY(e.y);
-            SceneInteractable hit = locator != null ? locator.hit(worldX, worldY) : null;
-            */
-
             pointer1 = e.pointer;
             p1x = p1StartX = e.x;
             p1y = p1StartY = e.y;
-
-            /*
-            if (hit != null && hit.isDraggable()) {
-                state = GestureState.OBJECT_DRAG;
-                draggedTarget = hit;
-                draggedTarget.onDragStart(worldX, worldY);
-            } else {
-                // Zona vuota, oppure oggetto solo "tappabile": aspettiamo
-                // di vedere se il gesto diventa un pan.
-                state = GestureState.PENDING;
-                tappableCandidate = hit; // null se zona vuota
-            }
-            */
-            state = GestureState.PENDING; // DA RIMUOVERE
+            state = GestureState.PENDING;
             return;
         }
 
@@ -136,28 +83,14 @@ public class InputSystem {
             pointer2 = e.pointer;
             p2x = e.x;
             p2y = e.y;
-            tappableCandidate = null;
-
             state = GestureState.PINCH_ZOOM;
             float midX = (p1x + p2x) / 2f;
             float midY = (p1y + p2y) / 2f;
             camera.beginPinch(midX, midY, distance(p1x, p1y, p2x, p2y));
         }
-
-        // Terzo dito o oltre: ignorato completamente.
     }
 
     private void handleDragged(Input.TouchEvent event) {
-        /*
-        if (state == GestureState.OBJECT_DRAG) {
-            if (event.pointer == pointer1) {
-                p1x = event.x;
-                p1y = event.y;
-                draggedTarget.onDrag(camera.screenToWorldX(event.x), camera.screenToWorldY(event.y));
-            }
-            return;
-        }
-        */
 
         if (event.pointer == pointer1) {
             float dx = event.x - p1x;
@@ -170,7 +103,6 @@ public class InputSystem {
                 float totalDy = p1y - p1StartY;
                 if (totalDx * totalDx + totalDy * totalDy > PAN_THRESHOLD * PAN_THRESHOLD) {
                     state = GestureState.PANNING;
-                    tappableCandidate = null; // si è mosso troppo: non è più un tap
                 }
             } else if (state == GestureState.PANNING) {
                 camera.pan(dx, dy);
@@ -186,37 +118,16 @@ public class InputSystem {
             if (state == GestureState.PINCH_ZOOM) {
                 camera.updatePinch((p1x + p2x) / 2f, (p1y + p2y) / 2f, distance(p1x, p1y, p2x, p2y));
             }
-            return;
         }
-
-        // Pointer non tracciato (es. dito rimasto giù dopo un reset()): ignorato.
     }
 
     private void handleUp(Input.TouchEvent event) {
-        /*
-        if (state == GestureState.OBJECT_DRAG) {
-            if (event.pointer == pointer1) {
-                draggedTarget.onDragEnd(camera.screenToWorldX(event.x), camera.screenToWorldY(event.y));
-                draggedTarget = null;
-                pointer1 = NO_POINTER;
-                state = GestureState.IDLE;
-            }
-            return;
-        }
-        */
 
         if (event.pointer == pointer1) {
-            if (state == GestureState.PENDING && tappableCandidate != null) {
-                tappableCandidate.onTap();
-            }
-            tappableCandidate = null;
-
             if (pointer2 != NO_POINTER) {
                 if (state == GestureState.PINCH_ZOOM) {
                     camera.endPinch();
                 }
-                // Il primo dito si solleva ma il secondo è ancora giù: quel
-                // dito diventa naturalmente il nuovo dito di pan.
                 pointer1 = pointer2;
                 p1x = p2x;
                 p1y = p2y;
@@ -233,13 +144,9 @@ public class InputSystem {
             pointer2 = NO_POINTER;
             if (state == GestureState.PINCH_ZOOM) {
                 camera.endPinch();
-                // Resta un solo dito: si prosegue in pan senza ripartire da zero.
                 state = GestureState.PANNING;
             }
-            return;
         }
-
-        // Pointer non tracciato: ignorato.
     }
 
     private static float distance(float x1, float y1, float x2, float y2) {

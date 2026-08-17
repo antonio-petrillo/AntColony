@@ -198,12 +198,12 @@ public class GameWorld {
     }
 
 
-    public synchronized void render(float deltaTime)
+    public synchronized void render()
     {
         // background (clear the screen with black)
         canvas.drawARGB(255, 0, 0, 0);
         // entities
-        rsys.update(entities, deltaTime);
+        rsys.update(entities, 0f);
         // ui
         uiController.draw(canvas);
     }

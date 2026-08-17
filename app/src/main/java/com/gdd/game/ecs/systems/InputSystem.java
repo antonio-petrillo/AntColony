@@ -2,6 +2,7 @@ package com.gdd.game.ecs.systems;
 
 import com.badlogic.androidgames.framework.Input;
 import com.gdd.game.Camera;
+import com.gdd.game.PointerTracker;
 
 public class InputSystem {
 
@@ -9,12 +10,8 @@ public class InputSystem {
     private GestureState state = GestureState.IDLE;
     private final Camera camera;
 
-    private static final int NO_POINTER = -1;
     private static final float PAN_THRESHOLD = 20f;
-
-    private int pointer1 = NO_POINTER, pointer2 = NO_POINTER;
-    private float p1x, p1y, p2x, p2y;
-    private float p1StartX, p1StartY;
+    private PointerTracker pointers = new PointerTracker();
 
 
     /*
@@ -32,10 +29,6 @@ public class InputSystem {
         return state;
     }
 
-    public Camera getCamera() {
-        return camera;
-    }
-
     // ------------------------------------------------------------------
     // Reset esplicito
     // ------------------------------------------------------------------
@@ -44,8 +37,7 @@ public class InputSystem {
         if (state == GestureState.PINCH_ZOOM) {
             camera.endPinch();
         }
-        pointer1 = NO_POINTER;
-        pointer2 = NO_POINTER;
+        pointers.removePointers();
         state = GestureState.IDLE;
     }
 
@@ -54,6 +46,7 @@ public class InputSystem {
     // ------------------------------------------------------------------
 
     public void processInput(Input.TouchEvent event) {
+
         if(event == null) return;
 
         switch (event.type) {
@@ -69,89 +62,64 @@ public class InputSystem {
         }
     }
 
-    private void handleDown(Input.TouchEvent e) {
+    private void handleDown(Input.TouchEvent event) {
 
-        if (pointer1 == NO_POINTER) {
-            pointer1 = e.pointer;
-            p1x = p1StartX = e.x;
-            p1y = p1StartY = e.y;
+        if(state == GestureState.IDLE) {
+            pointers.addPointer(event.pointer, event.x, event.y);
             state = GestureState.PENDING;
-            return;
         }
-
-        if (pointer2 == NO_POINTER) {
-            pointer2 = e.pointer;
-            p2x = e.x;
-            p2y = e.y;
+        else if(state == GestureState.PENDING) {
+            pointers.addPointer(event.pointer, event.x, event.y);
             state = GestureState.PINCH_ZOOM;
-            float midX = (p1x + p2x) / 2f;
-            float midY = (p1y + p2y) / 2f;
-            camera.beginPinch(midX, midY, distance(p1x, p1y, p2x, p2y));
+
+            camera.beginPinch(pointers.pinchMidX(), pointers.pinchMidY(), pointers.pinchDistance());
+        }
+        else if(state == GestureState.PANNING) {
+            pointers.addPointer(event.pointer, event.x, event.y);
+            state = GestureState.PINCH_ZOOM;
+
+            camera.beginPinch(pointers.pinchMidX(), pointers.pinchMidY(), pointers.pinchDistance());
         }
     }
 
     private void handleDragged(Input.TouchEvent event) {
 
-        if (event.pointer == pointer1) {
-            float dx = event.x - p1x;
-            float dy = event.y - p1y;
-            p1x = event.x;
-            p1y = event.y;
-
-            if (state == GestureState.PENDING) {
-                float totalDx = p1x - p1StartX;
-                float totalDy = p1y - p1StartY;
-                if (totalDx * totalDx + totalDy * totalDy > PAN_THRESHOLD * PAN_THRESHOLD) {
-                    state = GestureState.PANNING;
-                }
-            } else if (state == GestureState.PANNING) {
-                camera.pan(dx, dy);
-            } else if (state == GestureState.PINCH_ZOOM) {
-                camera.updatePinch((p1x + p2x) / 2f, (p1y + p2y) / 2f, distance(p1x, p1y, p2x, p2y));
-            }
+        if(!pointers.hasPointer(event.pointer))
             return;
-        }
 
-        if (event.pointer == pointer2) {
-            p2x = event.x;
-            p2y = event.y;
-            if (state == GestureState.PINCH_ZOOM) {
-                camera.updatePinch((p1x + p2x) / 2f, (p1y + p2y) / 2f, distance(p1x, p1y, p2x, p2y));
+        if (state == GestureState.PENDING) {
+            float totalDx = pointers.totalDeltaX(event.pointer, event.x);
+            float totalDy = pointers.totalDeltaY(event.pointer, event.y);
+            pointers.updatePointer(event.pointer, event.x, event.y);
+            // passa al panning se superata una certa soglia con il dito
+            if (totalDx * totalDx + totalDy * totalDy > PAN_THRESHOLD * PAN_THRESHOLD) {
+                state = GestureState.PANNING;
             }
+        } else if (state == GestureState.PANNING) {
+            float dx = pointers.deltaX(event.pointer, event.x);
+            float dy = pointers.deltaY(event.pointer, event.y);
+            pointers.updatePointer(event.pointer, event.x, event.y);
+            camera.pan(dx, dy);
+        } else if (state == GestureState.PINCH_ZOOM) {
+            pointers.updatePointer(event.pointer, event.x, event.y);
+            camera.updatePinch(pointers.pinchMidX(), pointers.pinchMidY(), pointers.pinchDistance());
         }
     }
 
     private void handleUp(Input.TouchEvent event) {
 
-        if (event.pointer == pointer1) {
-            if (pointer2 != NO_POINTER) {
-                if (state == GestureState.PINCH_ZOOM) {
-                    camera.endPinch();
-                }
-                pointer1 = pointer2;
-                p1x = p2x;
-                p1y = p2y;
-                pointer2 = NO_POINTER;
-                state = GestureState.PANNING;
-            } else {
-                pointer1 = NO_POINTER;
-                state = GestureState.IDLE;
-            }
+        if(!pointers.hasPointer(event.pointer))
             return;
-        }
 
-        if (event.pointer == pointer2) {
-            pointer2 = NO_POINTER;
-            if (state == GestureState.PINCH_ZOOM) {
-                camera.endPinch();
-                state = GestureState.PANNING;
-            }
-        }
-    }
+        pointers.removePointer(event.pointer);
 
-    private static float distance(float x1, float y1, float x2, float y2) {
-        float dx = x2 - x1;
-        float dy = y2 - y1;
-        return (float) Math.sqrt(dx * dx + dy * dy);
+        if(state == GestureState.PENDING) {
+            state = GestureState.IDLE;
+        } else if (state == GestureState.PANNING) {
+            state = GestureState.IDLE;
+        } else if (state == GestureState.PINCH_ZOOM) {
+            camera.endPinch();
+            state = GestureState.PANNING;
+        }
     }
 }

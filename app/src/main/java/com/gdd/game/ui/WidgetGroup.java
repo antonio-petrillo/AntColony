@@ -8,26 +8,77 @@ import com.badlogic.androidgames.framework.Input;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Questa classe è un contenitore di Widget.
+ */
 public abstract class WidgetGroup extends Widget {
 
     protected List<Widget> children = new ArrayList<>();
 
+    /*
+     * Constructor.
+     */
     public WidgetGroup(float x, float y, float width, float height) {
         super(x, y, width, height);
+        touchable = Touchable.CHILDREN_ONLY;
     }
 
-    public void addWidget(Widget w) {
+    // ***************************************
+    //  Drawing
+    // ***************************************
+
+    @Override
+    public void draw(Canvas canvas) {
+        validateTransform();
+        for (int i = 0; i < children.size(); i++) {
+            Widget c = children.get(i);
+            if (c.visible) c.draw(canvas);
+        }
+    }
+
+    // ***************************************
+    //  Input
+    // ***************************************
+
+    /*
+     * Ritorna il widget che viene "colpito" dal punto (x,y) in pixel.
+     * Eventuali widget con enabled = false o visibile = false vengono ignorati.
+     */
+    @Override
+    public Widget hit(float x, float y) {
+        if (!visible) return null;
+        for (int i = children.size() - 1; i >= 0; i--) {
+            Widget hit = children.get(i).hit(x, y);
+            if (hit != null) return hit;
+        }
+        if (touchable == Touchable.CHILDREN_ONLY) return null;
+        return super.hit(x, y);
+    }
+
+    // ***************************************
+    //  Misc
+    // ***************************************
+
+    public void addChild(Widget w) {
         w.setParent(this);
         children.add(w);
     }
 
-    public void removeWidget(Widget w) {
+    /*
+     * Attenzione: NON usare mentre il child possiede un pointer.
+     *          UIController non viene notificato.
+     */
+    public void removeChild(Widget w) {
         if (children.remove(w)) {
             w.setParent(null);
         }
     }
 
-    public void clear() {
+    /*
+     * Attenzione: NON usare mentre il child possiede un pointer.
+     *          UIController non viene notificato.
+     */
+    public void clearChildren() {
         for (int i = 0; i < children.size(); i++) {
             children.get(i).setParent(null);
         }
@@ -36,50 +87,5 @@ public abstract class WidgetGroup extends Widget {
 
     public List<Widget> getChildren() {
         return children;
-    }
-
-    // ***************************************
-    //            Ciclo di vita
-    // ***************************************
-
-    @Override
-    public void draw(Canvas canvas) {
-        if (!visible) return;
-
-        int n = children.size();
-        for (int i = 0; i < n; i++) {
-            Widget child = children.get(i);
-            if (child.isVisible()) {
-                child.draw(canvas);
-            }
-        }
-    }
-
-    @Override
-    public void update(float deltaTime) {
-        int n = children.size();
-        for (int i = 0; i < n; i++) {
-            children.get(i).update(deltaTime);
-        }
-    }
-
-    public Widget hit(float px, float py) {
-        if (!visible || !enabled || !contains(px, py))
-            return null;
-
-        for (int i = children.size() - 1; i >= 0; i--) {
-            Widget child = children.get(i);
-            if (!child.isVisible() || !child.isEnabled())
-                continue;
-
-            if (child instanceof WidgetGroup) {
-                Widget found = ((WidgetGroup) child).hit(px, py);
-                if (found != null)
-                    return found;
-            } else if (child.contains(px, py)) {
-                return child;
-            }
-        }
-        return null;
     }
 }

@@ -8,10 +8,8 @@ import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
-import com.gdd.game.ecs.factories.AntFactory;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.factories.NestFactory;
-import com.gdd.game.ecs.factories.WaspFactory;
 import com.gdd.game.ecs.misc.EntityContactListener;
 import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.InputSystem;
@@ -22,7 +20,7 @@ import com.gdd.game.ecs.systems.PerceptionSystem;
 import com.gdd.game.ui.Button;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
-import com.gdd.game.ui.WidgetGroupImp;
+import com.gdd.game.ui.Panel;
 import com.google.fpl.liquidfun.BodyDef;
 import com.google.fpl.liquidfun.FixtureDef;
 import com.google.fpl.liquidfun.ParticleSystem;
@@ -142,14 +140,14 @@ public class GameWorld {
 
     public void initUI() {
 
-        WidgetGroup mainLayout = new WidgetGroupImp(0, 0, fbufferWidth, fbufferHeight);
+        WidgetGroup mainLayout = new Panel(0, 0, fbufferWidth, fbufferHeight);
         Button pauseButton = new Button(50, 50, 200, 100, "PAUSE");
-        mainLayout.addWidget(pauseButton);
-        uiController.setMainLayout(mainLayout);
+        mainLayout.addChild(pauseButton);
+        uiController.setRoot(mainLayout);
 
-        WidgetGroup pauseLayout = new WidgetGroupImp(0, 0, fbufferWidth, fbufferHeight);
+        WidgetGroup pauseLayout = new Panel(0, 0, fbufferWidth, fbufferHeight);
         Button resumeButton = new Button(500, 500, 200, 100, "RESUME");
-        pauseLayout.addWidget(resumeButton);
+        pauseLayout.addChild(resumeButton);
 
         pauseButton.setOnClickListener(b -> {
             uiController.showPopup(pauseLayout);

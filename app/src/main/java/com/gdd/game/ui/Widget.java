@@ -6,15 +6,24 @@ import android.graphics.Paint;
 import com.badlogic.androidgames.framework.Input;
 
 /**
- * Widget rappresenta un generico elemento rettangolare dell'interfaccia.
+ * Questa classe rappresenta un generico componente dell'interfaccia utente.
+ * Occupa un'area rettangolare a schermo.
  */
 public abstract class Widget {
 
-    protected float x, y, width, height;
+    public enum Touchable { ENABLED, DISABLED, CHILDREN_ONLY }
+
+    protected float x, y, width, height; // coordinate locali
+    protected float absX, absY; // coordinate assolute
+    protected boolean transformDirty = true;
     protected boolean visible = true;
-    protected boolean enabled = true;
+    protected boolean enable = true;
+    protected Touchable touchable = Touchable.ENABLED;
     protected WidgetGroup parent;
 
+    /*
+     * Richiede valori locali in pixel (relativi al parent).
+     */
     public Widget(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;
@@ -22,30 +31,61 @@ public abstract class Widget {
         this.height = height;
     }
 
-    // ***************************************
-    //            Ciclo di vita
-    // ***************************************
-
-    public abstract void update(float deltaTime);
-
-    public abstract void draw(Canvas canvas);
-
-    public boolean contains(float px, float py) {
-        return px >= x && px <= x + width && py >= y && py <= y + height;
+    /*
+     * Aggiorna la posizione assoluta.
+     */
+    protected void validateTransform() {
+        if (!transformDirty) return;
+        if (parent != null) {
+            parent.validateTransform();
+            absX = parent.absX + x;
+            absY = parent.absY + y;
+        } else {
+            absX = x; absY = y;
+        }
+        transformDirty = false;
     }
 
     // ***************************************
-    //  Gestione input grezzi in base al type
+    //  Render
     // ***************************************
 
-    public boolean touchDown(float px, float py, int pointer) { return false; }
+    /*
+     * Deve disegnare in coordinate assolute
+     */
+    public abstract void draw(Canvas canvas);
 
-    public void touchDragged(float px, float py, int pointer) { }
+    // ***************************************
+    //  Input
+    // ***************************************
 
-    public void touchUp(float px, float py, int pointer) { }
+    /*
+     * Verifica l'input, in coordinate assolute.
+     */
+    public Widget hit(float x, float y) {
+        if (!visible || touchable == Touchable.DISABLED) return null;
+        validateTransform();
+        return (x >= absX && x < absX + width && y >= absY && y < absY + height) ? this : null;
+    }
+
+    /*
+     * Verifica se il punto (x,y) in coordinate assolute è dentro il widget.
+     */
+    public boolean contains(float x, float y) {
+        validateTransform();
+        return (x >= absX && x < absX + width && y >= absY && y < absY + height);
+    }
+
+    public boolean touchDown(float x, float y, int pointer) { return false; }
+
+    public void touchDragged(float x, float y, int pointer) { }
+
+    public void touchUp(float x, float y, int pointer) { }
+
+    public void touchCancelled(int pointer) { }
 
     // ********************************
-    //          Getter / Setter
+    //  Getter / Setter
     // ********************************
 
     public float getX() { return x; }
@@ -66,9 +106,14 @@ public abstract class Widget {
     public boolean isVisible() { return visible; }
     public void setVisible(boolean visible) { this.visible = visible; }
 
-    public boolean isEnabled() { return enabled; }
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
-
     public WidgetGroup getParent() { return parent; }
     public void setParent(WidgetGroup parent) { this.parent = parent; }
+
+    /*
+     * Attenzione: NON usare mentre this possiede un pointer.
+     *      UIController non viene notificato.
+     */
+    public void setTouchable(Touchable t) {
+        this.touchable = t;
+    }
 }

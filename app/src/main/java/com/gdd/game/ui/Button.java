@@ -12,37 +12,26 @@ public class Button extends Widget {
     public interface OnClickListener {
         void onClick(Button button);
     }
-
-    public enum State { IDLE, PRESSED, DISABLED }
-
-    private State state = State.IDLE;
-    private int owningPointer = -1;
     private OnClickListener listener;
 
+    public enum State { IDLE, PRESSED }
+    private State state = State.IDLE;
 
-    // ***** DRAW *****
-    private String label;
+    private int owningPointer = -1;
+
+    // RENDER
+    private String text;
     private final Paint paintUp;
     private final Paint paintPressed;
     private final Paint paintDisabled;
     private final Paint textPaint;
-
-    // ***** DRAW *****
-    private Bitmap bitmap;
-    private final RectF dst = new RectF();
-
 
     /*
      * Costruttore.
      */
     public Button(float x, float y, float width, float height)
     {
-        this(x, y, width, height, "");
-    }
-
-    public Button(float x, float y, float width, float height, String label) {
         super(x, y, width, height);
-        this.label = label;
 
         paintUp = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintUp.setColor(0xFF3E7BFA);
@@ -59,60 +48,43 @@ public class Button extends Widget {
         textPaint.setTextAlign(Paint.Align.CENTER);
     }
 
-    // ********************************
-    //          Getter / Setter
-    // ********************************
-
-    public State getState() { return state; }
-
-    public void setLabel(String label) { this.label = label; }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
-    public void setOnClickListener(OnClickListener listener) { this.listener = listener; }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        if (!enabled) {
-            owningPointer = -1;
-            state = State.IDLE;
-        }
+    /*
+     * Costruttore.
+     */
+    public Button(float x, float y, float width, float height, String text) {
+        this(x, y, width, height);
+        this.text = text;
     }
 
     // ***************************************
-    //            Ciclo di vita
+    //  Rendering
     // ***************************************
-
-    @Override
-    public void update(float deltaTime) {
-
-    }
 
     @Override
     public void draw(Canvas canvas) {
-        Paint background = !enabled
+        validateTransform(); // <- richiamalo altrove!
+
+        Paint background = touchable != Touchable.ENABLED
                 ? paintDisabled
                 : (state == State.PRESSED ? paintPressed : paintUp);
 
-        canvas.drawRoundRect(x, y, x + width, y + height, 12f, 12f, background);
+        canvas.drawRoundRect(absX, absY, absX + width, absY + height,
+                12f, 12f, background);
 
-        if (label != null) {
-            float cx = x + width / 2f;
-            float cy = y + height / 2f - (textPaint.ascent() + textPaint.descent()) / 2f;
-            canvas.drawText(label, cx, cy, textPaint);
+        if (text != null) {
+            float cx = absX + width / 2f;
+            float cy = absY + height / 2f - (textPaint.ascent() + textPaint.descent()) / 2f;
+            canvas.drawText(text, cx, cy, textPaint);
         }
     }
 
     // ***************************************
-    //         Gestione input grezzi
+    //  Input
     // ***************************************
 
     @Override
-    public boolean touchDown(float px, float py, int pointer) {
-        if (!enabled || owningPointer != -1) {
+    public boolean touchDown(float x, float y, int pointer) {
+        if (touchable != Touchable.ENABLED || owningPointer != -1) {
             return false;
         }
         owningPointer = pointer;
@@ -121,19 +93,75 @@ public class Button extends Widget {
     }
 
     @Override
-    public void touchDragged(float px, float py, int pointer) {
+    public void touchDragged(float x, float y, int pointer) {
         if (pointer != owningPointer) return;
-        state = contains(px, py) ? State.PRESSED : State.IDLE;
+        state = contains(x, y) ? State.PRESSED : State.IDLE;
     }
 
     @Override
-    public void touchUp(float px, float py, int pointer) {
+    public void touchUp(float x, float y, int pointer) {
         if (pointer != owningPointer) return;
-        boolean wasInsideOnRelease = contains(px, py);
+        boolean wasInsideOnRelease = contains(x, y);
         owningPointer = -1;
         state = State.IDLE;
+
         if (wasInsideOnRelease && listener != null) {
             listener.onClick(this);
         }
+    }
+
+    @Override
+    public void touchCancelled(int pointer) {
+        if (pointer == owningPointer) {
+            owningPointer = -1;
+            state = State.IDLE;
+        }
+    }
+
+    // ********************************
+    //  Getter / Setter
+    // ********************************
+
+    public State getState() { return state; }
+
+    public void setText(String text) { this.text = text; }
+
+    public void setTextSize(float size) {
+        textPaint.setTextSize(height * size);
+    }
+
+    public void setTextColor(int color) {
+        textPaint.setColor(color);
+    }
+
+    public void setColor(int color) {
+        // TODO: gestire i 3 diversi colori per stato
+        paintUp.setColor(color);
+    }
+
+    public void setOnClickListener(OnClickListener listener) { this.listener = listener; }
+
+    @Override
+    public void setTouchable(Touchable touchable) {
+        super.setTouchable(touchable);
+        // * UIController andrebbe notificato *
+        if (touchable != Touchable.ENABLED) {
+            owningPointer = -1;
+            state = State.IDLE;
+        }
+    }
+
+    // ********************************
+    //  Misc
+    // ********************************
+
+    // da fixare,per i problemi di "setTouchable"
+
+    public void enable() {
+        touchable = Touchable.ENABLED;
+    }
+
+    public void disable() {
+        touchable = Touchable.DISABLED;
     }
 }

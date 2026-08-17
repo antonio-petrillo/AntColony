@@ -1,16 +1,19 @@
 package com.gdd.game.ui;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.util.SparseArray;
 
 import com.badlogic.androidgames.framework.Input;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+/*
+ * UIController gestisce l'intero ciclo di vita dell'UI nel gioco..
+ */
 public class UIController {
-
-    private static final int NO_POINTER = -1;
 
     private static final class PopupEntry {
         final WidgetGroup layout;
@@ -22,32 +25,32 @@ public class UIController {
         }
     }
 
+    private WidgetGroup root;
     private final List<PopupEntry> popups = new ArrayList<>();
-    private WidgetGroup mainLayout;
 
-    private int activePointer = NO_POINTER;
-    private Widget activeWidget = null;
+    private final SparseArray<Widget> pointerOwners = new SparseArray<>();// pointer e widget posseduti
+    private final Set<Integer> modalBlockedPointers = new HashSet<>(); // pointer bloccati da popup modale senza widget
 
-    // ------------------------------------------------------------------
-    // Configurazione layout
-    // ------------------------------------------------------------------
+    // ***************************************
+    //  Layout
+    // ***************************************
 
-    public void setMainLayout(WidgetGroup layout) {
-        this.mainLayout = layout;
+    public void setRoot(WidgetGroup root) {
+        this.root = root;
     }
 
-    public WidgetGroup getMainLayout() {
-        return mainLayout;
+    public WidgetGroup getRoot() {
+        return root;
     }
 
     public void showPopup(WidgetGroup popup) {
         showPopup(popup, true);
     }
 
-    public void showPopup(WidgetGroup popup, boolean modal) {
-        popups.add(new PopupEntry(popup, modal));
+    public void showPopup(WidgetGroup layout, boolean modal) {
+        if (modal) cancelAllPointers();
+        popups.add(new PopupEntry(layout, modal));
     }
-
     public void hideTopPopup() {
         if (!popups.isEmpty()) {
             popups.remove(popups.size() - 1);
@@ -71,29 +74,38 @@ public class UIController {
         return !popups.isEmpty();
     }
 
+    private WidgetGroup topLayer() {
+        if (popups.isEmpty()) return root;
+        return popups.get(popups.size() - 1).layout;
+    }
 
-    // ------------------------------------------------------------------
-    // Ciclo di vita: update / draw
-    // ------------------------------------------------------------------
+    private boolean isTopPopupModal() {
+        return !popups.isEmpty() && popups.get(popups.size() - 1).modal;
+    }
+
+    // ***************************************
+    //  Rendering
+    // ***************************************
 
     public void draw(Canvas canvas) {
-        if (mainLayout != null) {
-            mainLayout.draw(canvas);
+        if (root != null) {
+            root.draw(canvas);
         }
 
         int n = popups.size();
         for (int i = 0; i < n; i++) {
             PopupEntry entry = popups.get(i);
             if (entry.modal) {
+                // Oscura ciò che sta sotto per dare risalto al popup
                 canvas.drawColor(0x99000000);
             }
             entry.layout.draw(canvas);
         }
     }
 
-    // ------------------------------------------------------------------
-    // Input
-    // ------------------------------------------------------------------
+    // ***************************************
+    //  Input
+    // ***************************************
 
     public boolean processInput(Input.TouchEvent event) {
         if(event == null) return false;
@@ -117,22 +129,16 @@ public class UIController {
 
     private boolean handleTouchDown(Input.TouchEvent event) {
 
-        if (activePointer != NO_POINTER) {
-            return false;
-        }
-
         WidgetGroup topLayer = topLayer();
         Widget hitWidget = topLayer != null ? topLayer.hit(event.x, event.y) : null;
 
         if (hitWidget != null && hitWidget.touchDown(event.x, event.y, event.pointer)) {
-            activePointer = event.pointer;
-            activeWidget = hitWidget;
+            pointerOwners.put(event.pointer, hitWidget);
             return true;
         }
 
         if (isTopPopupModal()) {
-            activePointer = event.pointer;
-            activeWidget = null;
+            modalBlockedPointers.add(event.pointer);
             return true;
         }
 
@@ -140,31 +146,46 @@ public class UIController {
     }
 
     private boolean handleTouchDragged(Input.TouchEvent event) {
-        if (event.pointer != activePointer)
-            return false;
-        if (activeWidget != null) {
-            activeWidget.touchDragged(event.x, event.y, event.pointer);
+        Widget w = pointerOwners.get(event.pointer);
+        if (w != null) {
+            w.touchDragged(event.x, event.y, event.pointer);
+            return true;
         }
-        return true;
+        return modalBlockedPointers.contains(event.pointer);
     }
 
     private boolean handleTouchUp(Input.TouchEvent event) {
-        if (event.pointer != activePointer)
-            return false;
-        if (activeWidget != null) {
-            activeWidget.touchUp(event.x, event.y, event.pointer);
+        Widget w = pointerOwners.get(event.pointer);
+        if (w != null) {
+            w.touchUp(event.x, event.y, event.pointer);
+            pointerOwners.remove(event.pointer);
+            return true;
         }
-        activePointer = NO_POINTER;
-        activeWidget = null;
-        return true;
+        return modalBlockedPointers.remove(event.pointer);
     }
 
-    private WidgetGroup topLayer() {
-        if (popups.isEmpty()) return mainLayout;
-        return popups.get(popups.size() - 1).layout;
+    public void cancelPointer(int pointer) {
+        Widget w = pointerOwners.get(pointer);
+        if (w != null) w.touchCancelled(pointer);
+        pointerOwners.remove(pointer);
+        modalBlockedPointers.remove(pointer);
     }
 
-    private boolean isTopPopupModal() {
-        return !popups.isEmpty() && popups.get(popups.size() - 1).modal;
+    public void cancelAllPointers() {
+        for (int i = 0; i < pointerOwners.size(); i++) {
+            Widget w = pointerOwners.valueAt(i);
+            if (w != null) w.touchCancelled(pointerOwners.keyAt(i));
+        }
+        pointerOwners.clear();
+        modalBlockedPointers.clear();
+    }
+
+    public void cancelPointerFor(Widget widget) {
+        for (int i = pointerOwners.size() - 1; i >= 0; i--) {
+            if (pointerOwners.valueAt(i) == widget) {
+                widget.touchCancelled(pointerOwners.keyAt(i));
+                pointerOwners.removeAt(i);
+            }
+        }
     }
 }

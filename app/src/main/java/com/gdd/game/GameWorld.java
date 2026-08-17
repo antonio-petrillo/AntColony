@@ -18,6 +18,7 @@ import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
 import com.gdd.game.ecs.systems.PerceptionSystem;
 import com.gdd.game.ui.Button;
+import com.gdd.game.ui.TextButton;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
 import com.gdd.game.ui.Panel;
@@ -141,12 +142,14 @@ public class GameWorld {
     public void initUI() {
 
         WidgetGroup mainLayout = new Panel(0, 0, fbufferWidth, fbufferHeight);
-        Button pauseButton = new Button(50, 50, 200, 100, "PAUSE");
+        TextButton pauseButton = new TextButton(50, 50, 200, 100);
+        pauseButton.setText("PAUSE");
         mainLayout.addChild(pauseButton);
         uiController.setRoot(mainLayout);
 
         WidgetGroup pauseLayout = new Panel(0, 0, fbufferWidth, fbufferHeight);
-        Button resumeButton = new Button(500, 500, 200, 100, "RESUME");
+        TextButton resumeButton = new TextButton(500, 500, 200, 100);
+        resumeButton.setText("RESUME");
         pauseLayout.addChild(resumeButton);
 
         pauseButton.setOnClickListener(b -> {

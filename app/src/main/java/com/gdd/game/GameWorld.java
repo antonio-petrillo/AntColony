@@ -9,6 +9,7 @@ import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
+import com.gdd.game.ecs.entities.Transform;
 import com.gdd.game.ecs.factories.NestFactory;
 import com.gdd.game.ecs.misc.EntityContactListener;
 import com.gdd.game.ecs.systems.AiSystem;
@@ -115,7 +116,7 @@ public class GameWorld {
         );
 
         // SYSTEMS
-        inputSystem = new InputSystem(camera);
+        inputSystem = new InputSystem(this, camera);
         rsys = new RenderSystem(this, camera);
         spawnsys = new SpawnSystem(this, nest);
         wbsys = new GarbageCollectSystem(this, spawnsys);
@@ -278,4 +279,19 @@ public class GameWorld {
         fdef.delete();
     }
 
+    // TEST METHOD
+    public Entity hit(float worldX, float worldY) {
+        int n = entities.size();
+        for(int i=0; i<n; i++) {
+
+            Entity entity = entities.get(i);
+            Transform t = entity.transform;
+
+            if(worldX >= t.x - t.halfWidth && worldX <= t.x + t.halfWidth &&
+                    worldY >= t.y - t.halfHeight && worldY <= t.y + t.halfHeight) {
+                return entity;
+            }
+        }
+        return null;
+    }
 }

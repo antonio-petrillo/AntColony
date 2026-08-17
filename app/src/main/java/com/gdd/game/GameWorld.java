@@ -128,7 +128,6 @@ public class GameWorld {
         aisys = new AiSystem(this, nestPosition, 1.0f);
         perceptionsys = new PerceptionSystem(this);
 
-//        initGameObjects();
         addWorldBoundaries();
 
         // UI
@@ -162,30 +161,6 @@ public class GameWorld {
             state = State.RUNNING;
         });
     }
-
-
-    public void initGameObjects() {
-
-        // spawn ants
-        for (int i = 0; i < 100; i++) {
-            float angle = rng.nextFloat(360.0f);
-            float x = (float) Math.cos(angle) * SPAWN_DIST;
-            float y = (float) Math.sin(angle) * SPAWN_DIST;
-
-            var ant = AntFactory.makeAnt(this, x, y, angle);
-            entities.add(ant);
-        }
-
-        // spawn wasps around the edges
-        for (int i = 0; i < 15; i++) {
-            float angle = rng.nextFloat(360.0f);
-            float dist  = 4.0f ; // spawn far from nest
-            float x = (float) Math.cos(angle) * dist;
-            float y = (float) Math.sin(angle) * dist;
-            entities.add(WaspFactory.makeWasp(this, x, y, dist));
-        }
-    }
-
 
     // ------------------------------------------------------------------
     // Getter / Setter

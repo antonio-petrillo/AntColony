@@ -99,7 +99,6 @@ public class SpawnSystem  implements System {
             var dx = nest.transform.x - x;
             var dy = nest.transform.y - y;
             float direction = (float) Math.atan2(dy, dx) + rng.nextFloat(-Entity.WASP_MAX_DEGREE_INWARD, Entity.WASP_MAX_DEGREE_INWARD);
-            Log.d("SPAWN", "spawn wasp");
             entities.add(WaspFactory.makeWasp(gw, x, y, direction));
             waspCount++;
             timerWasp = 0f;

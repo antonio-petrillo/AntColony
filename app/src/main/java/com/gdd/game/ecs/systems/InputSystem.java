@@ -19,6 +19,10 @@ public class InputSystem {
     private static final float PAN_THRESHOLD = 20f;
     private PointerTracker pointers = new PointerTracker();
 
+    // ********************************
+    //  Entity interaction
+    // ********************************
+
     private Entity entityTarget;
     private InputComponent inputTarget;
 
@@ -30,33 +34,9 @@ public class InputSystem {
         this.camera = camera;
     }
 
-    // ------------------------------------------------------------------
-    // Getter / Setter
-    // ------------------------------------------------------------------
-
-    public GestureState getState() {
-        return state;
-    }
-
-    // ------------------------------------------------------------------
-    // Reset esplicito
-    // ------------------------------------------------------------------
-
-    public void reset() {
-        if (state == GestureState.PINCH_ZOOM) {
-            camera.endPinch();
-        } else if (state == GestureState.DRAG) {
-            inputTarget.onDragCancel();
-        }
-        inputTarget = null;
-        entityTarget = null;
-        pointers.removePointers();
-        state = GestureState.IDLE;
-    }
-
-    // ------------------------------------------------------------------
-    // Input
-    // ------------------------------------------------------------------
+    // ********************************
+    //  Input
+    // ********************************
 
     public void processInput(Input.TouchEvent event) {
 
@@ -166,5 +146,29 @@ public class InputSystem {
         }
 
         pointers.removePointer(event.pointer);
+    }
+
+    // ********************************
+    //  Getter / Setter
+    // ********************************
+
+    public GestureState getState() {
+        return state;
+    }
+
+    // ********************************
+    //  Misc
+    // ********************************
+
+    public void reset() {
+        if (state == GestureState.PINCH_ZOOM) {
+            camera.endPinch();
+        } else if (state == GestureState.DRAG) {
+            inputTarget.onDragCancel();
+        }
+        inputTarget = null;
+        entityTarget = null;
+        pointers.removePointers();
+        state = GestureState.IDLE;
     }
 }

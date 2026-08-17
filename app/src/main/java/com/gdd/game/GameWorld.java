@@ -39,7 +39,7 @@ public class GameWorld {
 
     public enum State { RUNNING, PAUSE }
 
-    State state = State.RUNNING;
+    public State state = State.RUNNING;
     public final Activity activity;
 
     // Rendering
@@ -55,6 +55,7 @@ public class GameWorld {
 
     // Physics Simulation
     public World world;
+    public Entity nest;
     // Used to constraint the moving objects in the world, see `addWorldBoundaries`
     public Body  worldBoundaries;
     public final Box worldSize, // physics world's size (in meters)
@@ -103,6 +104,11 @@ public class GameWorld {
         cameraView = new Box(worldSize); // di default vede l'intero mondo
         canvas = new Canvas(frameBuffer);
 
+        // INIT NEST
+        var nestPosition = new Vec2(0, 0);
+        nest = NestFactory.makeNest(this, nestPosition);
+        entities.add(nest);
+
         // SCENE
         camera = new Camera(cameraView,
                 Settings.worldWidth, Settings.worldHeight, // worldWidth, worldHeight in metri
@@ -112,21 +118,17 @@ public class GameWorld {
         // SYSTEMS
         inputSystem = new InputSystem(camera);
         rsys = new RenderSystem(this, camera);
-        wbsys = new GarbageCollectSystem(this);
-        spawnsys = new SpawnSystem(this);
+        spawnsys = new SpawnSystem(this, nest);
+        wbsys = new GarbageCollectSystem(this, spawnsys);
 
         // stored to prevent GC
         entityContactListener = new EntityContactListener();
         world.setContactListener(entityContactListener);
 
-        var nestPosition = new Vec2(0, 0);
-        var nest = NestFactory.makeNest(this, nestPosition);
-        entities.add(nest);
-
         aisys = new AiSystem(this, nestPosition, 1.0f);
         perceptionsys = new PerceptionSystem(this);
 
-        initGameObjects();
+//        initGameObjects();
         addWorldBoundaries();
 
         // UI

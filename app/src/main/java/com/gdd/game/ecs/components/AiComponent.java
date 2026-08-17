@@ -2,9 +2,6 @@ package com.gdd.game.ecs.components;
 
 import com.gdd.game.ecs.entities.Entity;
 import com.google.fpl.liquidfun.Joint;
-import com.google.fpl.liquidfun.Vec2;
-
-// TODO: implement FSM
 public class AiComponent extends Component {
 
     public enum State {

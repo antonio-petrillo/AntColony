@@ -14,9 +14,11 @@ public class GarbageCollectSystem implements System {
 
     private final Set<Entity> toRemove = new HashSet<>(128);
     private final GameWorld gw;
+    private final SpawnSystem spawnSystem;
 
-    public GarbageCollectSystem(GameWorld gw) {
+    public GarbageCollectSystem(GameWorld gw, SpawnSystem spawnSystem) {
         this.gw = gw;
+        this.spawnSystem = spawnSystem;
     }
 
     @Override
@@ -39,6 +41,13 @@ public class GarbageCollectSystem implements System {
         }
         if (!toRemove.isEmpty()) {
             for (var entity : toRemove) {
+                switch (entity.tag) {
+                    case ANT -> spawnSystem.antCount--;
+                    case FOOD -> spawnSystem.foodCount--;
+                    case WASP -> spawnSystem.waspCount--;
+                    case NEST, EMPTY -> {}
+                }
+
                 var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
                 if (phys == null) continue;
 

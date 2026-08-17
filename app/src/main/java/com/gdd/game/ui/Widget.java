@@ -22,7 +22,6 @@ public abstract class Widget {
         this.height = height;
     }
 
-
     // ***************************************
     //            Ciclo di vita
     // ***************************************
@@ -31,11 +30,9 @@ public abstract class Widget {
 
     public abstract void draw(Canvas canvas);
 
-    // Ritorna true se il touch è dentro i confini dell'elemento (Collision Box)
     public boolean contains(float px, float py) {
         return px >= x && px <= x + width && py >= y && py <= y + height;
     }
-
 
     // ***************************************
     //  Gestione input grezzi in base al type
@@ -46,7 +43,6 @@ public abstract class Widget {
     public void touchDragged(float px, float py, int pointer) { }
 
     public void touchUp(float px, float py, int pointer) { }
-
 
     // ********************************
     //          Getter / Setter
@@ -75,5 +71,4 @@ public abstract class Widget {
 
     public WidgetGroup getParent() { return parent; }
     public void setParent(WidgetGroup parent) { this.parent = parent; }
-
 }

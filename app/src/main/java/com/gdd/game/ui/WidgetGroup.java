@@ -8,12 +8,6 @@ import com.badlogic.androidgames.framework.Input;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * WidgetGroup è un contenitore di Widget.
- *
- * Nota: i widget children dovrebbero essere sempre contenuti nel rettangolo di widgetgroup
- * altrimenti "hit" non li trova. Serve il metodo di update del layout per garantirlo.
- */
 public abstract class WidgetGroup extends Widget {
 
     protected List<Widget> children = new ArrayList<>();
@@ -44,7 +38,6 @@ public abstract class WidgetGroup extends Widget {
         return children;
     }
 
-
     // ***************************************
     //            Ciclo di vita
     // ***************************************
@@ -70,11 +63,6 @@ public abstract class WidgetGroup extends Widget {
         }
     }
 
-    /*
-     * Se il punto (px,py) "colpisce" un widget nell'albero, allora verrà ritornato dal metodo.
-     * Notare che se un widget o un widgetgroup ha visible = false o enabled = false allora
-     * verrà ignorato.
-     */
     public Widget hit(float px, float py) {
         if (!visible || !enabled || !contains(px, py))
             return null;
@@ -92,8 +80,6 @@ public abstract class WidgetGroup extends Widget {
                 return child;
             }
         }
-
         return null;
     }
-
 }

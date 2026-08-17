@@ -13,11 +13,10 @@ public class Button extends Widget {
         void onClick(Button button);
     }
 
-    // public enum State { IDLE, PRESSED, PRESSED_OUTSIDE }
     public enum State { IDLE, PRESSED, DISABLED }
 
     private State state = State.IDLE;
-    private int owningPointer = -1; // il pointer che "possiede" il button
+    private int owningPointer = -1;
     private OnClickListener listener;
 
 
@@ -60,8 +59,6 @@ public class Button extends Widget {
         textPaint.setTextAlign(Paint.Align.CENTER);
     }
 
-
-
     // ********************************
     //          Getter / Setter
     // ********************************
@@ -84,7 +81,6 @@ public class Button extends Widget {
             state = State.IDLE;
         }
     }
-
 
     // ***************************************
     //            Ciclo di vita
@@ -110,7 +106,6 @@ public class Button extends Widget {
         }
     }
 
-
     // ***************************************
     //         Gestione input grezzi
     // ***************************************
@@ -128,9 +123,6 @@ public class Button extends Widget {
     @Override
     public void touchDragged(float px, float py, int pointer) {
         if (pointer != owningPointer) return;
-        // Se il dito esce dall'area il bottone si "spegne" visivamente ma
-        // resta posseduto: se il dito rientra prima del touchUp torna PRESSED,
-        // esattamente come il comportamento standard dei bottoni Android.
         state = contains(px, py) ? State.PRESSED : State.IDLE;
     }
 
@@ -144,16 +136,4 @@ public class Button extends Widget {
             listener.onClick(this);
         }
     }
-
 }
-
-
-/*
-    @Override
-    public void draw(Canvas canvas, Paint paint) {
-        if (!visible) return;
-
-        canvas.drawBitmap(bitmap, null, dst, paint);
-        // canvas.drawRect(x, y, x+width, y+height, paint);
-    }
-*/

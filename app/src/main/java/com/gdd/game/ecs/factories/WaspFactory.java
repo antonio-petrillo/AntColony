@@ -37,6 +37,8 @@ public class WaspFactory {
         var wasp = new Entity(EntityTag.WASP);
         wasp.transform.halfWidth = RADIUS;
         wasp.transform.halfHeight = RADIUS;
+        wasp.transform.x = x;
+        wasp.transform.y = y;
         wasp.addComponent(new CircleRenderComp(Color.YELLOW, true));
         wasp.addComponent(new HealthComponent(50));
 

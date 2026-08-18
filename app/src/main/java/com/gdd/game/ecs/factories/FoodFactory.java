@@ -27,6 +27,8 @@ public class FoodFactory {
         var food = new Entity(EntityTag.FOOD);
         food.transform.halfWidth = RADIUS;
         food.transform.halfHeight = RADIUS;
+        food.transform.x = x;
+        food.transform.y = y;
         food.addComponent(new CircleRenderComp(Color.WHITE, true));
         food.addComponent(new AiComponent(AiComponent.State.NONE));
 

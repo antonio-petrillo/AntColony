@@ -39,6 +39,8 @@ public class AntFactory {
         var ant = new Entity(EntityTag.ANT);
         ant.transform.halfWidth = RADIUS/2;
         ant.transform.halfHeight = RADIUS/2;
+        ant.transform.x = x;
+        ant.transform.y = y;
         ant.addComponent(new CircleRenderComp(Color.RED, true));
         ant.addComponent(new HealthComponent(20));
 

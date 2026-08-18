@@ -154,6 +154,7 @@ public class GameWorld {
         pauseLayout.addChild(resumeButton);
 
         pauseButton.setOnClickListener(b -> {
+            inputSystem.reset();
             uiController.showPopup(pauseLayout);
             state = State.PAUSE;
         });

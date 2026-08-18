@@ -95,6 +95,8 @@ public final class AiSystem implements System {
                         aiState.enemyToAttack = null;
                     }
                 }
+                var health = (HealthComponent) entity.getComponent(ComponentType.HEALTH);
+                aiState.canBeGarbageCollected = !health.isAlive();
             } break;
             case GATHER: {
                 if (aiState.foodInSight == null) {
@@ -194,6 +196,8 @@ public final class AiSystem implements System {
                         aiState.enemyToAttack = null;
                     }
                 }
+                var health = (HealthComponent) entity.getComponent(ComponentType.HEALTH);
+                aiState.canBeGarbageCollected = !health.isAlive();
             } break;
             case GATHER: {
                 if (aiState.foodInSight == null) {

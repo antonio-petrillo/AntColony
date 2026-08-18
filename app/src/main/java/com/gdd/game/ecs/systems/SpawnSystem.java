@@ -81,18 +81,18 @@ public class SpawnSystem  implements System {
             switch (nextSpawnSide) {
                 case NORTH -> {
                     x = worldSize.xmin + worldSize.width * percentage;
-                    y = worldSize.ymin;
+                    y = worldSize.ymin - BORDER_MARGIN;
                 }
                 case EAST -> {
-                    x = worldSize.xmax;
+                    x = worldSize.xmax - BORDER_MARGIN;
                     y = worldSize.ymax - worldSize.height * percentage;
                 }
                 case SOUTH -> {
                     x = worldSize.xmax - worldSize.width * percentage;
-                    y = worldSize.ymax;
+                    y = worldSize.ymax + BORDER_MARGIN;
                 }
                 case OVEST -> {
-                    x = worldSize.xmin;
+                    x = worldSize.xmin + BORDER_MARGIN;
                     y = worldSize.ymin + worldSize.height * percentage;
                 }
             }

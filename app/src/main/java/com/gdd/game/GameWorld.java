@@ -142,11 +142,10 @@ public class GameWorld {
 
     public void initUI() {
 
-        WidgetGroup mainLayout = new Panel(0, 0, fbufferWidth, fbufferHeight);
+        WidgetGroup root = new Panel(0, 0, fbufferWidth, fbufferHeight);
         TextButton pauseButton = new TextButton(50, 50, 200, 100);
         pauseButton.setText("PAUSE");
-        mainLayout.addChild(pauseButton);
-        uiController.setRoot(mainLayout);
+        root.addChild(pauseButton);
 
         WidgetGroup pauseLayout = new Panel(0, 0, fbufferWidth, fbufferHeight);
         TextButton resumeButton = new TextButton(500, 500, 200, 100);
@@ -163,6 +162,9 @@ public class GameWorld {
             uiController.hideTopPopup();
             state = State.RUNNING;
         });
+
+        uiController.setRoot(root);
+        uiController.updateLayout();
     }
 
     // ------------------------------------------------------------------

@@ -10,22 +10,11 @@ public class Image extends Widget {
     protected Paint paint;
     protected RectF dst = new RectF();
 
-    /*
-     * Constructor.
-     */
+
     public Image(float x, float y, float width, float height)
     {
         super(x, y, width, height);
         this.paint = new Paint(Paint.FILTER_BITMAP_FLAG);
-    }
-
-    /*
-     * Constructor.
-     */
-    public Image(float x, float y, float width, float height, Bitmap bitmap)
-    {
-        this(x, y, width, height);
-        this.bitmap = bitmap;
     }
 
     // ***************************************

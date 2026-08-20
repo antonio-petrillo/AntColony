@@ -36,8 +36,6 @@ public class TextButton extends Button {
 
     @Override
     public void draw(Canvas canvas) {
-        validateTransform();
-
         Paint background = touchable != Touchable.ENABLED
                 ? paintDisabled
                 : (state == State.PRESSED ? paintPressed : paintUp);

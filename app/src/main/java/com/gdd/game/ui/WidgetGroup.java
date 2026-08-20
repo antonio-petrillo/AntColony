@@ -24,12 +24,23 @@ public abstract class WidgetGroup extends Widget {
     }
 
     // ***************************************
+    //  Layout
+    // ***************************************
+
+    @Override
+    protected void validateTransform() {
+        super.validateTransform();
+        for (int i = children.size() - 1; i >= 0; i--) {
+            children.get(i).validateTransform();
+        }
+    }
+
+    // ***************************************
     //  Drawing
     // ***************************************
 
     @Override
     public void draw(Canvas canvas) {
-        validateTransform();
         for (int i = 0; i < children.size(); i++) {
             Widget c = children.get(i);
             if (c.visible) c.draw(canvas);
@@ -61,11 +72,12 @@ public abstract class WidgetGroup extends Widget {
 
     public void addChild(Widget w) {
         w.setParent(this);
+        w.transformDirty = true;
         children.add(w);
     }
 
     /*
-     * Attenzione: NON usare mentre il child possiede un pointer.
+     * Warning: NON usare mentre il child possiede un pointer.
      *          UIController non viene notificato.
      */
     public void removeChild(Widget w) {
@@ -75,7 +87,7 @@ public abstract class WidgetGroup extends Widget {
     }
 
     /*
-     * Attenzione: NON usare mentre il child possiede un pointer.
+     * Warning: NON usare mentre il child possiede un pointer.
      *          UIController non viene notificato.
      */
     public void clearChildren() {

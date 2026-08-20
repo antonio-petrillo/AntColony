@@ -10,9 +10,7 @@ public class Label extends Widget {
     private final Paint textPaint, backgroundPaint;
     protected RectF dst = new RectF();
 
-    /*
-     * Constructor.
-     */
+
     public Label(float x, float y, float width, float height)
     {
         super(x, y, width, height);
@@ -26,9 +24,6 @@ public class Label extends Widget {
         textPaint.setTextAlign(Paint.Align.CENTER);
     }
 
-    /*
-     * Constructor.
-     */
     public Label(float x, float y, float width, float height, String text)
     {
         this(x, y, width, height);
@@ -41,7 +36,7 @@ public class Label extends Widget {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawRoundRect(x, y, x + width, y + height, 12f, 12f, backgroundPaint);
+        //canvas.drawRoundRect(x, y, x + width, y + height, 12f, 12f, backgroundPaint);
 
         if (text != null) {
             float cx = x + width / 2f;
@@ -62,9 +57,7 @@ public class Label extends Widget {
         return text;
     }
 
-    public void setTextSize(int size) {
-        textPaint.setTextSize(size);
-    }
+    public void setTextSize(float size) { textPaint.setTextSize(height * size); }
 
     public void setTextColor(int color) {
         textPaint.setColor(color);

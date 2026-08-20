@@ -17,7 +17,6 @@ public abstract class Widget {
     protected float absX, absY; // coordinate assolute
     protected boolean transformDirty = true;
     protected boolean visible = true;
-    protected boolean enable = true;
     protected Touchable touchable = Touchable.ENABLED;
     protected WidgetGroup parent;
 
@@ -31,18 +30,24 @@ public abstract class Widget {
         this.height = height;
     }
 
+    // ***************************************
+    //  Layout
+    // ***************************************
+
     /*
      * Aggiorna la posizione assoluta.
+     * Funziona se il parent è stato già validato.
      */
     protected void validateTransform() {
         if (!transformDirty) return;
+
         if (parent != null) {
-            parent.validateTransform();
             absX = parent.absX + x;
             absY = parent.absY + y;
         } else {
             absX = x; absY = y;
         }
+
         transformDirty = false;
     }
 
@@ -64,7 +69,6 @@ public abstract class Widget {
      */
     public Widget hit(float x, float y) {
         if (!visible || touchable == Touchable.DISABLED) return null;
-        validateTransform();
         return (x >= absX && x < absX + width && y >= absY && y < absY + height) ? this : null;
     }
 
@@ -72,7 +76,6 @@ public abstract class Widget {
      * Verifica se il punto (x,y) in coordinate assolute è dentro il widget.
      */
     public boolean contains(float x, float y) {
-        validateTransform();
         return (x >= absX && x < absX + width && y >= absY && y < absY + height);
     }
 
@@ -96,11 +99,13 @@ public abstract class Widget {
     public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
+        transformDirty = true;
     }
 
     public void setSize(float width, float height) {
         this.width = width;
         this.height = height;
+        transformDirty = true;
     }
 
     public boolean isVisible() { return visible; }
@@ -110,7 +115,7 @@ public abstract class Widget {
     public void setParent(WidgetGroup parent) { this.parent = parent; }
 
     /*
-     * Attenzione: NON usare mentre this possiede un pointer.
+     * Warning: NON usare mentre this possiede un pointer.
      *      UIController non viene notificato.
      */
     public void setTouchable(Touchable t) {

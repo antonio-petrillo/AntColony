@@ -19,14 +19,25 @@ import com.badlogic.androidgames.framework.Audio;
 import com.badlogic.androidgames.framework.Music;
 import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.badlogic.androidgames.framework.impl.MultiTouchHandler;
+import com.badlogic.androidgames.framework.impl.TouchHandler;
+import com.gdd.game.screen.GameScreen;
+import com.gdd.game.screen.Screen;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements Game {
 
     private AndroidFastRenderView renderView;
+    private MultiTouchHandler touchHandler;
+    public Screen screen;
+    public Box screenSize;
+    public Bitmap frameBuffer;
     private Music backgroundMusic;
 
     // the tag used for logging
     public static String TAG;
+
+    // ********************************
+    //  Android callbacks
+    // ********************************
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,29 +59,19 @@ public class MainActivity extends Activity {
         // ***** GAME *****
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        Box screenSize   = new Box(0, 0, metrics.widthPixels, metrics.heightPixels);
-
-        // World: physical simulation
-        float halfWorldWidth = Settings.worldWidth / 2;
-        float halfWorldHeight = Settings.worldHeight / 2;
-        Box worldSize = new Box(-halfWorldWidth, -halfWorldHeight,
-                halfWorldWidth, halfWorldHeight);
-
-        Bitmap frameBuffer = Bitmap.createBitmap(Settings.fbufferWidth, Settings.fbufferHeight,
+        screenSize = new Box(0, 0, metrics.widthPixels, metrics.heightPixels);
+        frameBuffer = Bitmap.createBitmap(Settings.fbufferWidth, Settings.fbufferHeight,
                 Bitmap.Config.ARGB_8888);
-        GameWorld gw = new GameWorld(this, frameBuffer, worldSize, screenSize);
+
 
         // ***** SURFACE VIEW *****
-        renderView = new AndroidFastRenderView(this, gw);
-        setContentView(renderView);
+        renderView = new AndroidFastRenderView(this, frameBuffer);
 
         // ***** INPUT (TOUCH) *****
         // Scale for input coordinates (screen to framebuffer)
         float scaleX = (float) Settings.fbufferWidth / metrics.widthPixels;
         float scaleY = (float) Settings.fbufferHeight / metrics.heightPixels;
-        MultiTouchHandler touch = new MultiTouchHandler(renderView, scaleX, scaleY);
-        // Setter needed due to cyclic dependency
-        gw.setTouchHandler(touch);
+        touchHandler = new MultiTouchHandler(renderView, scaleX, scaleY);
 
         // ***** AUDIO *****
         //TODO va gestito in GameWorld
@@ -79,6 +80,9 @@ public class MainActivity extends Activity {
         backgroundMusic = audio.newMusic("soundtrack.mp3");
         backgroundMusic.play();
         */
+
+        screen = getStartScreen();
+        setContentView(renderView);
     }
 
     @Override
@@ -86,7 +90,11 @@ public class MainActivity extends Activity {
         super.onPause();
         Log.i("Main thread", "pause");
         renderView.pause(); // stops the main loop
+        screen.pause();
         //backgroundMusic.pause();
+
+        if (isFinishing())
+            screen.dispose();
     }
 
     @Override
@@ -99,7 +107,7 @@ public class MainActivity extends Activity {
     public void onResume() {
         super.onResume();
         Log.i("Main thread", "resume");
-
+        screen.resume();
         renderView.resume(); // starts game loop in a separate thread
         //backgroundMusic.play();
 
@@ -109,6 +117,9 @@ public class MainActivity extends Activity {
         Log.i("Main thread", "read counter " + counter);
     }
 
+    // ********************************
+    //  Misc
+    // ********************************
 
     private void enableImmersiveMode() {
         Window window = getWindow();
@@ -128,5 +139,41 @@ public class MainActivity extends Activity {
                     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             );
         }
+    }
+
+    // ********************************
+    //  Methods for screen
+    // ********************************
+
+    @Override
+    public void setScreen(Screen screen) {
+        if (screen == null)
+            throw new IllegalArgumentException("Screen must not be null");
+
+        this.screen.pause();
+        this.screen.dispose();
+        screen.resume();
+        screen.update(0);
+        this.screen = screen;
+    }
+
+    public Screen getCurrentScreen() {
+        return screen;
+    }
+
+    public Screen getStartScreen() {
+        return new GameScreen(this);
+    }
+
+    public TouchHandler getTouchHandler() {
+        return touchHandler;
+    }
+
+    public Bitmap getFramebuffer() {
+        return frameBuffer;
+    }
+
+    public Box getScreensize() {
+        return screenSize;
     }
 }

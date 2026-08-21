@@ -40,7 +40,6 @@ public class GameWorld {
     public enum State { RUNNING, PAUSE }
 
     public State state = State.RUNNING;
-    public final Activity activity;
 
     // Rendering
     public static final int fbufferWidth = Settings.fbufferWidth,
@@ -93,12 +92,11 @@ public class GameWorld {
     /*
      * Constructor.
      */
-    public GameWorld(Activity activity, Bitmap frameBuffer, Box worldSize, Box screenSize) {
+    public GameWorld(Bitmap frameBuffer, Box screenSize, Box worldSize) {
 
-        this.worldSize = worldSize;
-        this.screenSize = screenSize;
-        this.activity = activity;
         this.frameBuffer = frameBuffer;
+        this.screenSize = screenSize;
+        this.worldSize = worldSize;
         this.world = new World(0, 0);  // gravity vector
 
         cameraView = new Box(worldSize); // di default vede l'intero mondo

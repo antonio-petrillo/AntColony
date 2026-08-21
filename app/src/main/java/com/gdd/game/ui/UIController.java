@@ -28,11 +28,11 @@ public class UIController {
     private WidgetGroup root;
     private final List<PopupEntry> popups = new ArrayList<>();
 
-    private final SparseArray<Widget> pointerOwners = new SparseArray<>();// pointer e widget posseduti
+    private final SparseArray<Widget> pointerOwners = new SparseArray<>(); // pointer e widget posseduti
     private final Set<Integer> modalBlockedPointers = new HashSet<>(); // pointer bloccati da popup modale senza widget
 
     // ***************************************
-    //  Layout
+    //  Misc
     // ***************************************
 
     public void setRoot(WidgetGroup root) {
@@ -67,13 +67,10 @@ public class UIController {
         return !popups.isEmpty();
     }
 
-    private WidgetGroup topLayer() {
-        if (popups.isEmpty()) return root;
-        return popups.get(popups.size() - 1).popup;
-    }
-
-    private boolean isTopPopupModal() {
-        return !popups.isEmpty() && popups.get(popups.size() - 1).modal;
+    public void reset() {
+        cancelAllPointers();
+        clearPopups();
+        root = null;
     }
 
     // ***************************************
@@ -140,7 +137,7 @@ public class UIController {
     }
 
     private boolean handleTouchDown(Input.TouchEvent event) {
-        WidgetGroup topLayer = topLayer();
+        WidgetGroup topLayer = getTopLayer();
         Widget hitWidget = topLayer != null ? topLayer.hit(event.x, event.y) : null;
 
         if (hitWidget != null && hitWidget.touchDown(event.x, event.y, event.pointer)) {
@@ -198,5 +195,18 @@ public class UIController {
                 pointerOwners.removeAt(i);
             }
         }
+    }
+
+    // ***************************************
+    //  Misc
+    // ***************************************
+
+    private WidgetGroup getTopLayer() {
+        if (popups.isEmpty()) return root;
+        return popups.get(popups.size() - 1).popup;
+    }
+
+    private boolean isTopPopupModal() {
+        return !popups.isEmpty() && popups.get(popups.size() - 1).modal;
     }
 }

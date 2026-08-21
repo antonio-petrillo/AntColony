@@ -20,6 +20,7 @@ import com.badlogic.androidgames.framework.impl.MultiTouchHandler;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.screen.GameScreen;
+import com.gdd.game.screen.LoadingScreen;
 import com.gdd.game.screen.Screen;
 import com.gdd.game.ui.UIController;
 
@@ -165,7 +166,7 @@ public class MainActivity extends Activity implements Game {
     }
 
     public Screen getStartScreen() {
-        return new GameScreen(this);
+        return new LoadingScreen(this);
     }
 
     public TouchHandler getTouchHandler() {

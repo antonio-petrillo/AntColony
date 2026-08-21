@@ -109,10 +109,12 @@ public class GameScreen extends Screen {
     }
 
     // ***************************************
-    //  Misc
+    //  UI
     // ***************************************
 
     public void initUI() {
+
+        uiController.reset();
 
         WidgetGroup root = new Panel(0, 0, fbufferWidth, fbufferHeight);
         TextButton pauseButton = new TextButton(50, 50, 200, 100);

@@ -1,6 +1,6 @@
 package com.gdd.game.screen;
 
-import com.gdd.game.Box;
+import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.Game;
 import com.gdd.game.GameWorld;
 import com.gdd.game.Settings;

@@ -2,18 +2,13 @@ package com.gdd.game.ecs.systems;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.graphics.RenderEffect;
 
-import com.gdd.game.Assets;
-import com.gdd.game.Box;
-import com.gdd.game.Camera;
+import com.gdd.game.ecs.misc.Camera;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.ComponentType;
-import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.RenderComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.Transform;
-import com.gdd.game.ecs.factories.FoodFactory;
 import com.gdd.game.ecs.misc.ScreenParams;
 
 import java.util.List;

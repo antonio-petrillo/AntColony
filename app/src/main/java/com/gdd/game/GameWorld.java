@@ -1,6 +1,5 @@
 package com.gdd.game;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
@@ -11,6 +10,8 @@ import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.Transform;
 import com.gdd.game.ecs.factories.NestFactory;
+import com.gdd.game.ecs.misc.Box;
+import com.gdd.game.ecs.misc.Camera;
 import com.gdd.game.ecs.misc.EntityContactListener;
 import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.InputSystem;
@@ -18,7 +19,6 @@ import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
 import com.gdd.game.ecs.systems.PerceptionSystem;
-import com.gdd.game.ui.Button;
 import com.gdd.game.ui.TextButton;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;

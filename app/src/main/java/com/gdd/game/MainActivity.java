@@ -15,11 +15,10 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
-import com.badlogic.androidgames.framework.Audio;
 import com.badlogic.androidgames.framework.Music;
-import com.badlogic.androidgames.framework.impl.AndroidAudio;
 import com.badlogic.androidgames.framework.impl.MultiTouchHandler;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
+import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.screen.GameScreen;
 import com.gdd.game.screen.Screen;
 

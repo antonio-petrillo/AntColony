@@ -1,14 +1,9 @@
 package com.gdd.game.ecs.factories;
 
 import android.graphics.Color;
-import android.graphics.Paint;
 
-import com.gdd.game.Assets;
-import com.gdd.game.Box;
 import com.gdd.game.GameWorld;
-import com.gdd.game.ecs.components.BitmapRenderComp;
 import com.gdd.game.ecs.components.BoxRenderComp;
-import com.gdd.game.ecs.components.CircleRenderComp;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;

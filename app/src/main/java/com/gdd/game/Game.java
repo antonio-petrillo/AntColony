@@ -3,6 +3,7 @@ package com.gdd.game;
 import android.graphics.Bitmap;
 
 import com.badlogic.androidgames.framework.impl.TouchHandler;
+import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.screen.Screen;
 
 public interface Game {

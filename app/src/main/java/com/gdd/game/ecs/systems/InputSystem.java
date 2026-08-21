@@ -1,9 +1,9 @@
 package com.gdd.game.ecs.systems;
 
 import com.badlogic.androidgames.framework.Input;
-import com.gdd.game.Camera;
+import com.gdd.game.ecs.misc.Camera;
 import com.gdd.game.GameWorld;
-import com.gdd.game.PointerTracker;
+import com.gdd.game.ecs.misc.PointerTracker;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.InputComponent;
 import com.gdd.game.ecs.entities.Entity;

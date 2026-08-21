@@ -1,4 +1,4 @@
-package com.gdd.game;
+package com.gdd.game.ecs.misc;
 
 public class PointerTracker {
 

@@ -19,6 +19,7 @@ import com.gdd.game.ecs.systems.RenderSystem;
 import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
 import com.gdd.game.ecs.systems.PerceptionSystem;
+import com.gdd.game.screen.Screen;
 import com.gdd.game.ui.TextButton;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
@@ -35,21 +36,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/*
+ * Gestore principale della scena e degli oggetti di gioco.
+ */
 public class GameWorld {
 
-    public enum State { RUNNING, PAUSE }
-
-    public State state = State.RUNNING;
-
-    // Rendering
-    public static final int fbufferWidth = Settings.fbufferWidth,
-            fbufferHeight = Settings.fbufferHeight;
-    public Bitmap frameBuffer;
+    public final Bitmap frameBuffer;
     public final Canvas canvas;
 
     // Controller
-    private final UIController uiController;
-    private InputSystem inputSystem;
+    public final InputSystem inputSystem;
     public Camera camera;
 
     // Physics Simulation
@@ -58,7 +54,6 @@ public class GameWorld {
     // Used to constraint the moving objects in the world, see `addWorldBoundaries`
     public Body  worldBoundaries;
     public final Box worldSize, // physics world's size (in meters)
-            screenSize, // smartphone's screen size (in pixel)
             cameraView; // camera position and size (in meters)
     private final EntityContactListener entityContactListener;
 
@@ -86,16 +81,18 @@ public class GameWorld {
 
     private static final Random rng = new Random();
     private final float SPAWN_DIST = 1.0f;
-    boolean consumed;
+    private Screen gameScreen;
 
 
     /*
      * Constructor.
      */
-    public GameWorld(Bitmap frameBuffer, Box screenSize, Box worldSize) {
+    public GameWorld(Screen gameScreen, Bitmap frameBuffer, Box screenSize, Box worldSize) {
 
+        this.gameScreen = gameScreen;
+
+        touchHandler = gameScreen.game.getTouchHandler();
         this.frameBuffer = frameBuffer;
-        this.screenSize = screenSize;
         this.worldSize = worldSize;
         this.world = new World(0, 0);  // gravity vector
 
@@ -127,43 +124,10 @@ public class GameWorld {
         perceptionsys = new PerceptionSystem(this);
 
         addWorldBoundaries();
-
-        // UI
-        uiController = new UIController();
-        initUI();
     }
 
 
-    // ------------------------------------------------------------------
-    // Initialize
-    // ------------------------------------------------------------------
 
-    public void initUI() {
-
-        WidgetGroup root = new Panel(0, 0, fbufferWidth, fbufferHeight);
-        TextButton pauseButton = new TextButton(50, 50, 200, 100);
-        pauseButton.setText("PAUSE");
-        root.addChild(pauseButton);
-
-        WidgetGroup pauseLayout = new Panel(0, 0, fbufferWidth, fbufferHeight);
-        TextButton resumeButton = new TextButton(500, 500, 200, 100);
-        resumeButton.setText("RESUME");
-        pauseLayout.addChild(resumeButton);
-
-        pauseButton.setOnClickListener(b -> {
-            inputSystem.reset();
-            uiController.showPopup(pauseLayout);
-            state = State.PAUSE;
-        });
-
-        resumeButton.setOnClickListener(b -> {
-            uiController.hideTopPopup();
-            state = State.RUNNING;
-        });
-
-        uiController.setRoot(root);
-        uiController.updateLayout();
-    }
 
     // ------------------------------------------------------------------
     // Getter / Setter
@@ -180,35 +144,21 @@ public class GameWorld {
 
     public synchronized void update(float deltaTime)  {
 
-        // Handle touch events
-        for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
-            consumed = uiController.processInput(event);
-             if(!consumed && state == State.RUNNING)
-                 inputSystem.processInput(event);
-        }
+        // Handle collisions: advance the physics simulation
+        world.step(deltaTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
+        syncTransform(); // update transform components
 
-        if(state == State.RUNNING) {
-            // Handle collisions: advance the physics simulation
-            world.step(deltaTime, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
-            syncTransform(); // update transform components
-
-            // Update Systems
-            wbsys.update(entities, deltaTime);
-            perceptionsys.update(entities, deltaTime);
-            spawnsys.update(entities, deltaTime);
-            aisys.update(entities, deltaTime);
-        }
+        // Update Systems
+        wbsys.update(entities, deltaTime);
+        perceptionsys.update(entities, deltaTime);
+        spawnsys.update(entities, deltaTime);
+        aisys.update(entities, deltaTime);
     }
 
 
     public synchronized void render()
     {
-        // background (clear the screen with black)
-        canvas.drawARGB(255, 0, 0, 0);
-        // entities
         rsys.update(entities, 0f);
-        // ui
-        uiController.draw(canvas);
     }
 
     public synchronized void setGravity(float x, float y)

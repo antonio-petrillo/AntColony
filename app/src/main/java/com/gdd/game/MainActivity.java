@@ -21,6 +21,7 @@ import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.screen.GameScreen;
 import com.gdd.game.screen.Screen;
+import com.gdd.game.ui.UIController;
 
 public class MainActivity extends Activity implements Game {
 
@@ -30,6 +31,8 @@ public class MainActivity extends Activity implements Game {
     public Box screenSize;
     public Bitmap frameBuffer;
     private Music backgroundMusic;
+    private UIController uiController;
+
 
     // the tag used for logging
     public static String TAG;
@@ -80,6 +83,7 @@ public class MainActivity extends Activity implements Game {
         backgroundMusic.play();
         */
 
+        uiController = new UIController();
         screen = getStartScreen();
         setContentView(renderView);
     }
@@ -174,5 +178,9 @@ public class MainActivity extends Activity implements Game {
 
     public Box getScreensize() {
         return screenSize;
+    }
+
+    public UIController getUiController() {
+        return uiController;
     }
 }

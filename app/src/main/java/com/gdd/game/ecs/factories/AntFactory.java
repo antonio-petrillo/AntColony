@@ -26,7 +26,7 @@ public class AntFactory {
     private static final float DENSITY     = 1.0f;
     private static final float FRICTION    = 0.3f;
     private static final float RESTITUTION = 0.2f;
-    private static final float RADIUS = 0.1f;
+    private static final float RADIUS = 0.05f;
 
     public static final float ATTACK_COOLDOWN = 1.0f;
 
@@ -37,11 +37,12 @@ public class AntFactory {
     public static Entity makeAnt(GameWorld gw, float x, float y, float direction) {
 
         var ant = new Entity(EntityTag.ANT);
-        ant.transform.halfWidth = RADIUS/2;
-        ant.transform.halfHeight = RADIUS/2;
+        ant.transform.halfWidth = RADIUS;
+        ant.transform.halfHeight = RADIUS;
         ant.transform.x = x;
         ant.transform.y = y;
-        ant.addComponent(new CircleRenderComp(Color.RED, true));
+        //ant.addComponent(new CircleRenderComp(Color.RED, true));
+        ant.addComponent(new BitmapRenderComp(Assets.ANT_BITMAP));
         ant.addComponent(new HealthComponent(20));
 
         float timeBetweenActions = rng.nextFloat(1.5f, 5.0f);

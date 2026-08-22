@@ -2,7 +2,9 @@ package com.gdd.game.ecs.factories;
 
 import android.graphics.Color;
 
+import com.gdd.game.Assets;
 import com.gdd.game.GameWorld;
+import com.gdd.game.ecs.components.BitmapRenderComp;
 import com.gdd.game.ecs.components.BoxRenderComp;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
@@ -25,7 +27,8 @@ public class NestFactory {
         var nest = new Entity(EntityTag.NEST);
         nest.transform.halfWidth = SIDE;
         nest.transform.halfHeight = SIDE;
-        nest.addComponent(new BoxRenderComp(Color.BLUE, true));
+        // nest.addComponent(new BoxRenderComp(Color.BLUE, true));
+        nest.addComponent(new BitmapRenderComp(Assets.NEST_BITMAP));
         nest.addComponent(new HealthComponent(1000));
 
         // ***** PHYSICS

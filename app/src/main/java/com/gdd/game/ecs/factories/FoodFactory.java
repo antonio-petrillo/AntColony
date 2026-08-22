@@ -18,7 +18,7 @@ import com.google.fpl.liquidfun.FixtureDef;
 
 public class FoodFactory {
 
-    public static final float RADIUS = 0.2f;
+    public static final float RADIUS = 0.15f;
 
     private FoodFactory() {}
 
@@ -29,7 +29,8 @@ public class FoodFactory {
         food.transform.halfHeight = RADIUS;
         food.transform.x = x;
         food.transform.y = y;
-        food.addComponent(new CircleRenderComp(Color.WHITE, true));
+        //food.addComponent(new CircleRenderComp(Color.WHITE, true));
+        food.addComponent(new BitmapRenderComp(Assets.FOOD_BITMAP));
         food.addComponent(new AiComponent(AiComponent.State.NONE));
 
         // ***** PHYSICS

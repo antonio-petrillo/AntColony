@@ -81,8 +81,8 @@ public class GameScreen extends Screen {
 
     @Override
     public void render() {
-        // clear the screen with black
-        canvas.drawARGB(255, 0, 0, 0);
+        // clear the screen with white
+        canvas.drawARGB(255, 200, 200, 200);
         // draw entities
         gw.render();
         // draw widgets
@@ -117,7 +117,7 @@ public class GameScreen extends Screen {
         uiController.reset();
 
         WidgetGroup root = new Panel(0, 0, fbufferWidth, fbufferHeight);
-        TextButton pauseButton = new TextButton(50, 50, 200, 100);
+        TextButton pauseButton = new TextButton(25, 25, 100, 50);
         pauseButton.setText("PAUSE");
         root.addChild(pauseButton);
 

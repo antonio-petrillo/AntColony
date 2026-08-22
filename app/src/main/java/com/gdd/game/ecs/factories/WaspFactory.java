@@ -25,7 +25,7 @@ public class WaspFactory {
     private static final float DENSITY     = 1.0f;
     private static final float FRICTION    = 0.3f;
     private static final float RESTITUTION = 0.2f;
-    private static final float RADIUS = 0.15f;
+    private static final float RADIUS = 0.1f;
     private static final Random rng = new Random();
 
     public static final float ATTACK_COOLDOWN = 1.0f;
@@ -39,7 +39,8 @@ public class WaspFactory {
         wasp.transform.halfHeight = RADIUS;
         wasp.transform.x = x;
         wasp.transform.y = y;
-        wasp.addComponent(new CircleRenderComp(Color.YELLOW, true));
+        //wasp.addComponent(new CircleRenderComp(Color.YELLOW, true));
+        wasp.addComponent(new BitmapRenderComp(Assets.WASP_BITMAP));
         wasp.addComponent(new HealthComponent(50));
 
         float timeBetweenActions = rng.nextFloat(0.5f, 5.0f);

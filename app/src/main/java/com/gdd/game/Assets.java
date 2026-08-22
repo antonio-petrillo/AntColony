@@ -13,10 +13,10 @@ public class Assets {
 
 
     public static final String APPNAME = "AntColony";
-    private static final String ANT_BITMAP_PATH = "Ant.png";
-    private static final String NEST_BITMAP_PATH = "Nest.png";
-    private static final String FOOD_BITMAP_PATH = "Food.png";
-    private static final String WASP_BITMAP_PATH = "Wasp.png";
+    private static final String ANT_BITMAP_PATH = "ant_32x32.png";
+    private static final String NEST_BITMAP_PATH = "nest_128x128.png";
+    private static final String FOOD_BITMAP_PATH = "sugar_cube_32x32.png";
+    private static final String WASP_BITMAP_PATH = "wasp_32x32.png";
     private static final String TERRAIN_BITMAP_PATH = "Terrain.png";
 
 

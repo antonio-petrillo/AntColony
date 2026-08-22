@@ -76,7 +76,9 @@ public class GameScreen extends Screen {
                 gw.inputSystem.processInput(event);
         }
 
-        gw.update(deltaTime);
+        if(state == State.RUNNING) {
+            gw.update(deltaTime);
+        }
     }
 
     @Override

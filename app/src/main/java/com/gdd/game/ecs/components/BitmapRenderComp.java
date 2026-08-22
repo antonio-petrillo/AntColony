@@ -11,6 +11,7 @@ public class BitmapRenderComp extends RenderComponent {
 
     private final Bitmap bitmap;
     private final Paint paint;
+    public float visualAngleOffsetDeg = 0f;
 
     public BitmapRenderComp(Bitmap bitmap) {
         this.bitmap = bitmap;
@@ -26,7 +27,7 @@ public class BitmapRenderComp extends RenderComponent {
 
         canvas.save();
         canvas.translate(t.screenX, t.screenY);
-        canvas.rotate(t.rotation);
+        canvas.rotate(t.rotation + visualAngleOffsetDeg);
         canvas.drawBitmap(bitmap, null, dst, paint);
         canvas.restore();
     }

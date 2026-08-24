@@ -25,8 +25,8 @@ public class NestFactory {
     public static Entity makeNest(GameWorld gw, Vec2 nestPosition) {
 
         var nest = new Entity(EntityTag.NEST);
-        nest.transform.halfWidth = SIDE;
-        nest.transform.halfHeight = SIDE;
+        nest.transform.halfWidth = SIDE*2.5f;
+        nest.transform.halfHeight = SIDE*2.5f;
         // nest.addComponent(new BoxRenderComp(Color.BLUE, true));
         nest.addComponent(new BitmapRenderComp(Assets.NEST_BITMAP));
         nest.addComponent(new HealthComponent(1000));

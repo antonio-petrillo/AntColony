@@ -14,6 +14,8 @@ public interface Game {
     //  BAG services
     // ***************************************
 
+    public Audio getAudio();
+
     public void setScreen(Screen screen);
 
     public Screen getCurrentScreen();

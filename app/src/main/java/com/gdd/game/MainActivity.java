@@ -32,6 +32,7 @@ import com.gdd.game.ui.UIController;
 public class MainActivity extends Activity implements Game {
 
     private AndroidFastRenderView renderView;
+    public Audio audio;
     public Screen screen;
 
     public MultiTouchHandler touchHandler;
@@ -75,6 +76,7 @@ public class MainActivity extends Activity implements Game {
 
         // SERVICES
         renderView = new AndroidFastRenderView(this, frameBuffer);
+        audio = new AndroidAudio(this);
         touchHandler = new MultiTouchHandler(renderView, scaleX, scaleY);
         uiController = new UIController();
         screen = getStartScreen();
@@ -115,6 +117,11 @@ public class MainActivity extends Activity implements Game {
     // ***************************************
     //  BAG services
     // ***************************************
+
+    @Override
+    public Audio getAudio() {
+        return audio;
+    }
 
     @Override
     public void setScreen(Screen screen) {

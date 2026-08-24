@@ -27,7 +27,7 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] Makes *Ants* and *Wasps* fight still standing
 - [ ] If pinch to zoom start on button *PAUSE* and on release is still on button *PAUSE* the game gets paused while zooming and panning.
 
-* Improvements [2/5]
+* Improvements [2/6]
 - [ ] MAYBE add objects POOL (Poor Objects Oriented Linear-allocator)
 - [ ] MAYBE instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects
 - [X] add field of view to *Ants* and *Wasps*:
@@ -36,10 +36,11 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [ ] MAYBE add pheromones:
   - steer ant toward pheromones
 - [X] make entities change direction when they hit the world boundaries or the nest
+- [ ] Fix positioning of energy label positioning
   
 
-* Mechanics [0%]
-- [ ] Add *energy* counter, increase when ants deliver food    
+* Mechanics [50%]
+- [X] Add *energy* counter, increase when ants deliver food    
 - [ ] Add button with spell that consume *energy*:
   - AOE damage
   - AOE heal

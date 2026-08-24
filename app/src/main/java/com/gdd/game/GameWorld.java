@@ -85,6 +85,10 @@ public class GameWorld {
     private Screen gameScreen;
     private TiledBackgroundRenderer background;
 
+    /* Energy for mechanics
+     */
+
+    public int playerEnergy = 0;
 
     /*
      * Constructor.

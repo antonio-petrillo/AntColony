@@ -8,6 +8,7 @@ import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.Game;
 import com.gdd.game.GameWorld;
 import com.gdd.game.Settings;
+import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
 import com.gdd.game.ui.TextButton;
 import com.gdd.game.ui.UIController;
@@ -24,6 +25,7 @@ public class GameScreen extends Screen {
     public State state;
 
     private GameWorld gw;
+    private Label energyLabel;
     private UIController uiController;
     private float fbufferWidth, fbufferHeight;
     private Canvas canvas;
@@ -87,6 +89,10 @@ public class GameScreen extends Screen {
         canvas.drawARGB(255, 200, 200, 200);
         // draw entities
         gw.render();
+
+
+        energyLabel.setText(String.format("Energy: %d", gw.playerEnergy));
+
         // draw widgets
         uiController.draw(canvas);
     }
@@ -122,6 +128,11 @@ public class GameScreen extends Screen {
         TextButton pauseButton = new TextButton(25, 25, 100, 50);
         pauseButton.setText("PAUSE");
         root.addChild(pauseButton);
+
+        energyLabel = new Label(100, 100, 100, 50);
+        energyLabel.setText("Energy: 0");
+        energyLabel.setTextColor(0xFF000000);
+        root.addChild(energyLabel);
 
         WidgetGroup pauseLayout = new Panel(0, 0, fbufferWidth, fbufferHeight);
         TextButton resumeButton = new TextButton(500, 500, 200, 100);

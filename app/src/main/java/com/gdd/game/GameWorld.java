@@ -8,6 +8,7 @@ import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
+import com.gdd.game.ecs.entities.EntityTag;
 import com.gdd.game.ecs.entities.Transform;
 import com.gdd.game.ecs.factories.NestFactory;
 import com.gdd.game.ecs.misc.Box;
@@ -52,7 +53,7 @@ public class GameWorld {
     public World world;
     public Entity nest;
     // Used to constraint the moving objects in the world, see `addWorldBoundaries`
-    public Body  worldBoundaries;
+    public Body worldBoundaries;
     public final Box worldSize, // physics world's size (in meters)
             cameraView; // camera position and size (in meters)
     private final EntityContactListener entityContactListener;
@@ -227,6 +228,8 @@ public class GameWorld {
         // right
         shape.setAsBox(THICKNESS, ymax-ymin, xmax, ymin+(ymax-ymin)/2, 0);
         worldBoundaries.createFixture(fdef);
+
+        worldBoundaries.setUserData(new Entity(EntityTag.WALL));
 
         // clean up native objects
         bdef.delete();

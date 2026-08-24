@@ -57,6 +57,16 @@ public final class AiSystem implements System {
     public void wasp(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
         switch (aiState.current) {
             case WANDER: {
+                if (aiState.isColliding) {
+                    aiState.isColliding = false;
+
+                    var newDirection = phys.body.getAngle() + (float) Math.PI
+                            + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE / 2, Entity.WASP_MAX_STEERING_ANGLE / 2);
+                    phys.body.setTransform(phys.body.getPositionX(), phys.body.getPositionY(), newDirection);
+                    aiState.timeWanderAccumulator = 0;
+                    return;
+                }
+
                 aiState.timeWanderAccumulator += dt;
                 if (aiState.timeWanderAccumulator >= aiState.timeBetweenActions) {
                     aiState.timeWanderAccumulator = 0f;
@@ -147,13 +157,11 @@ public final class AiSystem implements System {
                 if (aiState.isColliding) {
                     aiState.isColliding = false;
 
-                    float nudge = Entity.ANT_MAX_STEERING_ANGLE * 0.5f;
-                    float newDirection = phys.body.getAngle() + nudge;
-                    phys.body.setTransform(
-                            phys.body.getPositionX(),
-                            phys.body.getPositionY(),
-                            newDirection);
-
+                    var newDirection = phys.body.getAngle() + (float) Math.PI
+                            + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE / 2, Entity.WASP_MAX_STEERING_ANGLE / 2);
+                    phys.body.setTransform(phys.body.getPositionX(), phys.body.getPositionY(), newDirection);
+                    aiState.timeWanderAccumulator = 0;
+                    return;
                 }
 
                 aiState.timeWanderAccumulator += dt;

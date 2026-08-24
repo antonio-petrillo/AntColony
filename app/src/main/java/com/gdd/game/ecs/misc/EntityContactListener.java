@@ -81,6 +81,12 @@ public class EntityContactListener extends ContactListener {
                 if (waspAi.enemyToAttack == null) {
                     waspAi.enemyToAttack = ant;
                 }
+            } else if (entityA.tag.isInsect() && entityB.tag.isObstacle()
+                    || entityA.tag.isObstacle() && entityB.tag.isInsect()) {
+                var insect = entityA.tag.isInsect() ? entityA : entityB;
+                var ai = (AiComponent) insect.getComponent(ComponentType.AI);
+                assert (ai != null);
+                ai.isColliding = true;
             }
         }
 

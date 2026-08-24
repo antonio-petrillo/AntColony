@@ -3,6 +3,7 @@ package com.gdd.game.ecs.systems;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 
+import com.gdd.game.TiledBackgroundRenderer;
 import com.gdd.game.ecs.misc.Camera;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.ComponentType;

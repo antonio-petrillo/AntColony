@@ -82,6 +82,7 @@ public class GameWorld {
     private static final Random rng = new Random();
     private final float SPAWN_DIST = 1.0f;
     private Screen gameScreen;
+    private TiledBackgroundRenderer background;
 
 
     /*
@@ -124,6 +125,8 @@ public class GameWorld {
         perceptionsys = new PerceptionSystem(this);
 
         addWorldBoundaries();
+
+        background = new TiledBackgroundRenderer(Assets.TERRAIN_BITMAP, 3f);
     }
 
 
@@ -158,6 +161,7 @@ public class GameWorld {
 
     public synchronized void render()
     {
+        background.draw(canvas, camera);
         rsys.update(entities, 0f);
     }
 

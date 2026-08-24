@@ -17,7 +17,7 @@ public class Assets {
     private static final String NEST_BITMAP_PATH = "nest_128x128.png";
     private static final String FOOD_BITMAP_PATH = "sugar_cube_64x64.png";
     private static final String WASP_BITMAP_PATH = "wasp_32x32.png";
-    private static final String TERRAIN_BITMAP_PATH = "Terrain.png";
+    private static final String TERRAIN_BITMAP_PATH = "grass_tile_128x128.png";
     private static final String MAINBG_BITMAP_PATH = "menu_bg_landscape_1280x720.png";
     private static final String MAINTITLE_BITMAP_PATH = "title_ant_colony.png";
 
@@ -64,6 +64,16 @@ public class Assets {
 
         if (WASP_BITMAP == null) {
             throw new RuntimeException("Can't load bitmap: " + WASP_BITMAP_PATH);
+        }
+
+        try (var stream = manager.open(TERRAIN_BITMAP_PATH)) {
+            TERRAIN_BITMAP = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (TERRAIN_BITMAP == null) {
+            throw new RuntimeException("Can't load bitmap: " + TERRAIN_BITMAP);
         }
 
         try (var stream = manager.open(MAINBG_BITMAP_PATH)) {

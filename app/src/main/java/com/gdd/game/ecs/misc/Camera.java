@@ -2,7 +2,7 @@ package com.gdd.game.ecs.misc;
 
 public class Camera {
 
-    private final Box cameraView; // camera in World (in metri)
+    public final Box cameraView; // camera in World (in metri)
     private final float worldWidth, worldHeight; // dimensione di World (in metri)
     private final int fbufferWidth, fbufferHeight; // dimensione framebuffer (in pixel)
 

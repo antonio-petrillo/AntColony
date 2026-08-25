@@ -87,6 +87,7 @@ public class GameScreen extends Screen {
 
         // Update UI
         energyLabel.setText(String.format("%d", gw.playerEnergy));
+        antsLabel.setText(String.format("%d", gw.playerAnts));
     }
 
     @Override

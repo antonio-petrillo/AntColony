@@ -89,6 +89,7 @@ public class GameWorld {
      */
 
     public int playerEnergy = 0;
+    public int playerAnts = 0;
 
     /*
      * Constructor.
@@ -161,6 +162,9 @@ public class GameWorld {
         perceptionsys.update(entities, deltaTime);
         spawnsys.update(entities, deltaTime);
         aisys.update(entities, deltaTime);
+
+        // Update variables for gameplay
+        playerAnts = spawnsys.antCount;
     }
 
 

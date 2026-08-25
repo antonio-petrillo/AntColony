@@ -4,10 +4,12 @@ import android.graphics.Canvas;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
+import com.gdd.game.Assets;
 import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.Game;
 import com.gdd.game.GameWorld;
 import com.gdd.game.Settings;
+import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
 import com.gdd.game.ui.TextButton;
@@ -27,7 +29,7 @@ public class GameScreen extends Screen {
     private GameWorld gw;
     private Label energyLabel;
     private UIController uiController;
-    private float fbufferWidth, fbufferHeight;
+    private float fbWidth, fbHeight;
     private Canvas canvas;
     private TouchHandler touchHandler;
     private boolean consumed;
@@ -45,8 +47,8 @@ public class GameScreen extends Screen {
 
         canvas = new Canvas(game.getFramebuffer());
 
-        fbufferWidth = game.getScreensize().width;
-        fbufferHeight = game.getScreensize().height;
+        fbWidth = game.getFramebuffer().getWidth();
+        fbHeight = game.getFramebuffer().getHeight();
 
         uiController = game.getUiController();
 
@@ -124,9 +126,10 @@ public class GameScreen extends Screen {
 
         uiController.reset();
 
-        WidgetGroup root = new Panel(0, 0, fbufferWidth, fbufferHeight);
-        TextButton pauseButton = new TextButton(25, 25, 100, 50);
-        pauseButton.setText("PAUSE");
+        WidgetGroup root = new Panel(0, 0, fbWidth, fbHeight);
+        ImageButton pauseButton = new ImageButton(fbWidth - 95, 25, 75, 75);
+        pauseButton.setIdleImage(Assets.PAUSEBUTTON_IDLE_BITMAP);
+        pauseButton.setPressedImage(Assets.PAUSEBUTTON_PRESSED);
         root.addChild(pauseButton);
 
         energyLabel = new Label(100, 100, 100, 50);
@@ -134,7 +137,7 @@ public class GameScreen extends Screen {
         energyLabel.setTextColor(0xFF000000);
         root.addChild(energyLabel);
 
-        WidgetGroup pauseLayout = new Panel(0, 0, fbufferWidth, fbufferHeight);
+        WidgetGroup pauseLayout = new Panel(0, 0, fbWidth, fbHeight);
         TextButton resumeButton = new TextButton(500, 500, 200, 100);
         resumeButton.setText("RESUME");
         pauseLayout.addChild(resumeButton);

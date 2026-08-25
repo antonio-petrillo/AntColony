@@ -20,6 +20,8 @@ public class Assets {
     private static final String TERRAIN_BITMAP_PATH = "grass_tile_128x128.png";
     private static final String MAINBG_BITMAP_PATH = "menu_bg_landscape_1280x720.png";
     private static final String MAINTITLE_BITMAP_PATH = "title_ant_colony.png";
+    private static final String PAUSEBUTTON_IDLE_PATH = "pause_button_idle_64x64.png";
+    private static final String PAUSEBUTTON_PRESSED_PATH = "pause_button_pressed_64x64.png";
 
 
     public static void load(AssetManager manager) {
@@ -96,6 +98,29 @@ public class Assets {
             throw new RuntimeException("Can't load bitmap: " + MAINTITLE_BITMAP);
         }
 
+        // ***** GameScreen UI *****
+
+        try (var stream = manager.open(PAUSEBUTTON_IDLE_PATH)) {
+            PAUSEBUTTON_IDLE_BITMAP = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (PAUSEBUTTON_IDLE_BITMAP == null) {
+            throw new RuntimeException("Can't load bitmap: " + PAUSEBUTTON_IDLE_BITMAP);
+        }
+
+        try (var stream = manager.open(PAUSEBUTTON_PRESSED_PATH)) {
+            PAUSEBUTTON_PRESSED = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (PAUSEBUTTON_PRESSED == null) {
+            throw new RuntimeException("Can't load bitmap: " + PAUSEBUTTON_PRESSED);
+        }
+
+
         loaded = true;
     }
 
@@ -106,5 +131,7 @@ public class Assets {
     public static Bitmap TERRAIN_BITMAP;
     public static Bitmap MAINBG_BITMAP;
     public static Bitmap MAINTITLE_BITMAP;
+    public static Bitmap PAUSEBUTTON_IDLE_BITMAP;
+    public static Bitmap PAUSEBUTTON_PRESSED;
 
 }

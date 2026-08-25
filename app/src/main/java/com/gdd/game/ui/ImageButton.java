@@ -7,7 +7,7 @@ import android.graphics.RectF;
 
 public class ImageButton extends Button {
 
-    protected Bitmap bitmap;
+    protected Bitmap idleBitmap, pressedBitmap;
     protected Paint paint;
     protected RectF dst = new RectF();
 
@@ -24,21 +24,23 @@ public class ImageButton extends Button {
     @Override
     public void draw(Canvas canvas) {
 
-        if(bitmap == null) return;
-
         dst.set(x, y, x+width, y+height);
-        canvas.drawBitmap(bitmap, null, dst, paint);
+
+        if(state == State.IDLE && idleBitmap != null)
+            canvas.drawBitmap(idleBitmap, null, dst, paint);
+        else if(state == State.PRESSED && pressedBitmap != null)
+            canvas.drawBitmap(pressedBitmap, null, dst, paint);
     }
 
     // ********************************
     //  Getter / Setter
     // ********************************
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void setIdleImage(Bitmap bitmap) {
+        this.idleBitmap = bitmap;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
+    public void setPressedImage(Bitmap bitmap) {
+        this.pressedBitmap = bitmap;
     }
 }

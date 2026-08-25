@@ -36,11 +36,11 @@ public class ImageButton extends Button {
     //  Getter / Setter
     // ********************************
 
-    public void setIdleImage(Bitmap bitmap) {
+    public void setIdleBitmap(Bitmap bitmap) {
         this.idleBitmap = bitmap;
     }
 
-    public void setPressedImage(Bitmap bitmap) {
+    public void setPressedBitmap(Bitmap bitmap) {
         this.pressedBitmap = bitmap;
     }
 }

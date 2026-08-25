@@ -129,8 +129,8 @@ public class GameScreen extends Screen {
         WidgetGroup root = new Panel(0, 0, fbWidth, fbHeight);
 
         ImageButton pauseButton = new ImageButton(fbWidth - 95, 25, 75, 75);
-        pauseButton.setIdleImage(Assets.PAUSEBUTTON_IDLE_BITMAP);
-        pauseButton.setPressedImage(Assets.PAUSEBUTTON_PRESSED);
+        pauseButton.setIdleBitmap(Assets.PAUSEBUTTON_IDLE_BITMAP);
+        pauseButton.setPressedBitmap(Assets.PAUSEBUTTON_PRESSED);
         root.addChild(pauseButton);
 
         Image antHUD = new Image(0, 20, 130, 75);

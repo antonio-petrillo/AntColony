@@ -133,13 +133,13 @@ public class GameScreen extends Screen {
         pauseButton.setPressedBitmap(Assets.PAUSEBUTTON_PRESSED);
         root.addChild(pauseButton);
 
-        Image antHUD = new Image(0, 20, 130, 75);
-        antHUD.setBitmap(Assets.HUD_BAR_ANT_BITMAP);
-        root.addChild(antHUD);
+        Image antBadge = new Image(0, 20, 130, 75);
+        antBadge.setBitmap(Assets.HUD_BADGE_ANT_BITMAP);
+        root.addChild(antBadge);
 
-        Image sugarHUD = new Image(0, 110, 130, 75);
-        sugarHUD.setBitmap(Assets.HUD_BAR_SUGAR_PRESSED);
-        root.addChild(sugarHUD);
+        Image sugarBadge = new Image(0, 110, 130, 75);
+        sugarBadge.setBitmap(Assets.HUD_BADGE_SUGAR_PRESSED);
+        root.addChild(sugarBadge);
 
         antsLabel = new Label(40, 30, 100, 50);
         antsLabel.setText("0");

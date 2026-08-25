@@ -22,6 +22,8 @@ public class Assets {
     private static final String MAINTITLE_BITMAP_PATH = "title_ant_colony.png";
     private static final String PAUSEBUTTON_IDLE_PATH = "pause_button_idle_64x64.png";
     private static final String PAUSEBUTTON_PRESSED_PATH = "pause_button_pressed_64x64.png";
+    private static final String HUD_BAR_ANT_PATH = "hud_bar_ant_244x84.png";
+    private static final String HUD_BAR_SUGAR_PATH = "hud_bar_sugar_244x84.png";
 
 
     public static void load(AssetManager manager) {
@@ -120,6 +122,27 @@ public class Assets {
             throw new RuntimeException("Can't load bitmap: " + PAUSEBUTTON_PRESSED);
         }
 
+        // ***** GameScreen HUD *****
+
+        try (var stream = manager.open(HUD_BAR_ANT_PATH)) {
+            HUD_BAR_ANT_BITMAP = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (HUD_BAR_ANT_BITMAP == null) {
+            throw new RuntimeException("Can't load bitmap: " + HUD_BAR_ANT_BITMAP);
+        }
+
+        try (var stream = manager.open(HUD_BAR_SUGAR_PATH)) {
+            HUD_BAR_SUGAR_PRESSED = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (HUD_BAR_SUGAR_PRESSED == null) {
+            throw new RuntimeException("Can't load bitmap: " + HUD_BAR_SUGAR_PRESSED);
+        }
 
         loaded = true;
     }
@@ -133,5 +156,7 @@ public class Assets {
     public static Bitmap MAINTITLE_BITMAP;
     public static Bitmap PAUSEBUTTON_IDLE_BITMAP;
     public static Bitmap PAUSEBUTTON_PRESSED;
+    public static Bitmap HUD_BAR_ANT_BITMAP;
+    public static Bitmap HUD_BAR_SUGAR_PRESSED;
 
 }

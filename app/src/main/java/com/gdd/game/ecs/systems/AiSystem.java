@@ -58,8 +58,9 @@ public final class AiSystem implements System {
         if (aiState.isColliding) {
             aiState.isColliding = false;
 
-            var newDirection = phys.body.getAngle() + (float) Math.PI
-                    + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE / 2, Entity.WASP_MAX_STEERING_ANGLE / 2);
+//            var newDirection = phys.body.getAngle() + (float) Math.PI
+//                    + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE / 2, Entity.WASP_MAX_STEERING_ANGLE / 2);
+            var newDirection = (phys.body.getAngle() + (float) Math.PI) % 360.f;
             phys.body.setTransform(phys.body.getPositionX(), phys.body.getPositionY(), newDirection);
             aiState.timeWanderAccumulator = 0;
         }
@@ -105,7 +106,7 @@ public final class AiSystem implements System {
         var health = (HealthComponent) entity.getComponent(ComponentType.HEALTH);
         aiState.canBeGarbageCollected = !health.isAlive();
     }
-    public void chase(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
+    public void chase(PhysicComponent phys, AiComponent aiState, float dt) {
         if (aiState.enemyInSight == null) {
             aiState.transition(AiComponent.State.WANDER, true);
             return;
@@ -114,7 +115,7 @@ public final class AiSystem implements System {
         assert(enemyPhys != null);
         steerToward(phys, enemyPhys.body.getPositionX(), enemyPhys.body.getPositionY(), Entity.WASP_SPEED);
     }
-    public void gather(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
+    public void gather(PhysicComponent phys, AiComponent aiState, float dt) {
         if (aiState.foodInSight == null) {
             aiState.transition(AiComponent.State.WANDER, true);
             return;
@@ -134,10 +135,10 @@ public final class AiSystem implements System {
                 combat(entity, phys, aiState, dt);
             } break;
             case GATHER: {
-                gather(entity, phys, aiState, dt);
+                gather(phys, aiState, dt);
             } break;
             case CHASE: {
-                chase(entity, phys, aiState, dt);
+                chase(phys, aiState, dt);
             } break;
             default: break;
         }
@@ -171,10 +172,10 @@ public final class AiSystem implements System {
                 combat(entity, phys, aiState, dt);
             } break;
             case GATHER: {
-                gather(entity, phys, aiState, dt);
+                gather(phys, aiState, dt);
             } break;
             case CHASE: {
-                chase(entity, phys, aiState, dt);
+                chase(phys, aiState, dt);
             } break;
             case RETURN: {
                // calc arctan with respect to nest pos and change direction of ant

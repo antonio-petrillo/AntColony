@@ -129,26 +129,29 @@ public class GameScreen extends Screen {
 
         WidgetGroup root = new Panel(0, 0, fbWidth, fbHeight);
 
-        ImageButton pauseButton = new ImageButton(fbWidth - 95, 25, 75, 75);
+        ImageButton pauseButton = new ImageButton(fbWidth - 95, 20, 75, 75);
         pauseButton.setIdleBitmap(Assets.PAUSEBUTTON_IDLE_BITMAP);
         pauseButton.setPressedBitmap(Assets.PAUSEBUTTON_PRESSED);
         root.addChild(pauseButton);
 
-        Image antBadge = new Image(0, 20, 130, 75);
+        float badgeWidth = 130;
+        float badgeHeight= 75;
+
+        Image antBadge = new Image(20, 20, badgeWidth, 75);
         antBadge.setBitmap(Assets.HUD_BADGE_ANT_BITMAP);
         root.addChild(antBadge);
 
-        Image sugarBadge = new Image(0, 110, 130, 75);
+        Image sugarBadge = new Image(40 + badgeWidth, 20, badgeWidth, 75);
         sugarBadge.setBitmap(Assets.HUD_BADGE_SUGAR_PRESSED);
         root.addChild(sugarBadge);
 
-        antsLabel = new Label(40, 30, 100, 50);
+        antsLabel = new Label(30, 20, badgeWidth, badgeHeight);
         antsLabel.setText("0");
         antsLabel.setTextSize(0.6f);
         antsLabel.setTextColor(0xFF000000);
         root.addChild(antsLabel);
 
-        energyLabel = new Label(40, 120, 100, 50);
+        energyLabel = new Label(50 + badgeWidth, 20, badgeWidth, badgeHeight);
         energyLabel.setText("0");
         energyLabel.setTextSize(0.6f);
         energyLabel.setTextColor(0xFF000000);

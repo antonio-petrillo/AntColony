@@ -11,6 +11,7 @@ import com.google.fpl.liquidfun.ContactListener;
 import com.google.fpl.liquidfun.Fixture;
 
 public class EntityContactListener extends ContactListener {
+    //WARN NOTE: Contact Listener doesn't expose 'endContact' method
 
     @Override
     public void beginContact(Contact contact) {

@@ -11,4 +11,14 @@ public enum EntityTag {
     public boolean isInsect() {
        return this == ANT || this == WASP;
     }
+
+    public float getSpeed() {
+       return switch (this) {
+           case ANT -> Entity.ANT_SPEED;
+           case WASP -> Entity.WASP_SPEED;
+           case NEST, EMPTY, FOOD, WALL -> {
+               throw new IllegalArgumentException("get speed must be called on ANT or WASP tags");
+           }
+       };
+    }
 }

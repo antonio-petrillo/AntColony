@@ -6,7 +6,7 @@ import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
-import com.google.fpl.liquidfun.DistanceJointDef;
+import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.google.fpl.liquidfun.Vec2;
 
 import java.util.List;
@@ -54,77 +54,90 @@ public final class AiSystem implements System {
         phys.body.setAngularVelocity(0);
     }
 
+    public void wander(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
+        if (aiState.isColliding) {
+            aiState.isColliding = false;
+
+            var newDirection = phys.body.getAngle() + (float) Math.PI
+                    + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE / 2, Entity.WASP_MAX_STEERING_ANGLE / 2);
+            phys.body.setTransform(phys.body.getPositionX(), phys.body.getPositionY(), newDirection);
+            aiState.timeWanderAccumulator = 0;
+        }
+        aiState.timeWanderAccumulator += dt;
+        if (aiState.timeWanderAccumulator >= aiState.timeBetweenActions) {
+            aiState.timeWanderAccumulator = 0f;
+            float newDir = phys.body.getAngle()
+                    + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE, Entity.WASP_MAX_STEERING_ANGLE);
+            phys.body.setTransform(
+                    phys.body.getPositionX(),
+                    phys.body.getPositionY(),
+                    newDir);
+        }
+        float angle = phys.body.getAngle();
+        var vel = phys.body.getLinearVelocity();
+        vel.setX(entity.tag.getSpeed() * (float) Math.cos(angle));
+        vel.setY(entity.tag.getSpeed() * (float) Math.sin(angle));
+        phys.body.setAngularVelocity(0);
+    }
+
+    public void combat(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
+        var vel = phys.body.getLinearVelocity();
+        vel.set(0, 0);
+        phys.body.setLinearVelocity(vel);
+        phys.body.setAngularVelocity(0);
+
+        aiState.timeAttackAccumulator += dt;
+        if (aiState.timeAttackAccumulator >= aiState.timeBetweenAttacks ) {
+            aiState.timeAttackAccumulator = 0;
+            if (aiState.enemyToAttack == null) return;
+            var enemy = aiState.enemyToAttack;
+            var healthEnemy = (HealthComponent) enemy.getComponent(ComponentType.HEALTH);
+            assert(healthEnemy != null);
+            healthEnemy.takeDamage(aiState.attackPower);
+
+            if (!healthEnemy.isAlive()) {
+                var enemyAi = (AiComponent) enemy.getComponent(ComponentType.AI);
+                enemyAi.canBeGarbageCollected = true;
+                aiState.restore();
+                aiState.enemyToAttack = null;
+            }
+        }
+        var health = (HealthComponent) entity.getComponent(ComponentType.HEALTH);
+        aiState.canBeGarbageCollected = !health.isAlive();
+    }
+    public void chase(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
+        if (aiState.enemyInSight == null) {
+            aiState.transition(AiComponent.State.WANDER, true);
+            return;
+        }
+        var enemyPhys = (PhysicComponent) aiState.enemyInSight.getComponent(ComponentType.PHYSIC);
+        assert(enemyPhys != null);
+        steerToward(phys, enemyPhys.body.getPositionX(), enemyPhys.body.getPositionY(), Entity.WASP_SPEED);
+    }
+    public void gather(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
+        if (aiState.foodInSight == null) {
+            aiState.transition(AiComponent.State.WANDER, true);
+            return;
+        }
+        var foodPhys = (PhysicComponent) aiState.foodInSight.getComponent(ComponentType.PHYSIC);
+        assert(foodPhys != null);
+        steerToward(phys, foodPhys.body.getPositionX(), foodPhys.body.getPositionY(), Entity.ANT_SPEED);
+    }
+
     public void wasp(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
         switch (aiState.current) {
             case WANDER: {
-                if (aiState.isColliding) {
-                    aiState.isColliding = false;
-
-                    var newDirection = phys.body.getAngle() + (float) Math.PI
-                            + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE / 2, Entity.WASP_MAX_STEERING_ANGLE / 2);
-                    phys.body.setTransform(phys.body.getPositionX(), phys.body.getPositionY(), newDirection);
-                    aiState.timeWanderAccumulator = 0;
-                    return;
-                }
-
-                aiState.timeWanderAccumulator += dt;
-                if (aiState.timeWanderAccumulator >= aiState.timeBetweenActions) {
-                    aiState.timeWanderAccumulator = 0f;
-                    float newDir = phys.body.getAngle()
-                            + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE, Entity.WASP_MAX_STEERING_ANGLE);
-                    phys.body.setTransform(
-                            phys.body.getPositionX(),
-                            phys.body.getPositionY(),
-                            newDir);
-                }
-                float angle = phys.body.getAngle();
-                var vel = phys.body.getLinearVelocity();
-                vel.setX(Entity.WASP_SPEED * (float) Math.cos(angle));
-                vel.setY(Entity.WASP_SPEED * (float) Math.sin(angle));
-                phys.body.setAngularVelocity(0);
+                wander(entity, phys, aiState, dt);
             } break;
             case COMBAT: {
                 // fight standing like a true here (more like die like an idiot)
-                var vel = phys.body.getLinearVelocity();
-                vel.set(0, 0);
-                phys.body.setLinearVelocity(vel);
-                phys.body.setAngularVelocity(0);
-                aiState.timeAttackAccumulator += dt;
-                if (aiState.timeAttackAccumulator >= aiState.timeBetweenAttacks) {
-                    aiState.timeAttackAccumulator = 0;
-                    if (aiState.enemyToAttack == null) return;
-                    var enemy = aiState.enemyToAttack;
-                    var healthEnemy = (HealthComponent) enemy.getComponent(ComponentType.HEALTH);
-                    assert(healthEnemy != null);
-                    healthEnemy.takeDamage(aiState.attackPower);
-
-                    if (!healthEnemy.isAlive()) {
-                        var enemyAi = (AiComponent) enemy.getComponent(ComponentType.AI);
-                        enemyAi.canBeGarbageCollected = true;
-                        aiState.restore();
-                        aiState.enemyToAttack = null;
-                    }
-                }
-                var health = (HealthComponent) entity.getComponent(ComponentType.HEALTH);
-                aiState.canBeGarbageCollected = !health.isAlive();
+                combat(entity, phys, aiState, dt);
             } break;
             case GATHER: {
-                if (aiState.foodInSight == null) {
-                    aiState.transition(AiComponent.State.WANDER, true);
-                    break;
-                }
-                var foodPhys = (PhysicComponent) aiState.foodInSight.getComponent(ComponentType.PHYSIC);
-                assert(foodPhys != null);
-                steerToward(phys, foodPhys.body.getPositionX(), foodPhys.body.getPositionY(), Entity.ANT_SPEED);
+                gather(entity, phys, aiState, dt);
             } break;
             case CHASE: {
-               if (aiState.enemyInSight == null) {
-                  aiState.transition(AiComponent.State.WANDER, true);
-                  break;
-               }
-               var enemyPhys = (PhysicComponent) aiState.enemyInSight.getComponent(ComponentType.PHYSIC);
-               assert(enemyPhys != null);
-               steerToward(phys, enemyPhys.body.getPositionX(), enemyPhys.body.getPositionY(), Entity.WASP_SPEED);
+                chase(entity, phys, aiState, dt);
             } break;
             default: break;
         }
@@ -132,18 +145,15 @@ public final class AiSystem implements System {
 
     public void ant(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
         if (aiState.foodToPickup != null && aiState.joint == null) {
-            var jointDef = new DistanceJointDef();
+            var jointDef = new RevoluteJointDef();
             jointDef.setBodyA(phys.body);
 
             var foodPhys = (PhysicComponent) aiState.foodToPickup.getComponent(ComponentType.PHYSIC);
             assert (foodPhys != null);
 
             jointDef.setBodyB(foodPhys.body);
-            jointDef.setLocalAnchorA(0, 0);
+            jointDef.setLocalAnchorA(0.2f, 0);
             jointDef.setLocalAnchorB(0, 0);
-            jointDef.setLength(0.3f);
-            jointDef.setFrequencyHz(4.0f);
-            jointDef.setDampingRatio(0.5f);
 
             aiState.joint = gw.world.createJoint(jointDef);
 
@@ -154,76 +164,17 @@ public final class AiSystem implements System {
         }
         switch (aiState.current) {
             case WANDER: {
-                if (aiState.isColliding) {
-                    aiState.isColliding = false;
-
-                    var newDirection = phys.body.getAngle() + (float) Math.PI
-                            + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE / 2, Entity.WASP_MAX_STEERING_ANGLE / 2);
-                    phys.body.setTransform(phys.body.getPositionX(), phys.body.getPositionY(), newDirection);
-                    aiState.timeWanderAccumulator = 0;
-                    return;
-                }
-
-                aiState.timeWanderAccumulator += dt;
-                if (aiState.timeWanderAccumulator >= aiState.timeBetweenActions) {
-                    aiState.timeWanderAccumulator = 0.0f;
-                    float newDirection = phys.body.getAngle() + rng.nextFloat(-Entity.ANT_MAX_STEERING_ANGLE, Entity.ANT_MAX_STEERING_ANGLE);
-                    phys.body.setTransform(
-                            phys.body.getPositionX(),
-                            phys.body.getPositionY(),
-                            newDirection
-                    );
-                }
-                float angle = phys.body.getAngle();
-                var vel = phys.body.getLinearVelocity();
-                vel.setX(Entity.ANT_SPEED * (float) Math.cos(angle));
-                vel.setY(Entity.ANT_SPEED * (float) Math.sin(angle));
-                phys.body.setAngularVelocity(0);
-
+                wander(entity, phys, aiState, dt);
             } break;
             case COMBAT: {
-                // go toward enemy and fight like a true ant
-                var vel = phys.body.getLinearVelocity();
-                vel.set(0, 0);
-                phys.body.setLinearVelocity(vel);
-                phys.body.setAngularVelocity(0);
-
-                aiState.timeAttackAccumulator += dt;
-                if (aiState.timeAttackAccumulator >= aiState.timeBetweenAttacks ) {
-                    aiState.timeAttackAccumulator = 0;
-                    if (aiState.enemyToAttack == null) return;
-                    var enemy = aiState.enemyToAttack;
-                    var healthEnemy = (HealthComponent) enemy.getComponent(ComponentType.HEALTH);
-                    assert(healthEnemy != null);
-                    healthEnemy.takeDamage(aiState.attackPower);
-
-                    if (!healthEnemy.isAlive()) {
-                        var enemyAi = (AiComponent) enemy.getComponent(ComponentType.AI);
-                        enemyAi.canBeGarbageCollected = true;
-                        aiState.restore();
-                        aiState.enemyToAttack = null;
-                    }
-                }
-                var health = (HealthComponent) entity.getComponent(ComponentType.HEALTH);
-                aiState.canBeGarbageCollected = !health.isAlive();
+//                // go toward enemy and fight like a true ant
+                combat(entity, phys, aiState, dt);
             } break;
             case GATHER: {
-                if (aiState.foodInSight == null) {
-                    aiState.transition(AiComponent.State.WANDER, true);
-                    break;
-                }
-                var foodPhys = (PhysicComponent) aiState.foodInSight.getComponent(ComponentType.PHYSIC);
-                assert(foodPhys != null);
-                steerToward(phys, foodPhys.body.getPositionX(), foodPhys.body.getPositionY(), Entity.ANT_SPEED);
+                gather(entity, phys, aiState, dt);
             } break;
             case CHASE: {
-                if (aiState.enemyInSight == null) {
-                    aiState.transition(AiComponent.State.WANDER, true);
-                    break;
-                }
-                var enemyPhys = (PhysicComponent) aiState.enemyInSight.getComponent(ComponentType.PHYSIC);
-                assert(enemyPhys != null);
-                steerToward(phys, enemyPhys.body.getPositionX(), enemyPhys.body.getPositionY(), Entity.ANT_SPEED);
+                chase(entity, phys, aiState, dt);
             } break;
             case RETURN: {
                // calc arctan with respect to nest pos and change direction of ant

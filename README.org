@@ -27,7 +27,7 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] Makes *Ants* and *Wasps* fight still standing
 - [ ] If pinch to zoom start on button *PAUSE* and on release is still on button *PAUSE* the game gets paused while zooming and panning.
 
-* Improvements [2/6]
+* Improvements [3/7]
 - [ ] MAYBE add objects POOL (Poor Objects Oriented Linear-allocator)
 - [ ] MAYBE instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects
 - [X] add field of view to *Ants* and *Wasps*:
@@ -36,16 +36,21 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [ ] MAYBE add pheromones:
   - steer ant toward pheromones
 - [X] make entities change direction when they hit the world boundaries or the nest
-- [ ] Fix positioning of energy label positioning
+- [X] Fix positioning of energy label positioning
+- [ ] Spawn food near to the nest if the player has few ants 
   
-
+  
 * Mechanics [50%]
 - [X] Add *energy* counter, increase when ants deliver food    
 - [ ] Add button with spell that consume *energy*:
-  - AOE damage
-  - AOE heal
-
+  - AOE damage (hit everybody)
+  - AOE heal (heal everybody)
+  - AOE damage that hits only wasps (more expensive)
+  - AOE heal that heal only ants (more expensive)
+* Note
+JliquidFun doesn't expose method ~endContact~ in ~ContactListener~ hence it's impossible to handle in a proper way stuff like bouncing of entities and such.
+With /in a proper way/ I mean with the physic engine provide by the underlying Box2D.
 
 # Local Variables:
-# jinx-local-words: "AntColony"
+# jinx-local-words: "AntColony JliquidFun"
 # End:

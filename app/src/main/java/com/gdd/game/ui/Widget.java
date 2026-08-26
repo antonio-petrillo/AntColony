@@ -1,9 +1,6 @@
 package com.gdd.game.ui;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
-
-import com.badlogic.androidgames.framework.Input;
 
 /**
  * Questa classe rappresenta un generico componente dell'interfaccia utente.
@@ -120,5 +117,16 @@ public abstract class Widget {
      */
     public void setTouchable(Touchable t) {
         this.touchable = t;
+    }
+
+
+    /*
+     * Quanto vorrebbe essere grande questo widget.
+     */
+    public float getPrefWidth() {
+        return width;
+    }
+    public float getPrefHeight() {
+        return height;
     }
 }

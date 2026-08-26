@@ -78,17 +78,25 @@ public class UIController {
     // ***************************************
 
     /*
-     * Aggiorna le posizioni assolute dei widget.
+     * Aggiorna layout (dimensioni/posizioni locali) e
+     * posizioni assolute di tutti i widget, root e popup inclusi.
+     * Va richiamato prima di draw() e processInput() se ci sono state modifiche all'UI.
      */
     public void updateLayout() {
         if (root != null) {
-            root.validateTransform();
+            if (root instanceof WidgetGroup) {
+                ((WidgetGroup) root).validate(); // 1. sistema x,y,w,h locali
+            }
+            root.validateTransform();            // 2. calcola absX/absY
         }
 
         int n = popups.size();
         for (int i = 0; i < n; i++) {
-            PopupEntry entry = popups.get(i);
-            entry.popup.validateTransform();
+            Widget popup = popups.get(i).popup;
+            if (popup instanceof WidgetGroup) {
+                ((WidgetGroup) popup).validate();
+            }
+            popup.validateTransform();
         }
     }
 
@@ -96,6 +104,10 @@ public class UIController {
     //  Rendering
     // ***************************************
 
+    /*
+     * Disegna soltanto. Presuppone che updateLayout() sia già
+     * stato chiamato in questo frame: qui non si ricalcola nulla.
+     */
     public void draw(Canvas canvas) {
         if (root != null) {
             root.draw(canvas);
@@ -105,7 +117,6 @@ public class UIController {
         for (int i = 0; i < n; i++) {
             PopupEntry entry = popups.get(i);
             if (entry.modal) {
-                // Oscura ciò che sta sotto per dare risalto al popup
                 canvas.drawColor(0x99000000);
             }
             entry.popup.draw(canvas);

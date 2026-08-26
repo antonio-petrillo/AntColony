@@ -1,9 +1,6 @@
 package com.gdd.game.ui;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
-
-import com.badlogic.androidgames.framework.Input;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +11,9 @@ import java.util.List;
 public abstract class WidgetGroup extends Widget {
 
     protected List<Widget> children = new ArrayList<>();
+    protected boolean layoutDirty = true;
 
-    /*
-     * Constructor.
-     */
+
     public WidgetGroup(float x, float y, float width, float height) {
         super(x, y, width, height);
         touchable = Touchable.CHILDREN_ONLY;
@@ -27,6 +23,47 @@ public abstract class WidgetGroup extends Widget {
     //  Layout
     // ***************************************
 
+    /*
+     * Calcola e assegna x, y, width, height dei figli
+     * in base allo spazio disponibile in questo gruppo.
+     * Non va chiamato direttamente: lo invoca validate().
+     */
+    protected void layout() {
+
+    }
+
+    /*
+     * Segna "layout da ricalcolare" su questo gruppo.
+     * Risale al parent: se il mio arrangiamento cambia,
+     * anche quello del parent potrebbe non essere più valido.
+     */
+    public void invalidate() {
+        layoutDirty = true;
+        if (parent != null) parent.invalidate();
+    }
+
+    /*
+     * Se il layout è "sporco", lo ricalcola (layout()) e pulisce il flag.
+     * Poi scende sui figli che sono gruppi, per validare anche loro.
+     * Va chiamato prima di disegnare o gestire input.
+     */
+    public void validate() {
+        if (layoutDirty) {
+            layout();
+            layoutDirty = false;
+        }
+        for (Widget c : children) {
+            if (c instanceof WidgetGroup) {
+                ((WidgetGroup) c).validate();
+            }
+        }
+    }
+
+    /*
+     * Traduce x, y locali (già decisi) in coordinate assolute a schermo,
+     * sommando la posizione assoluta del parent.
+     * Si attiva quando x/y locali cambiano o quando si muove il parent.
+     */
     @Override
     protected void validateTransform() {
         super.validateTransform();
@@ -70,10 +107,17 @@ public abstract class WidgetGroup extends Widget {
     //  Misc
     // ***************************************
 
+    @Override
+    public void setSize(float width, float height) {
+        super.setSize(width, height);
+        invalidate();
+    }
+
     public void addChild(Widget w) {
         w.setParent(this);
         w.transformDirty = true;
         children.add(w);
+        invalidate();
     }
 
     /*
@@ -83,6 +127,7 @@ public abstract class WidgetGroup extends Widget {
     public void removeChild(Widget w) {
         if (children.remove(w)) {
             w.setParent(null);
+            invalidate();
         }
     }
 
@@ -95,6 +140,7 @@ public abstract class WidgetGroup extends Widget {
             children.get(i).setParent(null);
         }
         children.clear();
+        invalidate();
     }
 
     public List<Widget> getChildren() {

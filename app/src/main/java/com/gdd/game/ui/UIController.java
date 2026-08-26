@@ -84,18 +84,14 @@ public class UIController {
      */
     public void updateLayout() {
         if (root != null) {
-            if (root instanceof WidgetGroup) {
-                ((WidgetGroup) root).validate(); // 1. sistema x,y,w,h locali
-            }
-            root.validateTransform();            // 2. calcola absX/absY
+            root.validate(); // 1. sistema x,y,w,h locali
+            root.validateTransform();  // 2. calcola absX/absY
         }
 
         int n = popups.size();
         for (int i = 0; i < n; i++) {
-            Widget popup = popups.get(i).popup;
-            if (popup instanceof WidgetGroup) {
-                ((WidgetGroup) popup).validate();
-            }
+            WidgetGroup popup = popups.get(i).popup;
+            popup.validate();
             popup.validateTransform();
         }
     }

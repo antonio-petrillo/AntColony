@@ -4,7 +4,7 @@
 * AntColony
 Progetto per il corso Game Design and Development della Federico II, anno accademico 2025/2026.
 
-* Progress [66%]
+* Progress [75%]
 - [X] fork from [[https://github.com/mfaella/DragMe.git][DragMe]]
 - [X] basic nest + ant simulation
 - [X] implement ecs 
@@ -18,7 +18,7 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
   - background
   - combat
 - [ ] Game mechanics:
-- [ ] Texture/Bitmap
+- [X] Texture/Bitmap
 
 * BUGS to fix [75%]
 - [X] Handle World boundaries appropriately

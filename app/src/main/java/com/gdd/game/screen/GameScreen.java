@@ -1,5 +1,6 @@
 package com.gdd.game.screen;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 
 import com.badlogic.androidgames.framework.Input;
@@ -71,6 +72,7 @@ public class GameScreen extends Screen {
     //  Game loop
     // ***************************************
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void update(float deltaTime) {
 
@@ -87,7 +89,7 @@ public class GameScreen extends Screen {
 
         // Update UI
         energyLabel.setText(String.format("%d", gw.playerEnergy));
-        antsLabel.setText(String.format("%d", gw.playerAnts));
+        antsLabel.setText(String.format("%d", gw.spawnsys.antCount));
     }
 
     @Override

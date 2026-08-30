@@ -18,7 +18,7 @@ public class PerceptionSystem implements System {
 
     public PerceptionSystem(GameWorld gw) { this.gw = gw; }
 
-    private static class QueryContext {
+    private static final class QueryContext {
         // Subject of the query
         Entity entity;
         EntityTag enemyTag;

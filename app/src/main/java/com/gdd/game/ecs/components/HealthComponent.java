@@ -16,6 +16,7 @@ public class HealthComponent extends Component{
 
     public void heal(int heal) {
         health += heal;
+        if (health > 100) health = 100;
     }
     public void takeDamage(int dmg) {
         health -= dmg;

@@ -26,7 +26,7 @@ public class Image extends Widget {
 
         if(bitmap == null) return;
 
-        dst.set(x, y, x+width, y+height);
+        dst.set(absX, absY, absX+width, absY+height);
         canvas.drawBitmap(bitmap, null, dst, paint);
     }
 

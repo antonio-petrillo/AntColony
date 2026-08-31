@@ -50,7 +50,7 @@ public class UIController {
     public void showPopup(WidgetGroup popup, boolean modal) {
         if (modal) cancelAllPointers();
         popups.add(new PopupEntry(popup, modal));
-        popup.validateTransform();
+        this.updateLayout();
     }
 
     public void hideTopPopup() {

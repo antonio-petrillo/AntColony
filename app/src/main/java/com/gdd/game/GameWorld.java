@@ -256,6 +256,10 @@ public class GameWorld {
         for(int i=0; i<n; i++) {
 
             Entity entity = entities.get(i);
+
+            if(entity.getComponent(ComponentType.INPUT) == null)
+                continue;
+
             Transform t = entity.transform;
 
             if(worldX >= t.x - t.halfWidth && worldX <= t.x + t.halfWidth &&
@@ -268,6 +272,8 @@ public class GameWorld {
 
     public void addCardArea() {
         if(!cardAreaOnScreen) {
+            cardArea.transform.x = camera.getCenterX();
+            cardArea.transform.y = camera.getCenterY();
             entities.add(cardArea);
             cardAreaOnScreen = true;
         }

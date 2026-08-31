@@ -24,7 +24,9 @@ public class Assets {
     private static final String PAUSEBUTTON_PRESSED_PATH = "pause_button_pressed_64x64.png";
     private static final String HUD_BADGE_ANT_PATH = "hud_badge_ant_150x64.png";
     private static final String HUD_BADGE_SUGAR_PATH = "hud_badge_sugar_150x64.png";
-
+    private static final String CONTINUEBUTTON_IDLE_PATH = "continue_button_idle_128x64.png";
+    private static final String CONTINUEBUTTON_PRESSED_PATH = "continue_button_pressed_128x64.png";
+    private static final String TITLE_PAUSEMENU_PATH = "title_pause_menu.png";
 
     public static void load(AssetManager manager) {
        if (loaded)
@@ -144,6 +146,37 @@ public class Assets {
             throw new RuntimeException("Can't load bitmap: " + HUD_BADGE_SUGAR_PRESSED);
         }
 
+        try (var stream = manager.open(CONTINUEBUTTON_IDLE_PATH)) {
+            CONTINUEBUTTON_IDLE = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CONTINUEBUTTON_IDLE == null) {
+            throw new RuntimeException("Can't load bitmap: " + CONTINUEBUTTON_IDLE);
+        }
+
+        try (var stream = manager.open(CONTINUEBUTTON_PRESSED_PATH)) {
+            CONTINUEBUTTON_PRESSED = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CONTINUEBUTTON_PRESSED == null) {
+            throw new RuntimeException("Can't load bitmap: " + CONTINUEBUTTON_PRESSED);
+        }
+
+        try (var stream = manager.open(TITLE_PAUSEMENU_PATH)) {
+            TITLE_PAUSEMENU = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (TITLE_PAUSEMENU == null) {
+            throw new RuntimeException("Can't load bitmap: " + TITLE_PAUSEMENU);
+        }
+
+
         loaded = true;
     }
 
@@ -158,5 +191,7 @@ public class Assets {
     public static Bitmap PAUSEBUTTON_PRESSED;
     public static Bitmap HUD_BADGE_ANT_BITMAP;
     public static Bitmap HUD_BADGE_SUGAR_PRESSED;
-
+    public static Bitmap CONTINUEBUTTON_IDLE;
+    public static Bitmap CONTINUEBUTTON_PRESSED;
+    public static Bitmap TITLE_PAUSEMENU;
 }

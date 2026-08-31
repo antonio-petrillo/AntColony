@@ -2,10 +2,12 @@ package com.gdd.game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 
-import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
+import com.gdd.game.ecs.components.BoxRenderComp;
 import com.gdd.game.ecs.components.ComponentType;
+import com.gdd.game.ecs.components.InputComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.EntityTag;
@@ -21,10 +23,6 @@ import com.gdd.game.ecs.systems.SpawnSystem;
 import com.gdd.game.ecs.systems.GarbageCollectSystem;
 import com.gdd.game.ecs.systems.PerceptionSystem;
 import com.gdd.game.screen.Screen;
-import com.gdd.game.ui.TextButton;
-import com.gdd.game.ui.UIController;
-import com.gdd.game.ui.WidgetGroup;
-import com.gdd.game.ui.Panel;
 import com.google.fpl.liquidfun.BodyDef;
 import com.google.fpl.liquidfun.FixtureDef;
 import com.google.fpl.liquidfun.ParticleSystem;
@@ -85,6 +83,10 @@ public class GameWorld {
     private Screen gameScreen;
     private TiledBackgroundRenderer background;
 
+    // TEST
+    private Entity cardArea;
+    private boolean cardAreaOnScreen;
+
     /* Energy for mechanics
      */
 
@@ -132,8 +134,15 @@ public class GameWorld {
         addWorldBoundaries();
 
         background = new TiledBackgroundRenderer(Assets.TERRAIN_BITMAP, 3f);
-    }
 
+        // TEST: area
+        cardAreaOnScreen = false;
+        cardArea = new Entity(EntityTag.NONE);
+        cardArea.transform.halfWidth = 1;
+        cardArea.transform.halfHeight = 1;
+        cardArea.addComponent(new BoxRenderComp(Color.BLUE, false));
+        cardArea.addComponent(new InputComponent());
+    }
 
 
 
@@ -255,5 +264,19 @@ public class GameWorld {
             }
         }
         return null;
+    }
+
+    public void addCardArea() {
+        if(!cardAreaOnScreen) {
+            entities.add(cardArea);
+            cardAreaOnScreen = true;
+        }
+    }
+
+    public void removeCardArea() {
+        if(cardAreaOnScreen) {
+            entities.remove(cardArea);
+            cardAreaOnScreen = false;
+        }
     }
 }

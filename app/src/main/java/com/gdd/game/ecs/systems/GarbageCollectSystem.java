@@ -45,7 +45,7 @@ public class GarbageCollectSystem implements System {
                     case ANT -> spawnSystem.antCount--;
                     case FOOD -> spawnSystem.foodCount--;
                     case WASP -> spawnSystem.waspCount--;
-                    case NEST, EMPTY -> {}
+                    case NEST, NONE -> {}
                 }
 
                 var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);

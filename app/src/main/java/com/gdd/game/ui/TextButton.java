@@ -11,7 +11,6 @@ public class TextButton extends Button {
     private final Paint paintDisabled;
     private final Paint textPaint;
 
-
     public TextButton(float x, float y, float width, float height) {
         super(x, y, width, height);
 
@@ -26,7 +25,7 @@ public class TextButton extends Button {
 
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setColor(0xFFFFFFFF);
-        textPaint.setTextSize(height * 0.4f);
+        textPaint.setTextSize(25f); // TODO: gestire in modo opportuno
         textPaint.setTextAlign(Paint.Align.CENTER);
     }
 

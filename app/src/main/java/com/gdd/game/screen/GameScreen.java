@@ -2,6 +2,7 @@ package com.gdd.game.screen;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
+import android.graphics.Color;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Music;
@@ -16,8 +17,8 @@ import com.gdd.game.ui.Image;
 import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
+import com.gdd.game.ui.TextButton;
 import com.gdd.game.ui.UIController;
-import com.gdd.game.ui.WidgetGroup;
 
 /*
  * Schermata di gameplay.
@@ -34,7 +35,9 @@ public class GameScreen extends Screen {
     private Canvas canvas;
     private TouchHandler touchHandler;
     private boolean consumed;
-    private Panel pausePopup;
+
+    // UI
+    private Panel rootPanel, pausePopup;
 
     private Music music;
 
@@ -139,8 +142,8 @@ public class GameScreen extends Screen {
 
         uiController.reset();
 
-        WidgetGroup root = new Panel(0, 0, fbWidth, fbHeight);
-        uiController.setRoot(root);
+        rootPanel = new Panel(0, 0, fbWidth, fbHeight);
+        uiController.setRoot(rootPanel);
 
         // ***** HUD BADGES *****
 
@@ -148,7 +151,7 @@ public class GameScreen extends Screen {
         float badgeHeight = 75;
 
         HorizontalGroup badgeGroup = new HorizontalGroup(20, 20, 50 + badgeWidth*2, badgeHeight);
-        root.addChild(badgeGroup);
+        rootPanel.addChild(badgeGroup);
 
         antsLabel = new Label(30, 20, badgeWidth, badgeHeight);
         antsLabel.setText("0");
@@ -166,22 +169,74 @@ public class GameScreen extends Screen {
         energyLabel.setBackgroundMode(Label.BackgroundMode.BITMAP);
         badgeGroup.addChild(energyLabel);
 
-        // ***** BUTTONS *****
+        // ***** PAUSE BUTTON *****
 
         ImageButton pauseButton = new ImageButton(fbWidth - 95, 20, 75, 75);
         pauseButton.setIdleBitmap(Assets.PAUSEBUTTON_IDLE_BITMAP);
         pauseButton.setPressedBitmap(Assets.PAUSEBUTTON_PRESSED);
-        root.addChild(pauseButton);
-
-        // ***** ON_CLICK METHODS *****
+        rootPanel.addChild(pauseButton);
 
         pauseButton.setOnClickListener(b -> {
             Assets.click.play(1);
             setGameState(GameState.PAUSED);
         });
 
+        initBottomUI();
         initPausePopup();
+
         uiController.updateLayout();
+    }
+
+    // TEST
+    // TODO: da gestire in modo opportuno
+    private void initBottomUI() {
+
+        float bottomHeight = fbHeight/5;
+
+        Panel bottomPanel = new Panel(0, fbHeight - bottomHeight, fbWidth, bottomHeight);
+        rootPanel.addChild(bottomPanel);
+
+        HorizontalGroup bottomHorizontal = new HorizontalGroup(0, 0, 500, bottomHeight);
+        bottomPanel.addChild(bottomHorizontal);
+
+        // ***** CARD BUTTONS *****
+
+        TextButton healButton = new TextButton(0, 0, 100, 100);
+        healButton.setText("HEAL");
+        bottomHorizontal.addChild(healButton);
+
+        healButton.setOnClickListener(b -> {
+            gw.addCardArea();
+        });
+
+        TextButton attackButton = new TextButton(0, 0, 100, 100);
+        attackButton.setText("ATTACK");
+        bottomHorizontal.addChild(attackButton);
+
+        attackButton.setOnClickListener(b -> {
+            gw.addCardArea();
+        });
+
+        // ***** CONFIRM/CANCEL BUTTONS *****
+
+        TextButton confirmButton = new TextButton(0, 0, 100, 100);
+        confirmButton.setText("Y");
+        confirmButton.setColor(Color.GREEN);
+        bottomHorizontal.addChild(confirmButton);
+
+        confirmButton.setOnClickListener(b -> {
+            // TODO: query spaziale + attivare la carta
+            gw.removeCardArea();
+        });
+
+        TextButton cancelButton = new TextButton(0, 0, 100, 100);
+        cancelButton.setText("X");
+        cancelButton.setColor(Color.RED);
+        bottomHorizontal.addChild(cancelButton);
+
+        cancelButton.setOnClickListener(b -> {
+            gw.removeCardArea();
+        });
     }
 
     private void initPausePopup() {

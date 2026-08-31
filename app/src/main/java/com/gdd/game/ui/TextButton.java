@@ -57,7 +57,7 @@ public class TextButton extends Button {
     public void setText(String text) { this.text = text; }
 
     public void setTextSize(float size) {
-        textPaint.setTextSize(height * size);
+        textPaint.setTextSize(size);
     }
 
     public void setTextColor(int color) {

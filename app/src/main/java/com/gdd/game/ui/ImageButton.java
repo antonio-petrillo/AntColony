@@ -24,7 +24,7 @@ public class ImageButton extends Button {
     @Override
     public void draw(Canvas canvas) {
 
-        dst.set(x, y, x+width, y+height);
+        dst.set(absX, absY, absX+width, absY+height);
 
         if(state == State.IDLE && idleBitmap != null)
             canvas.drawBitmap(idleBitmap, null, dst, paint);

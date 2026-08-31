@@ -4,7 +4,7 @@
 * AntColony
 Progetto per il corso Game Design and Development della Federico II, anno accademico 2025/2026.
 
-* Progress [75%]
+* Progress [91%]
 - [X] fork from [[https://github.com/mfaella/DragMe.git][DragMe]]
 - [X] basic nest + ant simulation
 - [X] implement ecs 
@@ -14,10 +14,10 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] implement enemies (wasp, spawn & gather)
 - [ ] MAYBE implement card system
 - [X] implement camera view (pan & zoom)
-- [ ] Add sounds:
+- [X] Add sounds:
   - background
   - combat
-- [ ] Game mechanics:
+- [X] Game mechanics:
 - [X] Texture/Bitmap
 
 * BUGS to fix [75%]
@@ -27,7 +27,7 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] Makes *Ants* and *Wasps* fight still standing
 - [ ] If pinch to zoom start on button *PAUSE* and on release is still on button *PAUSE* the game gets paused while zooming and panning.
 
-* Improvements [3/7]
+* Improvements [3/8]
 - [ ] MAYBE add objects POOL (Poor Objects Oriented Linear-allocator)
 - [ ] MAYBE instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects
 - [X] add field of view to *Ants* and *Wasps*:
@@ -38,6 +38,7 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] make entities change direction when they hit the world boundaries or the nest
 - [X] Fix positioning of energy label positioning
 - [ ] Spawn food near to the nest if the player has few ants 
+- [ ] Game mechanics system is quite quirky to use, is thought as an UI from the '90, but with the mouse in mind (hence is super quirky) 
   
   
 * Mechanics [50%]

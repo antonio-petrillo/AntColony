@@ -10,6 +10,7 @@ import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.Game;
 import com.gdd.game.GameWorld;
 import com.gdd.game.Settings;
+import com.gdd.game.ui.HorizontalGroup;
 import com.gdd.game.ui.Image;
 import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Label;
@@ -130,39 +131,45 @@ public class GameScreen extends Screen {
         uiController.reset();
 
         WidgetGroup root = new Panel(0, 0, fbWidth, fbHeight);
+        uiController.setRoot(root);
+
+        // ***** BADGES *****
+
+        float badgeWidth = 130;
+        float badgeHeight = 75;
+
+        HorizontalGroup badgeGroup = new HorizontalGroup(20, 20, 50 + badgeWidth*2, badgeHeight);
+        root.addChild(badgeGroup);
+
+        antsLabel = new Label(30, 20, badgeWidth, badgeHeight);
+        antsLabel.setText("0");
+        antsLabel.setTextColor(0xFF000000);
+        antsLabel.setTextAlignment(Label.HAlign.RIGHT, Label.VAlign.CENTER, 20, 0);
+        antsLabel.setBackgroundBitmap(Assets.HUD_BADGE_ANT_BITMAP);
+        antsLabel.setBackgroundMode(Label.BackgroundMode.BITMAP);
+        badgeGroup.addChild(antsLabel);
+
+        energyLabel = new Label(50 + badgeWidth, 20, badgeWidth, badgeHeight);
+        energyLabel.setText("0");
+        energyLabel.setTextColor(0xFF000000);
+        energyLabel.setTextAlignment(Label.HAlign.RIGHT, Label.VAlign.CENTER, 20, 0);
+        energyLabel.setBackgroundBitmap(Assets.HUD_BADGE_SUGAR_PRESSED);
+        energyLabel.setBackgroundMode(Label.BackgroundMode.BITMAP);
+        badgeGroup.addChild(energyLabel);
+
+        // ***** PAUSE BUTTON + POPUP *****
 
         ImageButton pauseButton = new ImageButton(fbWidth - 95, 20, 75, 75);
         pauseButton.setIdleBitmap(Assets.PAUSEBUTTON_IDLE_BITMAP);
         pauseButton.setPressedBitmap(Assets.PAUSEBUTTON_PRESSED);
         root.addChild(pauseButton);
 
-        float badgeWidth = 130;
-        float badgeHeight= 75;
-
-        Image antBadge = new Image(20, 20, badgeWidth, 75);
-        antBadge.setBitmap(Assets.HUD_BADGE_ANT_BITMAP);
-        root.addChild(antBadge);
-
-        Image sugarBadge = new Image(40 + badgeWidth, 20, badgeWidth, 75);
-        sugarBadge.setBitmap(Assets.HUD_BADGE_SUGAR_PRESSED);
-        root.addChild(sugarBadge);
-
-        antsLabel = new Label(30, 20, badgeWidth, badgeHeight);
-        antsLabel.setText("0");
-        antsLabel.setTextSize(0.6f);
-        antsLabel.setTextColor(0xFF000000);
-        root.addChild(antsLabel);
-
-        energyLabel = new Label(50 + badgeWidth, 20, badgeWidth, badgeHeight);
-        energyLabel.setText("0");
-        energyLabel.setTextSize(0.6f);
-        energyLabel.setTextColor(0xFF000000);
-        root.addChild(energyLabel);
-
         WidgetGroup pauseLayout = new Panel(0, 0, fbWidth, fbHeight);
         TextButton resumeButton = new TextButton(500, 500, 200, 100);
         resumeButton.setText("RESUME");
         pauseLayout.addChild(resumeButton);
+
+        // ***** ON_CLICK METHODS *****
 
         pauseButton.setOnClickListener(b -> {
             gw.inputSystem.reset();
@@ -175,7 +182,6 @@ public class GameScreen extends Screen {
             state = State.RUNNING;
         });
 
-        uiController.setRoot(root);
         uiController.updateLayout();
     }
 }

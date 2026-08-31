@@ -2,9 +2,9 @@ package com.gdd.game.screen;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
-import android.graphics.Color;
 
 import com.badlogic.androidgames.framework.Input;
+import com.badlogic.androidgames.framework.Music;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.Assets;
 import com.gdd.game.ecs.misc.Box;
@@ -17,7 +17,6 @@ import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
 import com.gdd.game.ui.UIController;
-import com.gdd.game.ui.VerticalGroup;
 import com.gdd.game.ui.WidgetGroup;
 
 /*
@@ -36,6 +35,8 @@ public class GameScreen extends Screen {
     private TouchHandler touchHandler;
     private boolean consumed;
     private Panel pausePopup;
+
+    private Music music;
 
     /*
     public final Box worldSize, // physics world's size (in meters)
@@ -67,6 +68,12 @@ public class GameScreen extends Screen {
         gw.setTouchHandler(game.getTouchHandler());
 
         initUI();
+
+        // Music
+        music = Assets.song;
+        music.setLooping(true);
+        music.setVolume(0.5f);
+        music.play();
     }
 
     // ***************************************
@@ -109,17 +116,19 @@ public class GameScreen extends Screen {
 
     @Override
     public void pause() {
+        music.pause();
         setGameState(GameState.PAUSED);
     }
 
     @Override
     public void resume() {
+        music.play();
         setGameState(GameState.RUNNING);
     }
 
     @Override
     public void dispose() {
-
+        music.dispose();
     }
 
     // ***************************************

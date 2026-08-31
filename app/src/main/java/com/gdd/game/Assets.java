@@ -4,6 +4,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.badlogic.androidgames.framework.Music;
 import com.badlogic.androidgames.framework.Sound;
 
 import java.io.IOException;
@@ -197,5 +198,7 @@ public class Assets {
     public static Bitmap CONTINUEBUTTON_PRESSED;
     public static Bitmap TITLE_PAUSEMENU;
 
+
+    public static Music song;
     public static Sound click;
 }

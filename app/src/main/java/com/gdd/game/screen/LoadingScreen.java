@@ -15,6 +15,8 @@ public class LoadingScreen extends Screen {
 
     public void update(float deltaTime) {
 
+        Assets.song = game.getAudio().newMusic("mario64_theme.mp3");
+
         Assets.click = game.getAudio().newSound("click.ogg");
 
         game.setScreen(new MainMenuScreen(game));

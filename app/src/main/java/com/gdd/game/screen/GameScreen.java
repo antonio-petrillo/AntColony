@@ -11,7 +11,6 @@ import com.gdd.game.Game;
 import com.gdd.game.GameWorld;
 import com.gdd.game.Settings;
 import com.gdd.game.ui.HorizontalGroup;
-import com.gdd.game.ui.Image;
 import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
@@ -24,10 +23,8 @@ import com.gdd.game.ui.WidgetGroup;
  */
 public class GameScreen extends Screen {
 
-
-    public enum State { RUNNING, PAUSE }
-
-    public State state;
+    public enum GameState { RUNNING, PAUSED }
+    private GameState state;
 
     private GameWorld gw;
     private Label energyLabel, antsLabel;
@@ -36,6 +33,7 @@ public class GameScreen extends Screen {
     private Canvas canvas;
     private TouchHandler touchHandler;
     private boolean consumed;
+    private WidgetGroup pauseLayout;
 
     /*
     public final Box worldSize, // physics world's size (in meters)
@@ -46,7 +44,7 @@ public class GameScreen extends Screen {
     public GameScreen(Game game) {
         super(game);
 
-        state = State.RUNNING;
+        state = GameState.RUNNING;
 
         canvas = new Canvas(game.getFramebuffer());
 
@@ -80,11 +78,11 @@ public class GameScreen extends Screen {
         // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
             consumed = uiController.processInput(event);
-            if(!consumed && state == State.RUNNING)
+            if(!consumed && state == GameState.RUNNING)
                 gw.inputSystem.processInput(event);
         }
 
-        if(state == State.RUNNING) {
+        if(state == GameState.RUNNING) {
             gw.update(deltaTime);
         }
 
@@ -109,12 +107,12 @@ public class GameScreen extends Screen {
 
     @Override
     public void pause() {
-
+        setGameState(GameState.PAUSED);
     }
 
     @Override
     public void resume() {
-
+        setGameState(GameState.RUNNING);
     }
 
     @Override
@@ -164,7 +162,7 @@ public class GameScreen extends Screen {
         pauseButton.setPressedBitmap(Assets.PAUSEBUTTON_PRESSED);
         root.addChild(pauseButton);
 
-        WidgetGroup pauseLayout = new Panel(0, 0, fbWidth, fbHeight);
+        pauseLayout = new Panel(0, 0, fbWidth, fbHeight);
         TextButton resumeButton = new TextButton(500, 500, 200, 100);
         resumeButton.setText("RESUME");
         pauseLayout.addChild(resumeButton);
@@ -172,16 +170,35 @@ public class GameScreen extends Screen {
         // ***** ON_CLICK METHODS *****
 
         pauseButton.setOnClickListener(b -> {
-            gw.inputSystem.reset();
-            uiController.showPopup(pauseLayout);
-            state = State.PAUSE;
+            setGameState(GameState.PAUSED);
         });
 
         resumeButton.setOnClickListener(b -> {
-            uiController.hideTopPopup();
-            state = State.RUNNING;
+            setGameState(GameState.RUNNING);
         });
 
         uiController.updateLayout();
     }
+
+    // ***************************************
+    //  SCREEN
+    // ***************************************
+
+    private void setGameState(GameState newState) {
+        if (state == newState) return;
+
+        state = newState;
+        gw.inputSystem.reset();
+
+        switch (newState) {
+            case RUNNING:
+                uiController.hideTopPopup();
+                break;
+
+            case PAUSED:
+                uiController.showPopup(pauseLayout);
+                break;
+        }
+    }
+
 }

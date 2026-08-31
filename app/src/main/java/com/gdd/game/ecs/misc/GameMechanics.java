@@ -7,6 +7,7 @@ import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.entities.Entity;
 
 import com.gdd.game.ecs.entities.EntityTag;
+import com.gdd.game.ecs.entities.Transform;
 import com.google.fpl.liquidfun.Fixture;
 import com.google.fpl.liquidfun.QueryCallback;
 
@@ -18,23 +19,19 @@ public class GameMechanics {
         this.gw = gw;
     }
 
-    public enum Target {
-        ALL, SELECTIVE;
-    }
-
     public enum Action {
-        ATTACK(25), HEAL(15);
+        ATTACK_ALL(30, 1), HEAL_ALL(15, 1), ATTACK_ENEMY(20, 3), HEAL_ALLIES(10, 3);
 
-        public final int amount;
+        public final int amount, cost;
 
-        Action(int amount) {
+        Action(int amount, int cost) {
             this.amount = amount;
+            this.cost = cost;
         }
     }
 
     private static final class QueryContext {
         Action action;
-        Target target;
     }
 
     private final QueryContext ctx = new QueryContext();
@@ -49,38 +46,31 @@ public class GameMechanics {
                 assert (health != null);
                 var ai = (AiComponent) entity.getComponent(ComponentType.AI);
                 switch (ctx.action) {
-                    case HEAL -> {
-                        switch (ctx.target) {
-                            case ALL -> {
-                                health.heal(ctx.action.amount);
-                            }
-                            case SELECTIVE -> {
-                                if (entity.tag == EntityTag.ANT) {
-                                    health.heal(ctx.action.amount);
-                                }
-                            }
+                    case HEAL_ALL -> {
+                        health.heal(ctx.action.amount);
+                    }
+                    case HEAL_ALLIES -> {
+                        if (entity.tag == EntityTag.ANT) {
+                            health.heal(ctx.action.amount);
                         }
                     }
-                    case ATTACK -> {
-                        switch (ctx.target) {
-                            case ALL -> {
-                                health.takeDamage(ctx.action.amount);
+                    case ATTACK_ALL -> {
+                        health.takeDamage(ctx.action.amount);
 
-                                if (!health.isAlive()) {
-                                    ai.canBeGarbageCollected = true;
-                                    ai.restore();
-                                    ai.enemyToAttack = null;
-                                }
-                            }
-                            case SELECTIVE -> {
-                                if (entity.tag == EntityTag.WASP) {
-                                    health.takeDamage(ctx.action.amount);
-                                    if (!health.isAlive()) {
-                                        ai.canBeGarbageCollected = true;
-                                        ai.restore();
-                                        ai.enemyToAttack = null;
-                                    }
-                                }
+                        if (!health.isAlive()) {
+                            ai.canBeGarbageCollected = true;
+                            ai.restore();
+                            ai.enemyToAttack = null;
+                        }
+                    }
+                    case ATTACK_ENEMY -> {
+                        if (entity.tag == EntityTag.WASP) {
+                            health.takeDamage(ctx.action.amount);
+
+                            if (!health.isAlive()) {
+                                ai.canBeGarbageCollected = true;
+                                ai.restore();
+                                ai.enemyToAttack = null;
                             }
                         }
                     }
@@ -90,10 +80,11 @@ public class GameMechanics {
             }
         };
 
-    public void action(Action action, Target target, float x, float y, float width, float height) {
+    public void action(Action action, Transform transform) {
         ctx.action = action;
-        ctx.target = target;
 
-        gw.world.queryAABB(callback, x,  y, width, height);
+        gw.world.queryAABB(callback,
+                transform.x - transform.halfWidth, transform.y - transform.halfWidth,
+                transform.x + transform.halfWidth, transform.y + transform.halfWidth);
     }
 }

@@ -12,6 +12,7 @@ import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.Game;
 import com.gdd.game.GameWorld;
 import com.gdd.game.Settings;
+import com.gdd.game.ecs.misc.GameMechanics;
 import com.gdd.game.ui.HorizontalGroup;
 import com.gdd.game.ui.Image;
 import com.gdd.game.ui.ImageButton;
@@ -24,6 +25,9 @@ import com.gdd.game.ui.UIController;
  * Schermata di gameplay.
  */
 public class GameScreen extends Screen {
+
+    private TextButton attackButton;
+    private TextButton healButton;
 
     public enum GameState { RUNNING, PAUSED }
     private GameState state;
@@ -101,6 +105,18 @@ public class GameScreen extends Screen {
         // Update UI
         energyLabel.setText(String.format("%d", gw.playerEnergy));
         antsLabel.setText(String.format("%d", gw.spawnsys.antCount));
+
+        if (gw.playerEnergy < GameMechanics.Action.ATTACK_ALL.cost) {
+            attackButton.setColor(Color.GRAY);
+        } else {
+            attackButton.setColor(Color.BLUE);
+        }
+
+        if (gw.playerEnergy < GameMechanics.Action.HEAL_ALLIES.cost) {
+            healButton.setColor(Color.GRAY);
+        } else {
+            healButton.setColor(Color.BLUE);
+        }
     }
 
     @Override
@@ -201,20 +217,20 @@ public class GameScreen extends Screen {
 
         // ***** CARD BUTTONS *****
 
-        TextButton healButton = new TextButton(0, 0, 100, 100);
+        healButton = new TextButton(0, 0, 100, 100);
         healButton.setText("HEAL");
         bottomHorizontal.addChild(healButton);
 
         healButton.setOnClickListener(b -> {
-            gw.addCardArea();
+            gw.addCardArea(GameMechanics.Action.HEAL_ALLIES);
         });
 
-        TextButton attackButton = new TextButton(0, 0, 100, 100);
+        attackButton = new TextButton(0, 0, 100, 100);
         attackButton.setText("ATTACK");
         bottomHorizontal.addChild(attackButton);
 
         attackButton.setOnClickListener(b -> {
-            gw.addCardArea();
+            gw.addCardArea(GameMechanics.Action.ATTACK_ALL);
         });
 
         // ***** CONFIRM/CANCEL BUTTONS *****
@@ -226,7 +242,7 @@ public class GameScreen extends Screen {
 
         confirmButton.setOnClickListener(b -> {
             // TODO: query spaziale + attivare la carta
-            gw.removeCardArea();
+            gw.removeCardArea(true);
         });
 
         TextButton cancelButton = new TextButton(0, 0, 100, 100);
@@ -235,7 +251,7 @@ public class GameScreen extends Screen {
         bottomHorizontal.addChild(cancelButton);
 
         cancelButton.setOnClickListener(b -> {
-            gw.removeCardArea();
+            gw.removeCardArea(false);
         });
     }
 

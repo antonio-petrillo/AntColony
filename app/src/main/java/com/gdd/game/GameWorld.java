@@ -16,6 +16,7 @@ import com.gdd.game.ecs.factories.NestFactory;
 import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.ecs.misc.Camera;
 import com.gdd.game.ecs.misc.EntityContactListener;
+import com.gdd.game.ecs.misc.GameMechanics;
 import com.gdd.game.ecs.systems.AiSystem;
 import com.gdd.game.ecs.systems.InputSystem;
 import com.gdd.game.ecs.systems.RenderSystem;
@@ -84,25 +85,28 @@ public class GameWorld {
     private TiledBackgroundRenderer background;
 
     // TEST
-    private Entity cardArea;
+    private final Entity cardArea;
     private boolean cardAreaOnScreen;
 
-    /* Energy for mechanics
+    /* Energy for mechanics and mechanics in general
      */
 
     public int playerEnergy = 0;
+    public final GameMechanics mechanics;
+    public GameMechanics.Action action;
 
     /*
      * Constructor.
      */
     public GameWorld(Screen gameScreen, Bitmap frameBuffer, Box screenSize, Box worldSize) {
 
+        mechanics = new GameMechanics(this);
         this.gameScreen = gameScreen;
 
         touchHandler = gameScreen.game.getTouchHandler();
         this.frameBuffer = frameBuffer;
         this.worldSize = worldSize;
-        this.world = new World(0, 0);  // gravity vector
+        world = new World(0, 0);  // gravity vector
 
         cameraView = new Box(worldSize); // di default vede l'intero mondo
         canvas = new Canvas(frameBuffer);
@@ -270,8 +274,9 @@ public class GameWorld {
         return null;
     }
 
-    public void addCardArea() {
-        if(!cardAreaOnScreen) {
+    public void addCardArea(GameMechanics.Action action) {
+        if(!cardAreaOnScreen && action.cost <= playerEnergy) {
+            this.action = action;
             cardArea.transform.x = camera.getCenterX();
             cardArea.transform.y = camera.getCenterY();
             entities.add(cardArea);
@@ -279,10 +284,16 @@ public class GameWorld {
         }
     }
 
-    public void removeCardArea() {
-        if(cardAreaOnScreen) {
-            entities.remove(cardArea);
-            cardAreaOnScreen = false;
+    public void removeCardArea(boolean applyMechanics) {
+        if (!cardAreaOnScreen) return;
+        entities.remove(cardArea);
+        cardAreaOnScreen = false;
+
+        if (applyMechanics) {
+            playerEnergy -= action.cost;
+            mechanics.action(action, cardArea.transform);
+
+            this.action = null;
         }
     }
 }

@@ -2,6 +2,7 @@ package com.gdd.game.screen;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
+import android.graphics.Color;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
@@ -11,11 +12,12 @@ import com.gdd.game.Game;
 import com.gdd.game.GameWorld;
 import com.gdd.game.Settings;
 import com.gdd.game.ui.HorizontalGroup;
+import com.gdd.game.ui.Image;
 import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
-import com.gdd.game.ui.TextButton;
 import com.gdd.game.ui.UIController;
+import com.gdd.game.ui.VerticalGroup;
 import com.gdd.game.ui.WidgetGroup;
 
 /*
@@ -33,7 +35,7 @@ public class GameScreen extends Screen {
     private Canvas canvas;
     private TouchHandler touchHandler;
     private boolean consumed;
-    private WidgetGroup pauseLayout;
+    private Panel pausePopup;
 
     /*
     public final Box worldSize, // physics world's size (in meters)
@@ -124,14 +126,14 @@ public class GameScreen extends Screen {
     //  UI
     // ***************************************
 
-    public void initUI() {
+    private void initUI() {
 
         uiController.reset();
 
         WidgetGroup root = new Panel(0, 0, fbWidth, fbHeight);
         uiController.setRoot(root);
 
-        // ***** BADGES *****
+        // ***** HUD BADGES *****
 
         float badgeWidth = 130;
         float badgeHeight = 75;
@@ -155,17 +157,12 @@ public class GameScreen extends Screen {
         energyLabel.setBackgroundMode(Label.BackgroundMode.BITMAP);
         badgeGroup.addChild(energyLabel);
 
-        // ***** PAUSE BUTTON + POPUP *****
+        // ***** BUTTONS *****
 
         ImageButton pauseButton = new ImageButton(fbWidth - 95, 20, 75, 75);
         pauseButton.setIdleBitmap(Assets.PAUSEBUTTON_IDLE_BITMAP);
         pauseButton.setPressedBitmap(Assets.PAUSEBUTTON_PRESSED);
         root.addChild(pauseButton);
-
-        pauseLayout = new Panel(0, 0, fbWidth, fbHeight);
-        TextButton resumeButton = new TextButton(500, 500, 200, 100);
-        resumeButton.setText("RESUME");
-        pauseLayout.addChild(resumeButton);
 
         // ***** ON_CLICK METHODS *****
 
@@ -173,11 +170,36 @@ public class GameScreen extends Screen {
             setGameState(GameState.PAUSED);
         });
 
+        initPausePopup();
+        uiController.updateLayout();
+    }
+
+    private void initPausePopup() {
+
+        float popupWidth = fbWidth * 0.25f;
+        float popupHeight = fbHeight * 0.75f;
+        float popupX = (fbWidth - popupWidth) / 2;
+        float popupY = (fbHeight - popupHeight) / 2;
+
+        pausePopup = new Panel(popupX, popupY, popupWidth, popupHeight);
+        pausePopup.setBorder(true, 0xB42D1C0E);
+
+        // ***** WIDGETS *****
+
+        Image pauseImage = new Image(0, 0, popupWidth, 100);
+        pauseImage.setBitmap(Assets.TITLE_PAUSEMENU);
+        pausePopup.addChild(pauseImage);
+
+        ImageButton resumeButton = new ImageButton(popupWidth/4, popupHeight/4, popupWidth/2, 100);
+        resumeButton.setIdleBitmap(Assets.CONTINUEBUTTON_IDLE);
+        resumeButton.setPressedBitmap(Assets.CONTINUEBUTTON_PRESSED);
+        pausePopup.addChild(resumeButton);
+
+        // ***** ON_CLICK METHODS *****
+
         resumeButton.setOnClickListener(b -> {
             setGameState(GameState.RUNNING);
         });
-
-        uiController.updateLayout();
     }
 
     // ***************************************
@@ -196,7 +218,7 @@ public class GameScreen extends Screen {
                 break;
 
             case PAUSED:
-                uiController.showPopup(pauseLayout);
+                uiController.showPopup(pausePopup);
                 break;
         }
     }

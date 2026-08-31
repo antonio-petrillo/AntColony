@@ -1,5 +1,6 @@
 package com.gdd.game.screen;
 
+import com.gdd.game.Assets;
 import com.gdd.game.Game;
 
 public class LoadingScreen extends Screen {
@@ -14,7 +15,7 @@ public class LoadingScreen extends Screen {
 
     public void update(float deltaTime) {
 
-        // TODO: inserire qui i caricamenti
+        Assets.click = game.getAudio().newSound("click.ogg");
 
         game.setScreen(new MainMenuScreen(game));
     }

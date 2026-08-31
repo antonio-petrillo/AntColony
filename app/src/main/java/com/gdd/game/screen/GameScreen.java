@@ -167,6 +167,7 @@ public class GameScreen extends Screen {
         // ***** ON_CLICK METHODS *****
 
         pauseButton.setOnClickListener(b -> {
+            Assets.click.play(1);
             setGameState(GameState.PAUSED);
         });
 
@@ -198,6 +199,7 @@ public class GameScreen extends Screen {
         // ***** ON_CLICK METHODS *****
 
         resumeButton.setOnClickListener(b -> {
+            Assets.click.play(1);
             setGameState(GameState.RUNNING);
         });
     }

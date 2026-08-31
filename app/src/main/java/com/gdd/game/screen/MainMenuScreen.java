@@ -106,6 +106,7 @@ public class MainMenuScreen extends Screen {
         root.addChild(startButton);
 
         startButton.setOnClickListener(b -> {
+            Assets.click.play(1);
             game.setScreen(new GameScreen(game));
         });
 

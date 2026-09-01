@@ -26,9 +26,6 @@ import com.gdd.game.ui.UIController;
  */
 public class GameScreen extends Screen {
 
-    private TextButton attackButton;
-    private TextButton healButton;
-
     public enum GameState { RUNNING, PAUSED }
     private GameState state;
 
@@ -105,18 +102,6 @@ public class GameScreen extends Screen {
         // Update UI
         energyLabel.setText(String.format("%d", gw.playerEnergy));
         antsLabel.setText(String.format("%d", gw.spawnsys.antCount));
-
-        if (gw.playerEnergy < GameMechanics.Action.ATTACK_ALL.cost) {
-            attackButton.setColor(Color.GRAY);
-        } else {
-            attackButton.setColor(Color.BLUE);
-        }
-
-        if (gw.playerEnergy < GameMechanics.Action.HEAL_ALLIES.cost) {
-            healButton.setColor(Color.GRAY);
-        } else {
-            healButton.setColor(Color.BLUE);
-        }
     }
 
     @Override
@@ -197,62 +182,9 @@ public class GameScreen extends Screen {
             setGameState(GameState.PAUSED);
         });
 
-        initBottomUI();
         initPausePopup();
 
         uiController.updateLayout();
-    }
-
-    // TEST
-    // TODO: da gestire in modo opportuno
-    private void initBottomUI() {
-
-        float bottomHeight = fbHeight/5;
-
-        Panel bottomPanel = new Panel(0, fbHeight - bottomHeight, fbWidth, bottomHeight);
-        rootPanel.addChild(bottomPanel);
-
-        HorizontalGroup bottomHorizontal = new HorizontalGroup(0, 0, 500, bottomHeight);
-        bottomPanel.addChild(bottomHorizontal);
-
-        // ***** CARD BUTTONS *****
-
-        healButton = new TextButton(0, 0, 100, 100);
-        healButton.setText("HEAL");
-        bottomHorizontal.addChild(healButton);
-
-        healButton.setOnClickListener(b -> {
-            gw.addCardArea(GameMechanics.Action.HEAL_ALLIES);
-        });
-
-        attackButton = new TextButton(0, 0, 100, 100);
-        attackButton.setText("ATTACK");
-        bottomHorizontal.addChild(attackButton);
-
-        attackButton.setOnClickListener(b -> {
-            gw.addCardArea(GameMechanics.Action.ATTACK_ALL);
-        });
-
-        // ***** CONFIRM/CANCEL BUTTONS *****
-
-        TextButton confirmButton = new TextButton(0, 0, 100, 100);
-        confirmButton.setText("Y");
-        confirmButton.setColor(Color.GREEN);
-        bottomHorizontal.addChild(confirmButton);
-
-        confirmButton.setOnClickListener(b -> {
-            // TODO: query spaziale + attivare la carta
-            gw.removeCardArea(true);
-        });
-
-        TextButton cancelButton = new TextButton(0, 0, 100, 100);
-        cancelButton.setText("X");
-        cancelButton.setColor(Color.RED);
-        bottomHorizontal.addChild(cancelButton);
-
-        cancelButton.setOnClickListener(b -> {
-            gw.removeCardArea(false);
-        });
     }
 
     private void initPausePopup() {

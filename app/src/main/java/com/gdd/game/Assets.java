@@ -30,6 +30,8 @@ public class Assets {
     private static final String CONTINUEBUTTON_IDLE_PATH = "continue_button_idle_128x64.png";
     private static final String CONTINUEBUTTON_PRESSED_PATH = "continue_button_pressed_128x64.png";
     private static final String TITLE_PAUSEMENU_PATH = "title_pause_menu.png";
+    private static final String CARD_ATTACK_PATH = "card_attack_64x128.png";
+    private static final String CARD_HEAL_PATH = "card_heal_64x128.png";
 
     public static void load(AssetManager manager) {
        if (loaded)
@@ -180,6 +182,29 @@ public class Assets {
         }
 
 
+        try (var stream = manager.open(CARD_ATTACK_PATH)) {
+            CARD_ATTACK = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CARD_ATTACK == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_ATTACK);
+        }
+
+
+
+        try (var stream = manager.open(CARD_HEAL_PATH)) {
+            CARD_HEAL = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CARD_HEAL == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_HEAL);
+        }
+
+
         loaded = true;
     }
 
@@ -198,6 +223,8 @@ public class Assets {
     public static Bitmap CONTINUEBUTTON_PRESSED;
     public static Bitmap TITLE_PAUSEMENU;
 
+    public static Bitmap CARD_ATTACK;
+    public static Bitmap CARD_HEAL;
 
     public static Music song;
     public static Sound click;

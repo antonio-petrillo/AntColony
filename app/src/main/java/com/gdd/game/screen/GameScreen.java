@@ -2,7 +2,6 @@ package com.gdd.game.screen;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
-import android.graphics.Color;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Music;
@@ -12,13 +11,11 @@ import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.Game;
 import com.gdd.game.GameWorld;
 import com.gdd.game.Settings;
-import com.gdd.game.ecs.misc.GameMechanics;
 import com.gdd.game.ui.HorizontalGroup;
 import com.gdd.game.ui.Image;
 import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
-import com.gdd.game.ui.TextButton;
 import com.gdd.game.ui.UIController;
 
 /*
@@ -71,7 +68,12 @@ public class GameScreen extends Screen {
         gw = new GameWorld(this, game.getFramebuffer(), game.getScreensize(), worldSize);
         gw.setTouchHandler(game.getTouchHandler());
 
-        initUI();
+        // Build and apply UI
+        buildRootPanel();
+        buildPausePopup();
+        uiController.reset();
+        uiController.setRoot(rootPanel);
+        uiController.updateLayout();
 
         // Music
         music = Assets.song;
@@ -139,12 +141,9 @@ public class GameScreen extends Screen {
     //  UI
     // ***************************************
 
-    private void initUI() {
-
-        uiController.reset();
+    private void buildRootPanel() {
 
         rootPanel = new Panel(0, 0, fbWidth, fbHeight);
-        uiController.setRoot(rootPanel);
 
         // ***** HUD BADGES *****
 
@@ -182,12 +181,9 @@ public class GameScreen extends Screen {
             setGameState(GameState.PAUSED);
         });
 
-        initPausePopup();
-
-        uiController.updateLayout();
     }
 
-    private void initPausePopup() {
+    private void buildPausePopup() {
 
         float popupWidth = fbWidth * 0.25f;
         float popupHeight = fbHeight * 0.75f;

@@ -33,6 +33,12 @@ public class Assets {
     private static final String CARD_ATTACK_PATH = "card_attack_64x128.png";
     private static final String CARD_HEAL_PATH = "card_heal_64x128.png";
 
+    private static final String DRAW_BUTTON_IDLE_PATH = "draw_button_idle_128x64.png";
+    private static final String DRAW_BUTTON_PRESSED_PATH = "draw_button_pressed_128x64.png";
+    private static final String DRAW_BUTTON_DISABLED_PATH = "draw_button_disabled_128x64.png";
+
+
+
     public static void load(AssetManager manager) {
        if (loaded)
            throw new IllegalStateException("Assets already loaded!");
@@ -193,7 +199,6 @@ public class Assets {
         }
 
 
-
         try (var stream = manager.open(CARD_HEAL_PATH)) {
             CARD_HEAL = BitmapFactory.decodeStream(stream);
         } catch (IOException e) {
@@ -204,6 +209,39 @@ public class Assets {
             throw new RuntimeException("Can't load bitmap: " + CARD_HEAL);
         }
 
+
+        try (var stream = manager.open(DRAW_BUTTON_IDLE_PATH)) {
+            DRAW_BUTTON_IDLE = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (DRAW_BUTTON_IDLE == null) {
+            throw new RuntimeException("Can't load bitmap: " + DRAW_BUTTON_IDLE);
+        }
+
+
+        try (var stream = manager.open(DRAW_BUTTON_PRESSED_PATH)) {
+            DRAW_BUTTON_PRESSED = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (DRAW_BUTTON_PRESSED == null) {
+            throw new RuntimeException("Can't load bitmap: " + DRAW_BUTTON_PRESSED);
+        }
+
+
+
+        try (var stream = manager.open(DRAW_BUTTON_DISABLED_PATH)) {
+            DRAW_BUTTON_DISABLED = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (DRAW_BUTTON_DISABLED == null) {
+            throw new RuntimeException("Can't load bitmap: " + DRAW_BUTTON_DISABLED);
+        }
 
         loaded = true;
     }
@@ -225,6 +263,11 @@ public class Assets {
 
     public static Bitmap CARD_ATTACK;
     public static Bitmap CARD_HEAL;
+
+    public static Bitmap DRAW_BUTTON_IDLE;
+    public static Bitmap DRAW_BUTTON_PRESSED;
+    public static Bitmap DRAW_BUTTON_DISABLED;
+
 
     public static Music song;
     public static Sound click;

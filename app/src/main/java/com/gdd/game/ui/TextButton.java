@@ -35,9 +35,12 @@ public class TextButton extends Button {
 
     @Override
     public void draw(Canvas canvas) {
-        Paint background = touchable != Touchable.ENABLED
-                ? paintDisabled
-                : (state == State.PRESSED ? paintPressed : paintUp);
+        Paint background;
+        switch (getVisualState()) {
+            case PRESSED:  background = paintPressed;  break;
+            case DISABLED: background = paintDisabled; break;
+            default:       background = paintUp;
+        }
 
         canvas.drawRoundRect(absX, absY, absX + width, absY + height,
                 12f, 12f, background);
@@ -63,8 +66,9 @@ public class TextButton extends Button {
         textPaint.setColor(color);
     }
 
-    public void setColor(int color) {
-        // TODO: gestire i 3 diversi colori per stato
-        paintUp.setColor(color);
-    }
+    public void setUpColor(int color) { paintUp.setColor(color); }
+
+    public void setPressedColor(int color) { paintPressed.setColor(color); }
+
+    public void setDisabledColor(int color) { paintDisabled.setColor(color); }
 }

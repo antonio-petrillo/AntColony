@@ -7,10 +7,9 @@ import android.graphics.RectF;
 
 public class ImageButton extends Button {
 
-    protected Bitmap idleBitmap, pressedBitmap;
+    protected Bitmap idleBitmap, pressedBitmap, disableBitmap;
     protected Paint paint;
     protected RectF dst = new RectF();
-
 
     public ImageButton(float x, float y, float width, float height) {
         super(x, y, width, height);
@@ -26,10 +25,13 @@ public class ImageButton extends Button {
 
         dst.set(absX, absY, absX+width, absY+height);
 
-        if(state == State.IDLE && idleBitmap != null)
-            canvas.drawBitmap(idleBitmap, null, dst, paint);
-        else if(state == State.PRESSED && pressedBitmap != null)
-            canvas.drawBitmap(pressedBitmap, null, dst, paint);
+        Bitmap bmp;
+        switch (getVisualState()) {
+            case PRESSED:  bmp = pressedBitmap;  break;
+            case DISABLED: bmp = disableBitmap;  break;
+            default:       bmp = idleBitmap;
+        }
+        if (bmp != null) canvas.drawBitmap(bmp, null, dst, paint);
     }
 
     // ********************************
@@ -42,5 +44,9 @@ public class ImageButton extends Button {
 
     public void setPressedBitmap(Bitmap bitmap) {
         this.pressedBitmap = bitmap;
+    }
+
+    public void setDisabledBitmap(Bitmap bitmap) {
+        this.disableBitmap = bitmap;
     }
 }

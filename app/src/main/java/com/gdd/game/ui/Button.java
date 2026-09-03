@@ -14,7 +14,8 @@ public abstract class Button extends Widget {
     }
     protected OnClickListener listener;
 
-    public enum State { IDLE, PRESSED }
+    public enum VisualState { IDLE, PRESSED, DISABLED } // usato solo per il rendering
+    public enum State { IDLE, PRESSED } // usato per l'interazione con l'utente
     protected State state = State.IDLE;
 
     protected int owningPointer = -1;
@@ -68,14 +69,22 @@ public abstract class Button extends Widget {
     //  Getter / Setter
     // ********************************
 
+    public void setOnClickListener(OnClickListener listener) { this.listener = listener; }
+
     public State getState() { return state; }
 
-    public void setOnClickListener(OnClickListener listener) { this.listener = listener; }
+    /*
+     * Usato per decidere l'aspetto di rendering.
+     */
+    public VisualState getVisualState() {
+        if (touchable != Touchable.ENABLED) return VisualState.DISABLED;
+        return state == State.PRESSED ? VisualState.PRESSED : VisualState.IDLE;
+    }
 
     @Override
     public void setTouchable(Touchable touchable) {
+        if (touchable == Touchable.CHILDREN_ONLY) touchable = Touchable.DISABLED;
         super.setTouchable(touchable);
-        // * UIController andrebbe notificato *
         if (touchable != Touchable.ENABLED) {
             owningPointer = -1;
             state = State.IDLE;
@@ -86,13 +95,6 @@ public abstract class Button extends Widget {
     //  Misc
     // ********************************
 
-    // da fixare,per i problemi di "setTouchable"
-
-    public void enable() {
-        touchable = Touchable.ENABLED;
-    }
-
-    public void disable() {
-        touchable = Touchable.DISABLED;
-    }
+    public void enable()  { setTouchable(Touchable.ENABLED); }
+    public void disable() { setTouchable(Touchable.DISABLED); }
 }

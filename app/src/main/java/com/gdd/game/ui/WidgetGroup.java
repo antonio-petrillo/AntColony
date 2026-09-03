@@ -94,7 +94,7 @@ public abstract class WidgetGroup extends Widget {
      */
     @Override
     public Widget hit(float x, float y) {
-        if (!visible) return null;
+        if (!visible || touchable == Touchable.DISABLED) return null;
         for (int i = children.size() - 1; i >= 0; i--) {
             Widget hit = children.get(i).hit(x, y);
             if (hit != null) return hit;

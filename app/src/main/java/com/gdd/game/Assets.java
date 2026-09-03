@@ -21,8 +21,7 @@ public class Assets {
     private static final String FOOD_BITMAP_PATH = "sugar_cube_64x64.png";
     private static final String WASP_BITMAP_PATH = "wasp_32x32.png";
     private static final String TERRAIN_BITMAP_PATH = "grass_tile_128x128.png";
-    private static final String MAINBG_BITMAP_PATH = "menu_bg_landscape_1280x720.png";
-    private static final String MAINTITLE_BITMAP_PATH = "title_ant_colony.png";
+    private static final String MAIN_MENU_BG_PATH = "main_menu_bg.jpg";
     private static final String PAUSEBUTTON_IDLE_PATH = "pause_button_idle_64x64.png";
     private static final String PAUSEBUTTON_PRESSED_PATH = "pause_button_pressed_64x64.png";
     private static final String HUD_BADGE_ANT_PATH = "hud_badge_ant_150x64.png";
@@ -36,6 +35,9 @@ public class Assets {
     private static final String DRAW_BUTTON_IDLE_PATH = "draw_button_idle_128x64.png";
     private static final String DRAW_BUTTON_PRESSED_PATH = "draw_button_pressed_128x64.png";
     private static final String DRAW_BUTTON_DISABLED_PATH = "draw_button_disabled_128x64.png";
+
+    private static final String STARTGAME_BUTTON_IDLE_PATH = "startgame_button_idle_128x64.png";
+    private static final String STARTGAME_BUTTON_PRESSED_PATH = "startgame_button_pressed_128x64.png";
 
 
 
@@ -93,24 +95,14 @@ public class Assets {
             throw new RuntimeException("Can't load bitmap: " + TERRAIN_BITMAP);
         }
 
-        try (var stream = manager.open(MAINBG_BITMAP_PATH)) {
-            MAINBG_BITMAP = BitmapFactory.decodeStream(stream);
+        try (var stream = manager.open(MAIN_MENU_BG_PATH)) {
+            MAIN_MENU_BG = BitmapFactory.decodeStream(stream);
         } catch (IOException e) {
             throw new RuntimeException("Assets loading failed: ", e);
         }
 
-        if (MAINBG_BITMAP == null) {
-            throw new RuntimeException("Can't load bitmap: " + MAINBG_BITMAP_PATH);
-        }
-
-        try (var stream = manager.open(MAINTITLE_BITMAP_PATH)) {
-            MAINTITLE_BITMAP = BitmapFactory.decodeStream(stream);
-        } catch (IOException e) {
-            throw new RuntimeException("Assets loading failed: ", e);
-        }
-
-        if (MAINTITLE_BITMAP == null) {
-            throw new RuntimeException("Can't load bitmap: " + MAINTITLE_BITMAP);
+        if (MAIN_MENU_BG == null) {
+            throw new RuntimeException("Can't load bitmap: " + MAIN_MENU_BG_PATH);
         }
 
         // ***** GameScreen UI *****
@@ -243,6 +235,27 @@ public class Assets {
             throw new RuntimeException("Can't load bitmap: " + DRAW_BUTTON_DISABLED);
         }
 
+
+        try (var stream = manager.open(STARTGAME_BUTTON_IDLE_PATH)) {
+            STARTGAME_BUTTON_IDLE = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (STARTGAME_BUTTON_IDLE == null) {
+            throw new RuntimeException("Can't load bitmap: " + STARTGAME_BUTTON_IDLE);
+        }
+
+        try (var stream = manager.open(STARTGAME_BUTTON_PRESSED_PATH)) {
+            STARTGAME_BUTTON_PRESSED = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (STARTGAME_BUTTON_PRESSED == null) {
+            throw new RuntimeException("Can't load bitmap: " + STARTGAME_BUTTON_PRESSED);
+        }
+
         loaded = true;
     }
 
@@ -251,8 +264,7 @@ public class Assets {
     public static Bitmap FOOD_BITMAP;
     public static Bitmap WASP_BITMAP;
     public static Bitmap TERRAIN_BITMAP;
-    public static Bitmap MAINBG_BITMAP;
-    public static Bitmap MAINTITLE_BITMAP;
+    public static Bitmap MAIN_MENU_BG;
     public static Bitmap PAUSEBUTTON_IDLE_BITMAP;
     public static Bitmap PAUSEBUTTON_PRESSED;
     public static Bitmap HUD_BADGE_ANT_BITMAP;
@@ -268,6 +280,8 @@ public class Assets {
     public static Bitmap DRAW_BUTTON_PRESSED;
     public static Bitmap DRAW_BUTTON_DISABLED;
 
+    public static Bitmap STARTGAME_BUTTON_IDLE;
+    public static Bitmap STARTGAME_BUTTON_PRESSED;
 
     public static Music song;
     public static Sound click;

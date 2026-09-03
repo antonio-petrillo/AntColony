@@ -9,6 +9,7 @@ import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.Assets;
 import com.gdd.game.Game;
 import com.gdd.game.Settings;
+import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Panel;
 import com.gdd.game.ui.TextButton;
 import com.gdd.game.ui.UIController;
@@ -56,8 +57,7 @@ public class MainMenuScreen extends Screen {
     public void render() {
         canvas.drawARGB(255, 200, 200, 200);
 
-        canvas.drawBitmap(Assets.MAINBG_BITMAP, null, rectBG, paint);
-        canvas.drawBitmap(Assets.MAINTITLE_BITMAP, null, rectT, paint);
+        canvas.drawBitmap(Assets.MAIN_MENU_BG, null, rectBG, paint);
 
         uiController.draw(canvas);
     }
@@ -92,17 +92,18 @@ public class MainMenuScreen extends Screen {
         float fbufferW = Settings.fbufferWidth;
         float fbufferH = Settings.fbufferHeight;
 
-        float buttonW = 250f;
+        float buttonW = 200f;
         float buttonH = 100f;
 
         uiController.reset();
 
         WidgetGroup root = new Panel(0, 0, screenW, screenH);
 
-        TextButton startButton = new TextButton(
+        ImageButton startButton = new ImageButton(
                 (fbufferW/2)-(buttonW/2), (fbufferH/2)-(buttonH/2),
                 buttonW, buttonH);
-        startButton.setText("START GAME");
+        startButton.setIdleBitmap(Assets.STARTGAME_BUTTON_IDLE);
+        startButton.setPressedBitmap(Assets.STARTGAME_BUTTON_PRESSED);
         root.addChild(startButton);
 
         startButton.setOnClickListener(b -> {

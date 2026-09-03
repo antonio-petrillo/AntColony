@@ -18,13 +18,12 @@ import com.gdd.game.ui.WidgetGroup;
 public class MainMenuScreen extends Screen {
 
     private UIController uiController;
-    private Canvas canvas;
     private TouchHandler touchHandler;
 
+    private float fbWidth, fbHeight;
+    private Canvas canvas;
     private final Paint paint;
     private RectF rectBG = new RectF();
-    private RectF rectT = new RectF();
-    private float fbWidth, fbHeight;
 
     public MainMenuScreen(Game game) {
         super(game);
@@ -35,13 +34,13 @@ public class MainMenuScreen extends Screen {
         fbWidth = game.getFramebuffer().getWidth();
         fbHeight = game.getFramebuffer().getHeight();
         rectBG.set(0, 0, fbWidth, fbHeight);
-        float offsetY = 50;
-        rectT.set( (fbWidth/2)-195, 0+offsetY, (fbWidth/2)+195, 78+offsetY);
 
         touchHandler = game.getTouchHandler();
         uiController = game.getUiController();
 
+        uiController.reset();
         initUI();
+        uiController.updateLayout();
     }
 
     // ***************************************
@@ -56,9 +55,7 @@ public class MainMenuScreen extends Screen {
 
     public void render() {
         canvas.drawARGB(255, 200, 200, 200);
-
         canvas.drawBitmap(Assets.MAIN_MENU_BG, null, rectBG, paint);
-
         uiController.draw(canvas);
     }
 
@@ -87,20 +84,13 @@ public class MainMenuScreen extends Screen {
 
     private void initUI() {
 
-        float screenW = game.getScreensize().width;
-        float screenH = game.getScreensize().height;
-        float fbufferW = Settings.fbufferWidth;
-        float fbufferH = Settings.fbufferHeight;
+        WidgetGroup root = new Panel(0, 0, fbWidth, fbHeight);
 
         float buttonW = 200f;
         float buttonH = 100f;
 
-        uiController.reset();
-
-        WidgetGroup root = new Panel(0, 0, screenW, screenH);
-
         ImageButton startButton = new ImageButton(
-                (fbufferW/2)-(buttonW/2), (fbufferH/2)-(buttonH/2),
+                (fbWidth/2)-(buttonW/2), (fbHeight/2)-(buttonH/2),
                 buttonW, buttonH);
         startButton.setIdleBitmap(Assets.STARTGAME_BUTTON_IDLE);
         startButton.setPressedBitmap(Assets.STARTGAME_BUTTON_PRESSED);
@@ -112,6 +102,5 @@ public class MainMenuScreen extends Screen {
         });
 
         uiController.setRoot(root);
-        uiController.updateLayout();
     }
 }

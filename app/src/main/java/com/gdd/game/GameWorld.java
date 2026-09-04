@@ -308,17 +308,18 @@ public class GameWorld implements CardWorldListener {
 
     @Override
     public void onArrowShown() {
-
+        entities.add(cardArea);
     }
 
     @Override
     public void onArrowHidden() {
-
+        entities.remove(cardArea);
     }
 
     @Override
     public void onArrowTipMoved(float screenX, float screenY) {
-
+        cardArea.transform.x = camera.toMetersX(screenX);
+        cardArea.transform.y = camera.toMetersY(screenY);
     }
 
     @Override

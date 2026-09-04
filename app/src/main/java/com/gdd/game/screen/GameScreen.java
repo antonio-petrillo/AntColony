@@ -2,11 +2,16 @@ package com.gdd.game.screen;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 
 import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Music;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.Assets;
+import com.gdd.game.cards.Card;
+import com.gdd.game.cards.CardController;
+import com.gdd.game.cards.Hand;
+import com.gdd.game.cards.TargetArrow;
 import com.gdd.game.ecs.misc.Box;
 import com.gdd.game.Game;
 import com.gdd.game.GameWorld;
@@ -26,24 +31,33 @@ public class GameScreen extends Screen {
     public enum GameState { RUNNING, PAUSED }
     private GameState state;
 
-    private GameWorld gw;
-    private Label energyLabel, antsLabel;
+    // Layers
     private UIController uiController;
+    private CardController cardController;
+    private GameWorld gw;
+
+
+    private Label energyLabel, antsLabel;
     private float fbWidth, fbHeight;
     private Canvas canvas;
     private TouchHandler touchHandler;
-    private boolean consumed;
-
     // UI
     private Panel rootPanel, pausePopup;
 
     private Music music;
+
+    private TargetArrow arrow;
+    private ImageButton drawButton;
+
 
     /*
     public final Box worldSize, // physics world's size (in meters)
             screenSize, // smartphone's screen size (in pixel)
             cameraView; // camera position and size (in meters)
     */
+
+    private int cardCounter = 0; // TEST
+    private Hand hand;
 
     public GameScreen(Game game) {
         super(game);
@@ -80,6 +94,11 @@ public class GameScreen extends Screen {
         music.setLooping(true);
         music.setVolume(0.5f);
         music.play();
+
+        // Cards
+        buildHand();
+        arrow = new TargetArrow(0xFFFFD54F, 3f);
+        cardController = new CardController(hand, arrow, gw);
     }
 
     // ***************************************
@@ -92,27 +111,33 @@ public class GameScreen extends Screen {
 
         // Handle touch events
         for (Input.TouchEvent event: touchHandler.getTouchEvents()) {
-            consumed = uiController.processInput(event);
-            if(!consumed && state == GameState.RUNNING)
-                gw.inputSystem.processInput(event);
+            boolean consumed = uiController.processInput(event);
+
+            if(!consumed && state == GameState.RUNNING) {
+                consumed = cardController.processInput(event);
+
+                if(!consumed)
+                    gw.inputSystem.processInput(event);
+            }
         }
 
         if(state == GameState.RUNNING) {
+            cardController.update(deltaTime);
             gw.update(deltaTime);
-        }
 
-        // Update UI
-        energyLabel.setText(String.format("%d", gw.playerEnergy));
-        antsLabel.setText(String.format("%d", gw.spawnsys.antCount));
+            // Update UI
+            energyLabel.setText(String.format("%d", gw.playerEnergy));
+            antsLabel.setText(String.format("%d", gw.spawnsys.antCount));
+        }
     }
 
     @Override
     public void render() {
         // clear the screen with white
         canvas.drawARGB(255, 200, 200, 200);
-        // draw entities
+        // draw scene
         gw.render();
-        // draw widgets
+        cardController.draw(canvas);
         uiController.draw(canvas);
     }
 
@@ -129,7 +154,6 @@ public class GameScreen extends Screen {
     @Override
     public void resume() {
         music.play();
-        setGameState(GameState.RUNNING);
     }
 
     @Override
@@ -181,6 +205,26 @@ public class GameScreen extends Screen {
             setGameState(GameState.PAUSED);
         });
 
+        // ***** DRAW BUTTON *****
+
+        // TEST
+        drawButton = new ImageButton(fbWidth - 300, fbHeight - 200, 150, 75);
+        drawButton.setIdleBitmap(Assets.DRAW_BUTTON_IDLE);
+        drawButton.setPressedBitmap(Assets.DRAW_BUTTON_PRESSED);
+        drawButton.setDisabledBitmap(Assets.DRAW_BUTTON_DISABLED);
+        rootPanel.addChild(drawButton);
+
+        drawButton.setOnClickListener(b -> {
+            Assets.click.play(1);
+
+            // TEST
+            cardCounter++;
+            if(cardCounter % 2 == 0)
+                hand.add(new Card(-1, Card.Type.ATTACK, Card.TargetType.WASP, Assets.CARD_ATTACK));
+            else
+                hand.add(new Card(-1, Card.Type.HEAL, Card.TargetType.ANT, Assets.CARD_HEAL));
+        });
+
     }
 
     private void buildPausePopup() {
@@ -210,6 +254,29 @@ public class GameScreen extends Screen {
             Assets.click.play(1);
             setGameState(GameState.RUNNING);
         });
+    }
+
+    // ***************************************
+    //  Cards
+    // ***************************************
+
+    private void buildHand() {
+
+        float cardPeek = 10f;
+        float maxSpread = 200f;
+        float areaWidthPadding = 40f;
+
+        float areaHeight = 100f;
+        float areaWidth = maxSpread + areaWidthPadding * 2f;
+
+        RectF handArea = new RectF(
+                fbWidth / 2f - areaWidth / 2f, // left
+                fbHeight - areaHeight,             // top
+                fbWidth / 2f + areaWidth / 2f,     // right
+                fbHeight                           // bottom
+        );
+
+        hand = new Hand(handArea, cardPeek, maxSpread);
     }
 
     // ***************************************

@@ -5,7 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 import com.badlogic.androidgames.framework.impl.TouchHandler;
+import com.gdd.game.cards.Card;
+import com.gdd.game.cards.CardWorldListener;
 import com.gdd.game.ecs.components.BoxRenderComp;
+import com.gdd.game.ecs.components.CircleRenderComp;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.InputComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
@@ -39,7 +42,7 @@ import java.util.Random;
 /*
  * Gestore principale della scena e degli oggetti di gioco.
  */
-public class GameWorld {
+public class GameWorld implements CardWorldListener {
 
     public final Bitmap frameBuffer;
     public final Canvas canvas;
@@ -85,7 +88,6 @@ public class GameWorld {
     private TiledBackgroundRenderer background;
 
     // TEST
-    private final Entity cardArea;
     private boolean cardAreaOnScreen;
 
     /* Energy for mechanics and mechanics in general
@@ -94,6 +96,9 @@ public class GameWorld {
     public int playerEnergy = 0;
     public final GameMechanics mechanics;
     public GameMechanics.Action action;
+
+    private final Entity cardArea;
+
 
     /*
      * Constructor.
@@ -295,5 +300,29 @@ public class GameWorld {
 
             this.action = null;
         }
+    }
+
+    // ***************************************
+    //  Cards
+    // ***************************************
+
+    @Override
+    public void onArrowShown() {
+
+    }
+
+    @Override
+    public void onArrowHidden() {
+
+    }
+
+    @Override
+    public void onArrowTipMoved(float screenX, float screenY) {
+
+    }
+
+    @Override
+    public void onCardPlayed(Card card) {
+
     }
 }

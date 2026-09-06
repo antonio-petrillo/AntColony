@@ -302,6 +302,7 @@ public class GameWorld implements CardWorldListener {
             return false;
         }
         this.action = card.action;
+        playerEnergy -= action.cost;
         var transform = cardArea.transform;
         mechanics.action(this.action, transform);
         return true;

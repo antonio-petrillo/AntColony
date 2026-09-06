@@ -110,8 +110,16 @@ public class SpawnSystem  implements System {
         }
         if (timerFood >= Entity.FOOD_SPAWN_INTERVAL) {
             float x, y;
-            x = rng.nextFloat(worldSize.xmin + BORDER_MARGIN, worldSize.xmax - BORDER_MARGIN);
-            y = rng.nextFloat(worldSize.ymin + BORDER_MARGIN, worldSize.ymax - BORDER_MARGIN);
+            if (gw.playerEnergy < 5) {
+
+                var angle = rng.nextFloat(0, (float)(2 * Math.PI));
+                var radius = rng.nextFloat(2.0f, 4.0f);
+                x = nest.transform.x + (float)(radius * Math.cos(angle));
+                y = nest.transform.y + (float)(radius * Math.sin(angle));
+            } else {
+                x = rng.nextFloat(worldSize.xmin + BORDER_MARGIN, worldSize.xmax - BORDER_MARGIN);
+                y = rng.nextFloat(worldSize.ymin + BORDER_MARGIN, worldSize.ymax - BORDER_MARGIN);
+            }
             foodCount++;
             entities.add(FoodFactory.makeFood(gw, x, y));
             timerFood = 0f;

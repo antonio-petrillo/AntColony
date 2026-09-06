@@ -7,7 +7,8 @@ public class Card {
     public enum Action {
         ATTACK_ALL(30, 1), HEAL_ALL(15, 1),
         ATTACK_ENEMY(20, 3), HEAL_ALLIES(10, 3),
-        DOUBLE_ENERGY(-1, 0);
+        DOUBLE_ENERGY(-1, 1), SHUFFLE_HAND(-1, 1),
+        DOUBLE_SPEED(-1, 1), INCREASE_FOV(-1, 1);
 
         public final int amount, cost;
 

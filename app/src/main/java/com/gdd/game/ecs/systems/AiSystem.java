@@ -58,8 +58,6 @@ public final class AiSystem implements System {
         if (aiState.isColliding) {
             aiState.isColliding = false;
 
-//            var newDirection = phys.body.getAngle() + (float) Math.PI
-//                    + rng.nextFloat(-Entity.WASP_MAX_STEERING_ANGLE / 2, Entity.WASP_MAX_STEERING_ANGLE / 2);
             var newDirection = (phys.body.getAngle() + (float) Math.PI) % 360.f;
             phys.body.setTransform(phys.body.getPositionX(), phys.body.getPositionY(), newDirection);
             aiState.timeWanderAccumulator = 0;

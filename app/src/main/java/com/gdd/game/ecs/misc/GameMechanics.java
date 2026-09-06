@@ -10,6 +10,7 @@ import com.gdd.game.ecs.entities.EntityTag;
 import com.gdd.game.ecs.entities.Transform;
 import com.google.fpl.liquidfun.Fixture;
 import com.google.fpl.liquidfun.QueryCallback;
+import static  com.gdd.game.cards.Card.Action;
 
 public class GameMechanics {
 
@@ -19,16 +20,6 @@ public class GameMechanics {
         this.gw = gw;
     }
 
-    public enum Action {
-        ATTACK_ALL(30, 1), HEAL_ALL(15, 1), ATTACK_ENEMY(20, 3), HEAL_ALLIES(10, 3);
-
-        public final int amount, cost;
-
-        Action(int amount, int cost) {
-            this.amount = amount;
-            this.cost = cost;
-        }
-    }
 
     private static final class QueryContext {
         Action action;
@@ -72,6 +63,12 @@ public class GameMechanics {
                                 ai.restore();
                                 ai.enemyToAttack = null;
                             }
+                        }
+                    }
+                    case DOUBLE_ENERGY -> {
+                        gw.playerEnergy <<= 1;
+                        if (gw.playerEnergy > 100) {
+                            gw.playerEnergy = 100;
                         }
                     }
                 }

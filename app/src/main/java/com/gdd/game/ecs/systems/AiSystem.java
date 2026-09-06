@@ -203,6 +203,8 @@ public final class AiSystem implements System {
                     phys.body.setTransform(x, y, rng.nextFloat(30.0f) - 15.0f);
                     aiState.timeWanderAccumulator = aiState.timeBetweenActions + 1.0f;
                     gw.playerEnergy++; // TODO: clamp between 0 and max energy like 255
+                    if (gw.playerEnergy < 0) { gw.playerEnergy = 0; }
+                    else if (gw.playerEnergy > 100) { gw.playerEnergy = 100; }
                     return;
                 }
 

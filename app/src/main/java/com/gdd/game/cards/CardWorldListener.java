@@ -15,5 +15,5 @@ public interface CardWorldListener {
     void onArrowTipMoved(float x, float y);
 
     // Richimato quando il giocatore ha giocato una carta
-    void onCardPlayed(Card card);
+    boolean onCardPlayed(Card card);
 }

@@ -8,7 +8,6 @@ import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.cards.Card;
 import com.gdd.game.cards.CardWorldListener;
 import com.gdd.game.ecs.components.BoxRenderComp;
-import com.gdd.game.ecs.components.CircleRenderComp;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.InputComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
@@ -34,6 +33,7 @@ import com.google.fpl.liquidfun.PolygonShape;
 import com.google.fpl.liquidfun.Vec2;
 import com.google.fpl.liquidfun.World;
 import com.google.fpl.liquidfun.Body;
+import static com.gdd.game.cards.Card.Action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,10 +95,9 @@ public class GameWorld implements CardWorldListener {
 
     public int playerEnergy = 0;
     public final GameMechanics mechanics;
-    public GameMechanics.Action action;
 
+    public Action action;
     private final Entity cardArea;
-
 
     /*
      * Constructor.
@@ -205,7 +204,6 @@ public class GameWorld implements CardWorldListener {
     }
 
     private void syncTransform() {
-
         int n = entities.size();
         for(int i=0; i<n; i++)  {
 
@@ -218,7 +216,6 @@ public class GameWorld implements CardWorldListener {
     }
 
     private void addWorldBoundaries() {
-
         float THICKNESS = 1f;
         float xmax = worldSize.width / 2;
         float xmin = -xmax;
@@ -279,29 +276,6 @@ public class GameWorld implements CardWorldListener {
         return null;
     }
 
-    public void addCardArea(GameMechanics.Action action) {
-        if(!cardAreaOnScreen && action.cost <= playerEnergy) {
-            this.action = action;
-            cardArea.transform.x = camera.getCenterX();
-            cardArea.transform.y = camera.getCenterY();
-            entities.add(cardArea);
-            cardAreaOnScreen = true;
-        }
-    }
-
-    public void removeCardArea(boolean applyMechanics) {
-        if (!cardAreaOnScreen) return;
-        entities.remove(cardArea);
-        cardAreaOnScreen = false;
-
-        if (applyMechanics) {
-            playerEnergy -= action.cost;
-            mechanics.action(action, cardArea.transform);
-
-            this.action = null;
-        }
-    }
-
     // ***************************************
     //  Cards
     // ***************************************
@@ -323,7 +297,13 @@ public class GameWorld implements CardWorldListener {
     }
 
     @Override
-    public void onCardPlayed(Card card) {
-
+    public boolean onCardPlayed(Card card) {
+        if (!card.action.canActivate(playerEnergy)) {
+            return false;
+        }
+        this.action = card.action;
+        var transform = cardArea.transform;
+        mechanics.action(this.action, transform);
+        return true;
     }
 }

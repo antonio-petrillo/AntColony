@@ -22,6 +22,7 @@ import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
 import com.gdd.game.ui.UIController;
+import static com.gdd.game.cards.Card.Action;
 
 /*
  * Schermata di gameplay.
@@ -48,13 +49,6 @@ public class GameScreen extends Screen {
 
     private TargetArrow arrow;
     private ImageButton drawButton;
-
-
-    /*
-    public final Box worldSize, // physics world's size (in meters)
-            screenSize, // smartphone's screen size (in pixel)
-            cameraView; // camera position and size (in meters)
-    */
 
     private int cardCounter = 0; // TEST
     private Hand hand;
@@ -220,9 +214,9 @@ public class GameScreen extends Screen {
             // TEST
             cardCounter++;
             if(cardCounter % 2 == 0)
-                hand.add(new Card(-1, Card.Type.ATTACK, Card.TargetType.WASP, Assets.CARD_ATTACK));
+                hand.add(new Card(-1, Action.ATTACK_ALL, Assets.CARD_ATTACK));
             else
-                hand.add(new Card(-1, Card.Type.HEAL, Card.TargetType.ANT, Assets.CARD_HEAL));
+                hand.add(new Card(-1, Action.HEAL_ALLIES, Assets.CARD_HEAL));
         });
 
     }

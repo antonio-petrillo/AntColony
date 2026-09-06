@@ -114,8 +114,12 @@ public class CardController {
 
     private void onDragEnd(float px, float py) {
         if (state == State.TARGETING) {
-            worldListener.onCardPlayed(card.getCard());
-            hand.remove(card);
+            if (worldListener.onCardPlayed(card.getCard())) {
+                hand.remove(card);
+            } else {
+                //TODO: to reposition in hand when card is not played
+                card.moveTowards(hand.getTargetAnchorX(), hand.getTargetAnchorY());
+            }
         } else {
             card.setState(CardView.State.IDLE);
         }

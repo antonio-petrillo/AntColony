@@ -14,7 +14,7 @@ public class CardController {
     private int activePointerId = -1;
 
     private final Hand hand;
-    private CardView card;
+    private CardView selectedCard;
     private final TargetArrow arrow;
 
     private float grabOffsetX, grabOffsetY; // offset tra pivot carta e punto di touch al DOWN
@@ -76,14 +76,14 @@ public class CardController {
     // ***************************************
 
     private void onDragStart(CardView hit, float px, float py) {
-        card = hit;
-        grabOffsetX = card.getPivotX() - px;
-        grabOffsetY = card.getPivotY() - py;
+        selectedCard = hit;
+        grabOffsetX = selectedCard.getPivotX() - px;
+        grabOffsetY = selectedCard.getPivotY() - py;
 
-        card.moveTowards(card.getPivotX(), card.getPivotY());
+        selectedCard.moveTowards(selectedCard.getPivotX(), selectedCard.getPivotY());
 
-        hand.bringToFront(card);
-        card.setState(CardView.State.DRAGGING);
+        hand.bringToFront(selectedCard);
+        selectedCard.setState(CardView.State.DRAGGING);
         state = State.DRAGGING;
     }
 
@@ -92,39 +92,39 @@ public class CardController {
 
         if (state == State.DRAGGING && !insideArea) {
             state = State.TARGETING;
-            card.setState(CardView.State.TARGETING);
+            selectedCard.setState(CardView.State.TARGETING);
             arrow.startAt(hand.getTargetAnchorX(), hand.getTargetAnchorArrowY());
             arrow.show();
             worldListener.onArrowShown();
         } else if (state == State.TARGETING && insideArea) {
             state = State.DRAGGING;
-            card.setState(CardView.State.DRAGGING);
+            selectedCard.setState(CardView.State.DRAGGING);
             arrow.hide();
             worldListener.onArrowHidden();
         }
 
         if (state == State.TARGETING) {
-            card.moveTowards(hand.getTargetAnchorX(), hand.getTargetAnchorY());
+            selectedCard.moveTowards(hand.getTargetAnchorX(), hand.getTargetAnchorY());
             arrow.updateTip(px, py);
             worldListener.onArrowTipMoved(px, py);
         } else {
-            card.moveTowards(px + grabOffsetX, py + grabOffsetY);
+            selectedCard.moveTowards(px + grabOffsetX, py + grabOffsetY);
         }
     }
 
     private void onDragEnd(float px, float py) {
         if (state == State.TARGETING) {
-            if (worldListener.onCardPlayed(card.getCard())) {
-                hand.remove(card);
+            if (worldListener.onCardPlayed(selectedCard.getCard())) {
+                hand.remove(selectedCard);
             } else {
-                card.setState(CardView.State.IDLE);
+                selectedCard.setState(CardView.State.IDLE);
             }
         } else {
-            card.setState(CardView.State.IDLE);
+            selectedCard.setState(CardView.State.IDLE);
         }
         arrow.hide();
         worldListener.onArrowHidden();
-        card = null;
+        selectedCard = null;
         state = State.IDLE;
     }
 }

@@ -107,4 +107,8 @@ public class Hand {
     public float getTargetAnchorArrowY() {
         return targetAnchorY - CardView.HEIGHT / 2f;
     }
+
+    public int getNumberOfCards() {
+        return cards.size();
+    }
 }

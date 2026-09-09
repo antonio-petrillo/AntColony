@@ -37,7 +37,6 @@ public class GameScreen extends Screen {
     private CardController cardController;
     private GameWorld gw;
 
-
     private Label energyLabel, antsLabel;
     private float fbWidth, fbHeight;
     private Canvas canvas;
@@ -47,11 +46,13 @@ public class GameScreen extends Screen {
 
     private Music music;
 
-    private TargetArrow arrow;
-    private ImageButton drawButton;
-
-    private int cardCounter = 0; // TEST
+    // Cards
     private Hand hand;
+    private TargetArrow arrow;
+    private boolean drawCardsPhase = true;
+    private int maxCardNumber = 5;
+    private float pickDelay = 0;
+
 
     public GameScreen(Game game) {
         super(game);
@@ -116,6 +117,11 @@ public class GameScreen extends Screen {
         }
 
         if(state == GameState.RUNNING) {
+
+            if(hand.getNumberOfCards() == 0)
+                drawCardsPhase = true;
+            if(drawCardsPhase)
+                pickCard(deltaTime);
             cardController.update(deltaTime);
             gw.update(deltaTime);
 
@@ -201,7 +207,8 @@ public class GameScreen extends Screen {
 
         // ***** DRAW BUTTON *****
 
-        // TEST
+        // Attualmente non serve, lo lascio per ogni evenienza
+        /*
         drawButton = new ImageButton(fbWidth - 300, fbHeight - 200, 150, 75);
         drawButton.setIdleBitmap(Assets.DRAW_BUTTON_IDLE);
         drawButton.setPressedBitmap(Assets.DRAW_BUTTON_PRESSED);
@@ -211,16 +218,15 @@ public class GameScreen extends Screen {
         drawButton.setOnClickListener(b -> {
             Assets.click.play(1);
 
-            // TEST
             cardCounter++;
             if(cardCounter % 2 == 0)
-//                hand.add(new Card(-1, Action.DOUBLE_SPEED, Assets.CARD_ATTACK));
+//                // hand.add(new Card(-1, Action.DOUBLE_SPEED, Assets.CARD_ATTACK));
                   hand.add(new Card(-1, Action.ATTACK_ALL, Assets.CARD_ATTACK));
             else
-//                hand.add(new Card(-1, Action.INCREASE_FOV, Assets.CARD_HEAL));
+//                // hand.add(new Card(-1, Action.INCREASE_FOV, Assets.CARD_HEAL));
                 hand.add(new Card(-1, Action.HEAL_ALLIES, Assets.CARD_HEAL));
         });
-
+        */
     }
 
     private void buildPausePopup() {
@@ -276,7 +282,7 @@ public class GameScreen extends Screen {
     }
 
     // ***************************************
-    //  SCREEN
+    //  Screen
     // ***************************************
 
     private void setGameState(GameState newState) {
@@ -296,4 +302,22 @@ public class GameScreen extends Screen {
         }
     }
 
+    /*
+     * Pesca n carte dal deck, con un certo delay, e le aggiunge alla mano.
+     */
+    private void pickCard(float deltaTime) {
+
+        float DELAY = 0.10f;
+
+        pickDelay += deltaTime;
+        if(pickDelay < DELAY)
+            return;
+
+        // Pesca una carta
+        hand.add(new Card(-1, Action.ATTACK_ALL, Assets.CARD_ATTACK));
+        pickDelay = 0;
+
+        if(hand.getNumberOfCards() >= maxCardNumber)
+            drawCardsPhase = false;
+    }
 }

@@ -38,6 +38,8 @@ public class FoodFactory {
         BodyDef bdef = new BodyDef();
         bdef.setType(BodyType.dynamicBody);
         bdef.setPosition(x, y);
+        bdef.setLinearDamping(4);
+        bdef.setAngularDamping(4);
 
         var body = gw.world.createBody(bdef);
 
@@ -48,8 +50,8 @@ public class FoodFactory {
 
         fdef.setShape(shape);
         fdef.setRestitution(0);
-        fdef.setFriction(0);
-        fdef.setDensity(0.5f); // TODO: spqwn food with differents weights
+        fdef.setFriction(0.3f);
+        fdef.setDensity(0.5f);
 
         body.createFixture(fdef);
 

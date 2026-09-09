@@ -214,11 +214,11 @@ public class GameScreen extends Screen {
             // TEST
             cardCounter++;
             if(cardCounter % 2 == 0)
-                hand.add(new Card(-1, Action.DOUBLE_SPEED, Assets.CARD_ATTACK));
-//              hand.add(new Card(-1, Action.ATTACK_ALL, Assets.CARD_ATTACK));
+//                hand.add(new Card(-1, Action.DOUBLE_SPEED, Assets.CARD_ATTACK));
+                  hand.add(new Card(-1, Action.ATTACK_ALL, Assets.CARD_ATTACK));
             else
-                hand.add(new Card(-1, Action.INCREASE_FOV, Assets.CARD_HEAL));
-//                hand.add(new Card(-1, Action.HEAL_ALLIES, Assets.CARD_HEAL));
+//                hand.add(new Card(-1, Action.INCREASE_FOV, Assets.CARD_HEAL));
+                hand.add(new Card(-1, Action.HEAL_ALLIES, Assets.CARD_HEAL));
         });
 
     }

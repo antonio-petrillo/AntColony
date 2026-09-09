@@ -117,15 +117,14 @@ public class CardController {
             if (worldListener.onCardPlayed(card.getCard())) {
                 hand.remove(card);
             } else {
-                //TODO: to reposition in hand when card is not played
-                card.moveTowards(hand.getTargetAnchorX(), hand.getTargetAnchorY());
+                card.setState(CardView.State.IDLE);
             }
         } else {
             card.setState(CardView.State.IDLE);
         }
         arrow.hide();
         worldListener.onArrowHidden();
-        state = State.IDLE;
         card = null;
+        state = State.IDLE;
     }
 }

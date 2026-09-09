@@ -45,7 +45,8 @@ public class AntFactory {
         ant.addComponent(new BitmapRenderComp(Assets.ANT_BITMAP));
         ant.addComponent(new HealthComponent(20));
 
-        float timeBetweenActions = rng.nextFloat(1.5f, 5.0f);
+        // TODO: maybe use an exponential distribution
+        float timeBetweenActions = rng.nextFloat(1.5f, 3.0f);
         ant.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 10));
 
         // ***** PHYSICS

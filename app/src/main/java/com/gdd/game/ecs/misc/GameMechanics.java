@@ -4,6 +4,7 @@ import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.HealthComponent;
+import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.entities.Entity;
 
 import com.gdd.game.ecs.entities.EntityTag;
@@ -36,10 +37,12 @@ public class GameMechanics {
                 var health = (HealthComponent) entity.getComponent(ComponentType.HEALTH);
                 assert (health != null);
                 var ai = (AiComponent) entity.getComponent(ComponentType.AI);
+                assert (ai != null);
                 switch (ctx.action) {
                     case HEAL_ALL -> {
                         health.heal(ctx.action.amount);
                     }
+                    // NOTE: heal only ants
                     case HEAL_ALLIES -> {
                         if (entity.tag == EntityTag.ANT) {
                             health.heal(ctx.action.amount);
@@ -54,6 +57,7 @@ public class GameMechanics {
                             ai.enemyToAttack = null;
                         }
                     }
+                    // NOTE: attack only wasps
                     case ATTACK_ENEMY -> {
                         if (entity.tag == EntityTag.WASP) {
                             health.takeDamage(ctx.action.amount);
@@ -66,10 +70,21 @@ public class GameMechanics {
                         }
                     }
                     case DOUBLE_ENERGY -> {
-                        gw.playerEnergy <<= 1;
-                        if (gw.playerEnergy > 100) {
-                            gw.playerEnergy = 100;
-                        }
+                        //NOTE: just to silence compiler, this case is handled elsewhere
+                    }
+                    case INCREASE_FOV -> {
+                       var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
+                       assert(phys != null);
+
+                       phys.speedModifier = 2.0f;
+                       ai.timerFOVModifier = 3.0f;
+                    }
+                    // NOTE: applies only to ants
+                    case DOUBLE_SPEED -> {
+                        var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
+                        assert (phys != null);
+                        phys.speedModifier = 2.0f;
+                        ai.timerSpeedModifier = 3.0f;
                     }
                 }
 
@@ -79,6 +94,14 @@ public class GameMechanics {
 
     public void action(Action action, Transform transform) {
         ctx.action = action;
+
+        if (action == Action.DOUBLE_ENERGY) {
+            gw.playerEnergy <<= 1;
+            if (gw.playerEnergy > 100) {
+                gw.playerEnergy = 100;
+            }
+            return;
+        }
 
         gw.world.queryAABB(callback,
                 transform.x - transform.halfWidth, transform.y - transform.halfWidth,

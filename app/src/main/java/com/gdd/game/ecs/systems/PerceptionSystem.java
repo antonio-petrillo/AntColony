@@ -82,13 +82,13 @@ public class PerceptionSystem implements System {
 
             switch (entity.tag) {
             case ANT: {
-                ctx.range = Entity.ANT_VIEW_RANGE;
+                ctx.range = Entity.ANT_VIEW_RANGE * phys.fovPerceptionModifier;
                 ctx.angle = Entity.ANT_VIEW_ANGLE;
                 ctx.enemyTag = EntityTag.WASP;
                 ctx.canGatherFood = true;
             } break;
             case WASP: {
-                ctx.range = Entity.WASP_VIEW_RANGE;
+                ctx.range = Entity.WASP_VIEW_RANGE * phys.fovPerceptionModifier;
                 ctx.angle = Entity.WASP_VIEW_ANGLE;
                 ctx.enemyTag = EntityTag.ANT;
                 ctx.canGatherFood = true;

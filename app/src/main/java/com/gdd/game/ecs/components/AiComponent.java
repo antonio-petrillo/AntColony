@@ -24,6 +24,11 @@ public class AiComponent extends Component {
     public float timeWanderAccumulator = 0.0f;
     public float timeBetweenActions;
 
+    public float timerSpeedModifierAccumulator = 0.0f;
+    public float timerSpeedModifier = -1;
+    public float timerFOVModifierAccumulator = 0.0f;
+    public float timerFOVModifier = -1;
+
     public boolean canBeGarbageCollected = false;
     public Entity foodToPickup = null; // ref to the food to pickup
     public boolean pickedUp = false; // indicate whether the food is picked up or not

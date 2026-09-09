@@ -111,7 +111,7 @@ public final class AiSystem implements System {
         }
         var enemyPhys = (PhysicComponent) aiState.enemyInSight.getComponent(ComponentType.PHYSIC);
         assert(enemyPhys != null);
-        steerToward(phys, enemyPhys.body.getPositionX(), enemyPhys.body.getPositionY(), Entity.WASP_SPEED);
+        steerToward(phys, enemyPhys.body.getPositionX(), enemyPhys.body.getPositionY(), Entity.WASP_SPEED * phys.speedModifier);
     }
     public void gather(PhysicComponent phys, AiComponent aiState, float dt) {
         if (aiState.foodInSight == null) {
@@ -120,10 +120,35 @@ public final class AiSystem implements System {
         }
         var foodPhys = (PhysicComponent) aiState.foodInSight.getComponent(ComponentType.PHYSIC);
         assert(foodPhys != null);
-        steerToward(phys, foodPhys.body.getPositionX(), foodPhys.body.getPositionY(), Entity.ANT_SPEED);
+        steerToward(phys, foodPhys.body.getPositionX(), foodPhys.body.getPositionY(), Entity.ANT_SPEED * phys.speedModifier);
+    }
+
+    public void updateFOVModifierTimer(PhysicComponent phys, AiComponent aiState, float dt) {
+        if (aiState.timerFOVModifier > 0.0f) {
+            aiState.timerFOVModifierAccumulator += dt;
+
+            if (aiState.timerFOVModifierAccumulator >= aiState.timerFOVModifier) {
+                aiState.timerFOVModifierAccumulator = 0.0f;
+                aiState.timerFOVModifier = -1.0f; // sentinel
+                phys.fovPerceptionModifier = PhysicComponent.DEFAULT_FOV_PERCEPTION_MODIFIER;
+            }
+        }
+    }
+    public void updateSpeedModifierTimer(PhysicComponent phys, AiComponent aiState, float dt) {
+        if (aiState.timerSpeedModifier > 0.0f) {
+            aiState.timerSpeedModifierAccumulator += dt;
+
+            if (aiState.timerSpeedModifierAccumulator >= aiState.timerSpeedModifier) {
+                aiState.timerSpeedModifierAccumulator = 0.0f;
+                aiState.timerSpeedModifier = -1.0f; // sentinel
+                phys.speedModifier = PhysicComponent.DEFAULT_SPEED_MODIFIER;
+            }
+        }
     }
 
     public void wasp(Entity entity, PhysicComponent phys, AiComponent aiState, float dt) {
+        updateSpeedModifierTimer(phys, aiState, dt);
+        updateFOVModifierTimer(phys, aiState, dt);
         switch (aiState.current) {
             case WANDER: {
                 wander(entity, phys, aiState, dt);
@@ -161,6 +186,10 @@ public final class AiSystem implements System {
             aiState.transition(AiComponent.State.RETURN);
             return;
         }
+
+        updateSpeedModifierTimer(phys, aiState, dt);
+        updateFOVModifierTimer(phys, aiState, dt);
+
         switch (aiState.current) {
             case WANDER: {
                 wander(entity, phys, aiState, dt);
@@ -199,8 +228,8 @@ public final class AiSystem implements System {
                     phys.body.setAngularVelocity(0);
 
                     phys.body.setTransform(x, y, rng.nextFloat(30.0f) - 15.0f);
-                    aiState.timeWanderAccumulator = aiState.timeBetweenActions + 1.0f;
-                    gw.playerEnergy++; // TODO: clamp between 0 and max energy like 255
+                    aiState.timeWanderAccumulator = aiState.timeBetweenActions + dt;
+                    gw.playerEnergy++;
                     if (gw.playerEnergy < 0) { gw.playerEnergy = 0; }
                     else if (gw.playerEnergy > 100) { gw.playerEnergy = 100; }
                     return;
@@ -210,8 +239,8 @@ public final class AiSystem implements System {
 
                 phys.body.setTransform(x, y, angleNest);
                 var vel = phys.body.getLinearVelocity();
-                vel.setX(Entity.ANT_SPEED * (float) Math.cos(angleNest));
-                vel.setY(Entity.ANT_SPEED * (float) Math.sin(angleNest));
+                vel.setX(Entity.ANT_SPEED * phys.speedModifier * (float) Math.cos(angleNest));
+                vel.setY(Entity.ANT_SPEED * phys.speedModifier * (float) Math.sin(angleNest));
                 phys.body.setAngularVelocity(0);
 
             }

@@ -29,8 +29,15 @@ public class Assets {
     private static final String CONTINUEBUTTON_IDLE_PATH = "continue_button_idle_128x64.png";
     private static final String CONTINUEBUTTON_PRESSED_PATH = "continue_button_pressed_128x64.png";
     private static final String TITLE_PAUSEMENU_PATH = "title_pause_menu.png";
-    private static final String CARD_ATTACK_PATH = "card_attack_64x128.png";
-    private static final String CARD_HEAL_PATH = "card_heal_64x128.png";
+
+    private static final String CARD_ATTACK_ALL_PATH = "card_damage_all_96x160.png";
+    private static final String CARD_ATTACK_ENEMIES_PATH = "card_damage_enemies_96x160.png";
+    private static final String CARD_HEAL_ALL_PATH = "card_heal_all_96x160.png";
+    private static final String CARD_HEAL_ALLIES_PATH = "card_heal_allies_96x160.png";
+    private static final String CARD_DOUBLE_ENERGY_PATH = "card_double_energy_96x160.png";
+    private static final String CARD_DOUBLE_SPEED_PATH = "card_speed_96x160.png";
+    private static final String CARD_SHUFFLE_HAND_PATH = "card_shuffle_96x160.png";
+    private static final String CARD_INCREASE_FOV_PATH = "card_fov_96x160.png";
 
     private static final String DRAW_BUTTON_IDLE_PATH = "draw_button_idle_128x64.png";
     private static final String DRAW_BUTTON_PRESSED_PATH = "draw_button_pressed_128x64.png";
@@ -180,25 +187,84 @@ public class Assets {
         }
 
 
-        try (var stream = manager.open(CARD_ATTACK_PATH)) {
-            CARD_ATTACK = BitmapFactory.decodeStream(stream);
+        try (var stream = manager.open(CARD_ATTACK_ALL_PATH)) {
+            CARD_ATTACK_ALL = BitmapFactory.decodeStream(stream);
         } catch (IOException e) {
             throw new RuntimeException("Assets loading failed: ", e);
         }
 
-        if (CARD_ATTACK == null) {
-            throw new RuntimeException("Can't load bitmap: " + CARD_ATTACK);
+        if (CARD_ATTACK_ALL == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_ATTACK_ALL);
         }
 
-
-        try (var stream = manager.open(CARD_HEAL_PATH)) {
-            CARD_HEAL = BitmapFactory.decodeStream(stream);
+        try (var stream = manager.open(CARD_ATTACK_ENEMIES_PATH)) {
+            CARD_ATTACK_ENEMIES = BitmapFactory.decodeStream(stream);
         } catch (IOException e) {
             throw new RuntimeException("Assets loading failed: ", e);
         }
 
-        if (CARD_HEAL == null) {
-            throw new RuntimeException("Can't load bitmap: " + CARD_HEAL);
+        if (CARD_ATTACK_ENEMIES == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_ATTACK_ENEMIES);
+        }
+
+        try (var stream = manager.open(CARD_HEAL_ALL_PATH)) {
+            CARD_HEAL_ALL = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CARD_HEAL_ALL == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_HEAL_ALL);
+        }
+
+        try (var stream = manager.open(CARD_HEAL_ALLIES_PATH)) {
+            CARD_HEAL_ALLIES = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CARD_HEAL_ALLIES == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_HEAL_ALLIES);
+        }
+
+        try (var stream = manager.open(CARD_DOUBLE_ENERGY_PATH)) {
+            CARD_DOUBLE_ENERGY = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CARD_DOUBLE_ENERGY == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_DOUBLE_ENERGY);
+        }
+
+        try (var stream = manager.open(CARD_DOUBLE_SPEED_PATH)) {
+            CARD_DOUBLE_SPEED = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CARD_DOUBLE_SPEED == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_DOUBLE_SPEED);
+        }
+
+        try (var stream = manager.open(CARD_SHUFFLE_HAND_PATH)) {
+            CARD_SHUFFLE_HAND = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CARD_SHUFFLE_HAND == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_SHUFFLE_HAND);
+        }
+
+        try (var stream = manager.open(CARD_INCREASE_FOV_PATH)) {
+            CARD_INCREASE_FOV = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (CARD_INCREASE_FOV == null) {
+            throw new RuntimeException("Can't load bitmap: " + CARD_INCREASE_FOV);
         }
 
 
@@ -273,8 +339,15 @@ public class Assets {
     public static Bitmap CONTINUEBUTTON_PRESSED;
     public static Bitmap TITLE_PAUSEMENU;
 
-    public static Bitmap CARD_ATTACK;
-    public static Bitmap CARD_HEAL;
+    public static Bitmap CARD_ATTACK_ALL;
+    public static Bitmap CARD_ATTACK_ENEMIES;
+    public static Bitmap CARD_HEAL_ALL;
+    public static Bitmap CARD_HEAL_ALLIES;
+    public static Bitmap CARD_DOUBLE_ENERGY;
+    public static Bitmap CARD_DOUBLE_SPEED;
+    public static Bitmap CARD_SHUFFLE_HAND;
+    public static Bitmap CARD_INCREASE_FOV;
+
 
     public static Bitmap DRAW_BUTTON_IDLE;
     public static Bitmap DRAW_BUTTON_PRESSED;

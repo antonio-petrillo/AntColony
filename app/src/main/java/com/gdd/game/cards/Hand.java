@@ -95,6 +95,7 @@ public class Hand {
 
     /*
      * Usato per l'animazione di quando la carta è toccata.
+     * NOTE: invece di '.remove' + '.add' (O(n)) is può invertire gli elementi usando gli indici dato che utilizziamo arraylist.
      */
     public void bringToFront(CardView view) {
         cards.remove(view);

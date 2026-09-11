@@ -10,6 +10,7 @@ import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.Assets;
 import com.gdd.game.cards.Card;
 import com.gdd.game.cards.CardController;
+import com.gdd.game.cards.Draw;
 import com.gdd.game.cards.Hand;
 import com.gdd.game.cards.TargetArrow;
 import com.gdd.game.ecs.misc.Box;
@@ -23,6 +24,7 @@ import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
 import com.gdd.game.ui.UIController;
 import static com.gdd.game.cards.Card.Action;
+import static com.gdd.game.cards.Card.Rarity;
 
 /*
  * Schermata di gameplay.
@@ -314,7 +316,8 @@ public class GameScreen extends Screen {
             return;
 
         // Pesca una carta
-        hand.add(new Card(-1, Action.ATTACK_ALL, Assets.CARD_ATTACK));
+        var card = Draw.nextCard();
+        hand.add(card);
         pickDelay = 0;
 
         if(hand.getNumberOfCards() >= maxCardNumber)

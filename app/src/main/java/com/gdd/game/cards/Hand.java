@@ -11,7 +11,7 @@ public class Hand {
 
     private final int BOTTOM_BAR_COLOR = 0xB42D1C0E;
 
-    private final List<CardView> cards = new ArrayList<>();
+    public final List<CardView> cards = new ArrayList<>();
 
     private final float targetAnchorX, targetAnchorY; // posizione fissa per la carta selezionata (stato TARGETING)
 

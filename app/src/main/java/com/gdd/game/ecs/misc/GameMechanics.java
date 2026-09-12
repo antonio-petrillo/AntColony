@@ -95,12 +95,18 @@ public class GameMechanics {
     public void action(Action action, Transform transform) {
         ctx.action = action;
 
-        if (action == Action.DOUBLE_ENERGY) {
-            gw.playerEnergy <<= 1;
-            if (gw.playerEnergy > 100) {
-                gw.playerEnergy = 100;
+        switch (action) {
+            case SHUFFLE_HAND -> {
+                gw.hand.cards.clear();
             }
-            return;
+            case DOUBLE_ENERGY -> {
+                gw.playerEnergy <<= 1;
+                if (gw.playerEnergy > 100) {
+                    gw.playerEnergy = 100;
+                }
+                return;
+            }
+            default -> {}
         }
 
         gw.world.queryAABB(callback,

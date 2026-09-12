@@ -281,6 +281,7 @@ public class GameScreen extends Screen {
         );
 
         hand = new Hand(handArea, cardPeek, maxSpread);
+        gw.hand = hand;
     }
 
     // ***************************************
@@ -309,7 +310,7 @@ public class GameScreen extends Screen {
      */
     private void pickCard(float deltaTime) {
 
-        float DELAY = 0.10f;
+        final float DELAY = 0.10f;
 
         pickDelay += deltaTime;
         if(pickDelay < DELAY)

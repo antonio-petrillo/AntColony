@@ -7,6 +7,7 @@ import android.graphics.Color;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.cards.Card;
 import com.gdd.game.cards.CardWorldListener;
+import com.gdd.game.cards.Hand;
 import com.gdd.game.ecs.components.BoxRenderComp;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.InputComponent;
@@ -83,6 +84,7 @@ public class GameWorld implements CardWorldListener {
     public List<Entity> entities = new ArrayList<>();
 
     private static final Random rng = new Random();
+    public Hand hand;
     private final float SPAWN_DIST = 1.0f;
     private Screen gameScreen;
     private TiledBackgroundRenderer background;

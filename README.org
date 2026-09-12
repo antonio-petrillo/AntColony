@@ -4,7 +4,7 @@
 * AntColony
 Progetto per il corso Game Design and Development della Federico II, anno accademico 2025/2026.
 
-* Progress [91%]
+* Progress [100%]
 - [X] fork from [[https://github.com/mfaella/DragMe.git][DragMe]]
 - [X] basic nest + ant simulation
 - [X] implement ecs 
@@ -12,7 +12,7 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] implement ant wander system
 - [X] implement food (spawn & gather)
 - [X] implement enemies (wasp, spawn & gather)
-- [ ] MAYBE implement card system
+- [X] implement card system
 - [X] implement camera view (pan & zoom)
 - [X] Add sounds:
   - background
@@ -27,7 +27,7 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] Makes *Ants* and *Wasps* fight still standing
 - [ ] If pinch to zoom start on button *PAUSE* and on release is still on button *PAUSE* the game gets paused while zooming and panning.
 
-* Improvements [3/8]
+* Improvements [5/8]
 - [ ] MAYBE add objects POOL (Poor Objects Oriented Linear-allocator)
 - [ ] MAYBE instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects
 - [X] add field of view to *Ants* and *Wasps*:
@@ -37,13 +37,13 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
   - steer ant toward pheromones
 - [X] make entities change direction when they hit the world boundaries or the nest
 - [X] Fix positioning of energy label positioning
-- [ ] Spawn food near to the nest if the player has few ants 
-- [ ] Game mechanics system is quite quirky to use, is thought as an UI from the '90, but with the mouse in mind (hence is super quirky) 
+- [X] Spawn food near to the nest if the player has few ants 
+- [X] Game mechanics system is quite quirky to use, is thought as an UI from the '90, but with the mouse in mind (hence is super quirky) 
   
   
-* Mechanics [50%]
+* Mechanics [100%]
 - [X] Add *energy* counter, increase when ants deliver food    
-- [ ] Add button with spell that consume *energy*:
+- [X] Add button with spell that consume *energy*:
   - AOE damage (hit everybody)
   - AOE heal (heal everybody)
   - AOE damage that hits only wasps (more expensive)

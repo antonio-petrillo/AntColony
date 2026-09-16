@@ -17,7 +17,12 @@ public class LoadingScreen extends Screen {
 
         Assets.song = game.getAudio().newMusic("mario64_theme.mp3");
 
+        // ***** SOUNDS *****
+
         Assets.click = game.getAudio().newSound("click.ogg");
+        Assets.card_draw1 = game.getAudio().newSound("card_draw1.mp3");
+        Assets.card_draw2 = game.getAudio().newSound("card_draw2.mp3");
+        Assets.card_disappear = game.getAudio().newSound("card_disappear.mp3");
 
         game.setScreen(new MainMenuScreen(game));
     }

@@ -310,11 +310,21 @@ public class GameScreen extends Screen {
      */
     private void pickCard(float deltaTime) {
 
-        final float DELAY = 0.10f;
+        final float DELAY = 0.15f;
 
         pickDelay += deltaTime;
         if(pickDelay < DELAY)
             return;
+
+        // SFX
+        switch(hand.getNumberOfCards() % 2) {
+            case 0:
+                Assets.card_draw1.play(1);
+                break;
+            case 1:
+                Assets.card_draw2.play(1);
+                break;
+        }
 
         // Pesca una carta
         var card = Draw.nextCard();

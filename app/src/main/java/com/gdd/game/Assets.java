@@ -358,4 +358,7 @@ public class Assets {
 
     public static Music song;
     public static Sound click;
+
+    public static Sound card_draw1, card_draw2, card_draw3, card_draw4, card_draw5;
+    public static Sound card_disappear;
 }

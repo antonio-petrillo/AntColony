@@ -30,14 +30,14 @@ public class Assets {
     private static final String CONTINUEBUTTON_PRESSED_PATH = "continue_button_pressed_128x64.png";
     private static final String TITLE_PAUSEMENU_PATH = "title_pause_menu.png";
 
-    private static final String CARD_ATTACK_ALL_PATH = "card_damage_all_96x160.png";
-    private static final String CARD_ATTACK_ENEMIES_PATH = "card_damage_enemies_96x160.png";
-    private static final String CARD_HEAL_ALL_PATH = "card_heal_all_96x160.png";
-    private static final String CARD_HEAL_ALLIES_PATH = "card_heal_allies_96x160.png";
-    private static final String CARD_DOUBLE_ENERGY_PATH = "card_double_energy_96x160.png";
-    private static final String CARD_DOUBLE_SPEED_PATH = "card_speed_96x160.png";
-    private static final String CARD_SHUFFLE_HAND_PATH = "card_shuffle_96x160.png";
-    private static final String CARD_INCREASE_FOV_PATH = "card_fov_96x160.png";
+    private static final String CARD_ATTACK_ALL_PATH = "card_damage_all_64x128.png";
+    private static final String CARD_ATTACK_ENEMIES_PATH = "card_damage_enemies_64x128.png";
+    private static final String CARD_HEAL_ALL_PATH = "card_heal_all_64x128.png";
+    private static final String CARD_HEAL_ALLIES_PATH = "card_heal_allies_64x128.png";
+    private static final String CARD_DOUBLE_ENERGY_PATH = "card_double_energy_64x128.png";
+    private static final String CARD_DOUBLE_SPEED_PATH = "card_speed_64x128.png";
+    private static final String CARD_SHUFFLE_HAND_PATH = "card_shuffle_64x128.png";
+    private static final String CARD_INCREASE_FOV_PATH = "card_fov_64x128.png";
 
     private static final String DRAW_BUTTON_IDLE_PATH = "draw_button_idle_128x64.png";
     private static final String DRAW_BUTTON_PRESSED_PATH = "draw_button_pressed_128x64.png";

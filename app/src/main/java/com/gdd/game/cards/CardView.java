@@ -11,7 +11,7 @@ public class CardView {
 
     private final Card card;
 
-    public static final float WIDTH = 60f, HEIGHT = 100f; // Dimensione della carta in pixel
+    public static final float WIDTH = 60f, HEIGHT = 120f; // Dimensione della carta in pixel
     private static final float DRAG_LERP_SPEED = 20f;
     private static final float LERP_SPEED = 14f;
 

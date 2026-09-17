@@ -61,8 +61,11 @@ public class MainActivity extends Activity implements Game {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         enableImmersiveMode();
 
+        /*
         var manager = getAssets();
         Assets.load(manager);
+        */
+        Assets.manager = getAssets();
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);

@@ -8,7 +8,6 @@ import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.Music;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.Assets;
-import com.gdd.game.cards.Card;
 import com.gdd.game.cards.CardController;
 import com.gdd.game.cards.Draw;
 import com.gdd.game.cards.Hand;
@@ -23,8 +22,6 @@ import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Label;
 import com.gdd.game.ui.Panel;
 import com.gdd.game.ui.UIController;
-import static com.gdd.game.cards.Card.Action;
-import static com.gdd.game.cards.Card.Rarity;
 
 /*
  * Schermata di gameplay.
@@ -87,7 +84,7 @@ public class GameScreen extends Screen {
         uiController.updateLayout();
 
         // Music
-        music = Assets.song;
+        music = Assets.SONG_GAMEPLAY;
         music.setLooping(true);
         music.setVolume(0.5f);
         music.play();
@@ -183,7 +180,7 @@ public class GameScreen extends Screen {
         antsLabel.setText("0");
         antsLabel.setTextColor(0xFF000000);
         antsLabel.setTextAlignment(Label.HAlign.RIGHT, Label.VAlign.CENTER, 20, 0);
-        antsLabel.setBackgroundBitmap(Assets.HUD_BADGE_ANT_BITMAP);
+        antsLabel.setBackgroundBitmap(Assets.BADGE_ANT);
         antsLabel.setBackgroundMode(Label.BackgroundMode.BITMAP);
         badgeGroup.addChild(antsLabel);
 
@@ -191,19 +188,19 @@ public class GameScreen extends Screen {
         energyLabel.setText("0");
         energyLabel.setTextColor(0xFF000000);
         energyLabel.setTextAlignment(Label.HAlign.RIGHT, Label.VAlign.CENTER, 20, 0);
-        energyLabel.setBackgroundBitmap(Assets.HUD_BADGE_SUGAR_PRESSED);
+        energyLabel.setBackgroundBitmap(Assets.BADGE_ENERGY);
         energyLabel.setBackgroundMode(Label.BackgroundMode.BITMAP);
         badgeGroup.addChild(energyLabel);
 
         // ***** PAUSE BUTTON *****
 
         ImageButton pauseButton = new ImageButton(fbWidth - 95, 20, 75, 75);
-        pauseButton.setIdleBitmap(Assets.PAUSEBUTTON_IDLE_BITMAP);
-        pauseButton.setPressedBitmap(Assets.PAUSEBUTTON_PRESSED);
+        pauseButton.setIdleBitmap(Assets.BUTTON_PAUSE_IDLE);
+        pauseButton.setPressedBitmap(Assets.BUTTON_PAUSE_PRESSED);
         rootPanel.addChild(pauseButton);
 
         pauseButton.setOnClickListener(b -> {
-            Assets.click.play(1);
+            Assets.CLICK.play(1);
             setGameState(GameState.PAUSED);
         });
 
@@ -244,18 +241,18 @@ public class GameScreen extends Screen {
         // ***** WIDGETS *****
 
         Image pauseImage = new Image(0, 0, popupWidth, 100);
-        pauseImage.setBitmap(Assets.TITLE_PAUSEMENU);
+        pauseImage.setBitmap(Assets.TITLE_PAUSE_MENU);
         pausePopup.addChild(pauseImage);
 
         ImageButton resumeButton = new ImageButton(popupWidth/4, popupHeight/4, popupWidth/2, 100);
-        resumeButton.setIdleBitmap(Assets.CONTINUEBUTTON_IDLE);
-        resumeButton.setPressedBitmap(Assets.CONTINUEBUTTON_PRESSED);
+        resumeButton.setIdleBitmap(Assets.BUTTON_CONTINUE_IDLE);
+        resumeButton.setPressedBitmap(Assets.BUTTON_CONTINUE_PRESSED);
         pausePopup.addChild(resumeButton);
 
         // ***** ON_CLICK METHODS *****
 
         resumeButton.setOnClickListener(b -> {
-            Assets.click.play(1);
+            Assets.CLICK.play(1);
             setGameState(GameState.RUNNING);
         });
     }
@@ -319,10 +316,10 @@ public class GameScreen extends Screen {
         // SFX
         switch(hand.getNumberOfCards() % 2) {
             case 0:
-                Assets.card_draw1.play(1);
+                Assets.CARD_DRAW1.play(1);
                 break;
             case 1:
-                Assets.card_draw2.play(1);
+                Assets.CARD_DRAW2.play(1);
                 break;
         }
 

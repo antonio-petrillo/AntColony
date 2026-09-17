@@ -8,10 +8,8 @@ import com.badlogic.androidgames.framework.Input;
 import com.badlogic.androidgames.framework.impl.TouchHandler;
 import com.gdd.game.Assets;
 import com.gdd.game.Game;
-import com.gdd.game.Settings;
 import com.gdd.game.ui.ImageButton;
 import com.gdd.game.ui.Panel;
-import com.gdd.game.ui.TextButton;
 import com.gdd.game.ui.UIController;
 import com.gdd.game.ui.WidgetGroup;
 
@@ -92,12 +90,12 @@ public class MainMenuScreen extends Screen {
         ImageButton startButton = new ImageButton(
                 (fbWidth/2)-(buttonW/2), (fbHeight/2)-(buttonH/2),
                 buttonW, buttonH);
-        startButton.setIdleBitmap(Assets.STARTGAME_BUTTON_IDLE);
-        startButton.setPressedBitmap(Assets.STARTGAME_BUTTON_PRESSED);
+        startButton.setIdleBitmap(Assets.BUTTON_STARTGAME_IDLE);
+        startButton.setPressedBitmap(Assets.BUTTON_STARTGAME_PRESSED);
         root.addChild(startButton);
 
         startButton.setOnClickListener(b -> {
-            Assets.click.play(1);
+            Assets.CLICK.play(1);
             game.setScreen(new GameScreen(game));
         });
 

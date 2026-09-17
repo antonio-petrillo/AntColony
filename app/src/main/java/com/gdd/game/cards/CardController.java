@@ -117,7 +117,7 @@ public class CardController {
         if (state == State.TARGETING) {
             if (worldListener.onCardPlayed(selectedCard.getCard())) {
                 hand.remove(selectedCard);
-                Assets.card_disappear.play(1);
+                Assets.CARD_DISAPPEAR.play(1);
             } else {
                 selectedCard.setState(CardView.State.IDLE);
             }

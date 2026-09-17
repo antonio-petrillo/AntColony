@@ -25,12 +25,12 @@ public class LoadingScreen extends Screen {
 
         // ***** MUSIC & SOUNDS *****
 
-        Assets.song = game.getAudio().newMusic("mario64_theme.mp3");
+        Assets.SONG_GAMEPLAY = game.getAudio().newMusic("mario64_theme.mp3");
 
-        Assets.click = game.getAudio().newSound("click.ogg");
-        Assets.card_draw1 = game.getAudio().newSound("card_draw1.mp3");
-        Assets.card_draw2 = game.getAudio().newSound("card_draw2.mp3");
-        Assets.card_disappear = game.getAudio().newSound("card_disappear.mp3");
+        Assets.CLICK = game.getAudio().newSound("click.ogg");
+        Assets.CARD_DRAW1 = game.getAudio().newSound("card_draw1.mp3");
+        Assets.CARD_DRAW2 = game.getAudio().newSound("card_draw2.mp3");
+        Assets.CARD_DISAPPEAR = game.getAudio().newSound("card_disappear.mp3");
 
         // ***** BITMAPS *****
 
@@ -44,22 +44,22 @@ public class LoadingScreen extends Screen {
 
         // --- UI: BUTTONS
 
-        Assets.STARTGAME_BUTTON_IDLE = loadBitmap(manager, "startgame_button_idle_128x64.png");
-        Assets.STARTGAME_BUTTON_PRESSED = loadBitmap(manager, "startgame_button_pressed_128x64.png");
+        Assets.BUTTON_STARTGAME_IDLE = loadBitmap(manager, "startgame_button_idle_128x64.png");
+        Assets.BUTTON_STARTGAME_PRESSED = loadBitmap(manager, "startgame_button_pressed_128x64.png");
 
-        Assets.PAUSEBUTTON_IDLE_BITMAP = loadBitmap(manager, "pause_button_idle_64x64.png");
-        Assets.PAUSEBUTTON_IDLE_BITMAP = loadBitmap(manager, "pause_button_idle_64x64.png");
+        Assets.BUTTON_PAUSE_IDLE = loadBitmap(manager, "pause_button_idle_64x64.png");
+        Assets.BUTTON_PAUSE_IDLE = loadBitmap(manager, "pause_button_idle_64x64.png");
 
-        Assets.CONTINUEBUTTON_IDLE = loadBitmap(manager, "continue_button_idle_128x64.png");
-        Assets.CONTINUEBUTTON_PRESSED = loadBitmap(manager, "continue_button_pressed_128x64.png");
+        Assets.BUTTON_CONTINUE_IDLE = loadBitmap(manager, "continue_button_idle_128x64.png");
+        Assets.BUTTON_CONTINUE_PRESSED = loadBitmap(manager, "continue_button_pressed_128x64.png");
 
         // --- UI: HUD
 
         Assets.MAIN_MENU_BG = loadBitmap(manager, "main_menu_bg.jpg");
-        Assets.TITLE_PAUSEMENU = loadBitmap(manager, "title_pause_menu.png");
+        Assets.TITLE_PAUSE_MENU = loadBitmap(manager, "title_pause_menu.png");
 
-        Assets.HUD_BADGE_ANT_BITMAP = loadBitmap(manager, "hud_badge_ant_150x64.png");
-        Assets.HUD_BADGE_SUGAR_PRESSED = loadBitmap(manager, "hud_badge_sugar_150x64.png");
+        Assets.BADGE_ANT = loadBitmap(manager, "hud_badge_ant_150x64.png");
+        Assets.BADGE_ENERGY = loadBitmap(manager, "hud_badge_sugar_150x64.png");
 
         // --- CARDS
 

@@ -18,10 +18,6 @@ public class Assets {
 
     public static final String APPNAME = "AntColony";
 
-    private static final String DRAW_BUTTON_IDLE_PATH = "draw_button_idle_128x64.png";
-    private static final String DRAW_BUTTON_PRESSED_PATH = "draw_button_pressed_128x64.png";
-    private static final String DRAW_BUTTON_DISABLED_PATH = "draw_button_disabled_128x64.png";
-
     /*
     public static void load(AssetManager manager) {
        if (loaded)
@@ -53,11 +49,6 @@ public class Assets {
     public static Bitmap CARD_DOUBLE_SPEED;
     public static Bitmap CARD_SHUFFLE_HAND;
     public static Bitmap CARD_INCREASE_FOV;
-
-
-    public static Bitmap DRAW_BUTTON_IDLE;
-    public static Bitmap DRAW_BUTTON_PRESSED;
-    public static Bitmap DRAW_BUTTON_DISABLED;
 
     public static Bitmap STARTGAME_BUTTON_IDLE;
     public static Bitmap STARTGAME_BUTTON_PRESSED;

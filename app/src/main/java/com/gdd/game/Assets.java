@@ -46,6 +46,10 @@ public class Assets {
     private static final String STARTGAME_BUTTON_IDLE_PATH = "startgame_button_idle_128x64.png";
     private static final String STARTGAME_BUTTON_PRESSED_PATH = "startgame_button_pressed_128x64.png";
 
+    private static final String EFFECT_DAMAGE_PATH = "effect_damage_48x48.png";
+    private static final String EFFECT_HEAL_PATH = "effect_heal_48x48.png";
+    private static final String STATUS_FOV_PATH = "status_fov_16x16.png";
+    private static final String STATUS_SPEED_PATH = "status_speed_16x16.png";
 
 
     public static void load(AssetManager manager) {
@@ -322,6 +326,49 @@ public class Assets {
             throw new RuntimeException("Can't load bitmap: " + STARTGAME_BUTTON_PRESSED);
         }
 
+
+        try (var stream = manager.open(EFFECT_DAMAGE_PATH)) {
+            EFFECT_DAMAGE = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (EFFECT_DAMAGE == null) {
+            throw new RuntimeException("Can't load bitmap: " + EFFECT_DAMAGE);
+        }
+
+
+        try (var stream = manager.open(EFFECT_HEAL_PATH)) {
+            EFFECT_HEAL = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (EFFECT_HEAL == null) {
+            throw new RuntimeException("Can't load bitmap: " + EFFECT_HEAL);
+        }
+
+        try (var stream = manager.open(STATUS_FOV_PATH)) {
+            STATUS_FOV = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (STATUS_FOV == null) {
+            throw new RuntimeException("Can't load bitmap: " + STATUS_FOV);
+        }
+
+
+        try (var stream = manager.open(STATUS_SPEED_PATH)) {
+            STATUS_SPEED = BitmapFactory.decodeStream(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Assets loading failed: ", e);
+        }
+
+        if (STATUS_SPEED == null) {
+            throw new RuntimeException("Can't load bitmap: " + STATUS_SPEED);
+        }
+
         loaded = true;
     }
 
@@ -355,6 +402,11 @@ public class Assets {
 
     public static Bitmap STARTGAME_BUTTON_IDLE;
     public static Bitmap STARTGAME_BUTTON_PRESSED;
+
+    public static Bitmap EFFECT_DAMAGE;
+    public static Bitmap EFFECT_HEAL;
+    public static Bitmap STATUS_FOV;
+    public static Bitmap STATUS_SPEED;
 
     public static Music song;
     public static Sound click;

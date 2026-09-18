@@ -7,9 +7,9 @@ public class Camera {
     private final int fbufferWidth, fbufferHeight; // dimensione framebuffer (in pixel)
 
     private float centerX = 0f, centerY = 0f;
-    private float minZoom = 1f; // zoom = 1 (100%) significa "vedi tutto il World"
-    private float maxZoom = 6f; // zoom > 1 significa "più vicino" (ingrandisci)
-    private float zoom = 3.5f;
+    private float minZoom = 2f; // zoom = 1 (100%) significa "vedi tutto il World"
+    private float maxZoom = 7f; // zoom > 1 significa "più vicino" (ingrandisci)
+    private float zoom = 4f;
 
     // stato del pinch in corso, in metri/pixel framebuffer
     private boolean pinching = false;

@@ -100,8 +100,7 @@ public class GameMechanics {
 
                         var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
                         assert(phys != null);
-
-                        phys.speedModifier = 2.0f;
+                        phys.fovPerceptionModifier = 2.0f;
                         ai.timerFOVModifier = 3.0f;
 
                         status.statusType = StatusComponent.Type.INCREASED_SIGHT;

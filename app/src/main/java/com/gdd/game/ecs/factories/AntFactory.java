@@ -27,7 +27,7 @@ public class AntFactory {
     private static final float DENSITY     = 1.0f;
     private static final float FRICTION    = 0.3f;
     private static final float RESTITUTION = 0.2f;
-    private static final float RADIUS = 0.05f;
+    private static final float RADIUS = 0.09f;
 
     public static final float ATTACK_COOLDOWN = 1.0f;
 

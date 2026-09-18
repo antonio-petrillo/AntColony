@@ -18,7 +18,7 @@ import com.google.fpl.liquidfun.FixtureDef;
 
 public class FoodFactory {
 
-    public static final float RADIUS = 0.15f;
+    public static final float RADIUS = 0.18f;
 
     private FoodFactory() {}
 

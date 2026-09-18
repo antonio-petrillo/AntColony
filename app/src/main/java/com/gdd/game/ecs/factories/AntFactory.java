@@ -45,7 +45,7 @@ public class AntFactory {
         //ant.addComponent(new CircleRenderComp(Color.RED, true));
         ant.addComponent(new BitmapRenderComp(Assets.ANT_BITMAP));
         ant.addComponent(new StatusComponent());
-        ant.addComponent(new HealthComponent(20));
+        ant.addComponent(new HealthComponent(55));
 
         // TODO: maybe use an exponential distribution
         float timeBetweenActions = rng.nextFloat(1.5f, 3.0f);

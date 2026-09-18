@@ -101,7 +101,7 @@ public class GameMechanics {
                         var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
                         assert(phys != null);
                         phys.fovPerceptionModifier = 2.0f;
-                        ai.timerFOVModifier = 3.0f;
+                        ai.timerFOVModifier = 5.0f;
 
                         status.type = StatusComponent.Type.INCREASED_SIGHT;
                         status.bitmap = Assets.STATUS_FOV;
@@ -117,7 +117,7 @@ public class GameMechanics {
                         var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
                         assert (phys != null);
                         phys.speedModifier = 2.0f;
-                        ai.timerSpeedModifier = 3.0f;
+                        ai.timerSpeedModifier = 5.0f;
 
                         status.type = StatusComponent.Type.HASTE;
                         status.bitmap = Assets.STATUS_SPEED;

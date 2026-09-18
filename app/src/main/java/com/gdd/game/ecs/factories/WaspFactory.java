@@ -43,7 +43,7 @@ public class WaspFactory {
         //wasp.addComponent(new CircleRenderComp(Color.YELLOW, true));
         wasp.addComponent(new BitmapRenderComp(Assets.WASP_BITMAP));
         wasp.addComponent(new StatusComponent());
-        wasp.addComponent(new HealthComponent(50));
+        wasp.addComponent(new HealthComponent(100));
 
         float timeBetweenActions = rng.nextFloat(0.5f, 5.0f);
         wasp.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 15));

@@ -1,6 +1,6 @@
 package com.gdd.game.ecs.components;
 
 public enum ComponentType {
-    ALIVE, HEALTH,
+    STATUS, HEALTH,
     INPUT, RENDER, PHYSIC, AI
 }

@@ -48,7 +48,7 @@ public class LoadingScreen extends Screen {
         Assets.BUTTON_STARTGAME_PRESSED = loadBitmap(manager, "startgame_button_pressed_128x64.png");
 
         Assets.BUTTON_PAUSE_IDLE = loadBitmap(manager, "pause_button_idle_64x64.png");
-        Assets.BUTTON_PAUSE_IDLE = loadBitmap(manager, "pause_button_idle_64x64.png");
+        Assets.BUTTON_PAUSE_PRESSED = loadBitmap(manager, "pause_button_pressed_64x64.png");
 
         Assets.BUTTON_CONTINUE_IDLE = loadBitmap(manager, "continue_button_idle_128x64.png");
         Assets.BUTTON_CONTINUE_PRESSED = loadBitmap(manager, "continue_button_pressed_128x64.png");

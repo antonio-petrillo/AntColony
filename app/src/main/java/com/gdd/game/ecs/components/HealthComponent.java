@@ -1,6 +1,8 @@
 package com.gdd.game.ecs.components;
 
 public class HealthComponent extends Component{
+
+    public int maxHealth = 100;
     public int health;
 
     public HealthComponent(int startingHealth) {
@@ -16,9 +18,13 @@ public class HealthComponent extends Component{
 
     public void heal(int heal) {
         health += heal;
-        if (health > 100) health = 100;
+        if (health > maxHealth) health = maxHealth;
     }
     public void takeDamage(int dmg) {
         health -= dmg;
+    }
+
+    public boolean isLow() {
+        return ( health <= maxHealth/2 );
     }
 }

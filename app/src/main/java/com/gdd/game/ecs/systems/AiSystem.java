@@ -101,6 +101,12 @@ public final class AiSystem implements System {
                 enemyAi.canBeGarbageCollected = true;
                 aiState.restore();
                 aiState.enemyToAttack = null;
+            } else if(healthEnemy.isLow()) {
+                StatusComponent enemyStatus = (StatusComponent) enemy.getComponent(ComponentType.STATUS);
+                if(enemyStatus != null) {
+                    enemyStatus.statusType = StatusComponent.Type.BLEEDING;
+                    enemyStatus.bitmap = Assets.STATUS_BLEED;
+                }
             }
         }
         var health = (HealthComponent) entity.getComponent(ComponentType.HEALTH);

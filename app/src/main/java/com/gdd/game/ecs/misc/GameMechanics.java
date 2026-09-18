@@ -43,11 +43,21 @@ public class GameMechanics {
                 switch (ctx.action) {
                     case HEAL_ALL -> {
                         health.heal(ctx.action.amount);
+
+                        if(!health.isLow()) {
+                            StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
+                            if (status != null) status.reset();
+                        }
                     }
                     // NOTE: heal only ants
                     case HEAL_ALLIES -> {
                         if (entity.tag == EntityTag.ANT) {
                             health.heal(ctx.action.amount);
+
+                            if(!health.isLow()) {
+                                StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
+                                if (status != null) status.reset();
+                            }
                         }
                     }
                     case ATTACK_ALL -> {
@@ -57,6 +67,12 @@ public class GameMechanics {
                             ai.canBeGarbageCollected = true;
                             ai.restore();
                             ai.enemyToAttack = null;
+                        } else if(health.isLow()) {
+                            StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
+                            if(status != null) {
+                                status.statusType = StatusComponent.Type.BLEEDING;
+                                status.bitmap = Assets.STATUS_BLEED;
+                            }
                         }
                     }
                     // NOTE: attack only wasps
@@ -68,6 +84,12 @@ public class GameMechanics {
                                 ai.canBeGarbageCollected = true;
                                 ai.restore();
                                 ai.enemyToAttack = null;
+                            } else if(health.isLow()) {
+                                StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
+                                if(status != null) {
+                                    status.statusType = StatusComponent.Type.BLEEDING;
+                                    status.bitmap = Assets.STATUS_BLEED;
+                                }
                             }
                         }
                     }

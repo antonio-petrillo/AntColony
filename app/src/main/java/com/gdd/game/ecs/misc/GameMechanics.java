@@ -97,6 +97,9 @@ public class GameMechanics {
                         //NOTE: just to silence compiler, this case is handled elsewhere
                     }
                     case INCREASE_FOV -> {
+                        if (entity.tag != EntityTag.ANT)
+                            break;
+
                        var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
                        assert(phys != null);
 
@@ -111,6 +114,9 @@ public class GameMechanics {
                     }
                     // NOTE: applies only to ants
                     case DOUBLE_SPEED -> {
+                        if (entity.tag != EntityTag.ANT)
+                            break;
+
                         var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
                         assert (phys != null);
                         phys.speedModifier = 2.0f;

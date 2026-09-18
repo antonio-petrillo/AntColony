@@ -74,7 +74,7 @@ public class LoadingScreen extends Screen {
 
         // --- VFX
 
-        Assets.STATUS_BLEED = loadBitmap(manager, "status_blood_16x16.png");
+        Assets.STATUS_INJURED = loadBitmap(manager, "status_blood_16x16.png");
         Assets.STATUS_FOV = loadBitmap(manager, "status_fov_16x16.png");
         Assets.STATUS_SPEED = loadBitmap(manager, "status_speed_16x16.png");
         Assets.EFFECT_DAMAGE = loadBitmap(manager, "effect_damage_48x48.png");

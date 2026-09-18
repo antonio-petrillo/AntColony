@@ -55,7 +55,7 @@ public class Assets {
 
     // --- VFX
 
-    public static Bitmap STATUS_BLEED;
+    public static Bitmap STATUS_INJURED;
     public static Bitmap STATUS_FOV;
     public static Bitmap STATUS_SPEED;
     public static Bitmap EFFECT_DAMAGE;

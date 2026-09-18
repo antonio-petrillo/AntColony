@@ -69,8 +69,8 @@ public class GameMechanics {
                             ai.restore();
                             ai.enemyToAttack = null;
                         } else if(health.isLow()) {
-                            status.statusType = StatusComponent.Type.BLEEDING;
-                            status.bitmap = Assets.STATUS_BLEED;
+                            status.type = StatusComponent.Type.INJURED;
+                            status.bitmap = Assets.STATUS_INJURED;
                         }
                     }
                     // NOTE: attack only wasps
@@ -83,8 +83,8 @@ public class GameMechanics {
                                 ai.restore();
                                 ai.enemyToAttack = null;
                             } else if(health.isLow()) {
-                                status.statusType = StatusComponent.Type.BLEEDING;
-                                status.bitmap = Assets.STATUS_BLEED;
+                                status.type = StatusComponent.Type.INJURED;
+                                status.bitmap = Assets.STATUS_INJURED;
                             }
                         }
                     }
@@ -95,7 +95,7 @@ public class GameMechanics {
                         if (entity.tag != EntityTag.ANT)
                             break;
 
-                        if (status.statusType == StatusComponent.Type.BLEEDING)
+                        if (status.type == StatusComponent.Type.INJURED)
                             break;
 
                         var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
@@ -103,7 +103,7 @@ public class GameMechanics {
                         phys.fovPerceptionModifier = 2.0f;
                         ai.timerFOVModifier = 3.0f;
 
-                        status.statusType = StatusComponent.Type.INCREASED_SIGHT;
+                        status.type = StatusComponent.Type.INCREASED_SIGHT;
                         status.bitmap = Assets.STATUS_FOV;
                     }
                     // NOTE: applies only to ants
@@ -111,7 +111,7 @@ public class GameMechanics {
                         if (entity.tag != EntityTag.ANT)
                             break;
 
-                        if (status.statusType == StatusComponent.Type.BLEEDING)
+                        if (status.type == StatusComponent.Type.INJURED)
                             break;
 
                         var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
@@ -119,7 +119,7 @@ public class GameMechanics {
                         phys.speedModifier = 2.0f;
                         ai.timerSpeedModifier = 3.0f;
 
-                        status.statusType = StatusComponent.Type.HASTE;
+                        status.type = StatusComponent.Type.HASTE;
                         status.bitmap = Assets.STATUS_SPEED;
                     }
                 }

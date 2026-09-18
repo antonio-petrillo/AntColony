@@ -9,15 +9,15 @@ import com.gdd.game.ecs.misc.ScreenParams;
 
 public class StatusComponent extends Component {
 
-    public enum Type { NONE, BLEEDING, HASTE, INCREASED_SIGHT }
+    public enum Type { NONE, INJURED, HASTE, INCREASED_SIGHT }
 
-    public Type statusType;
+    public Type type;
     public Bitmap bitmap;
     private final Paint paint;
 
 
     public StatusComponent() {
-        statusType = Type.NONE;
+        type = Type.NONE;
         bitmap = null;
         paint = new Paint(Paint.FILTER_BITMAP_FLAG);
     }
@@ -28,7 +28,7 @@ public class StatusComponent extends Component {
     }
 
     public void reset() {
-        statusType = Type.NONE;
+        type = Type.NONE;
         bitmap = null;
     }
 
@@ -37,7 +37,7 @@ public class StatusComponent extends Component {
      */
     public void draw(Canvas canvas, ScreenParams t, RectF dst) {
 
-        if(statusType == Type.NONE || bitmap == null) return;
+        if(type == Type.NONE || bitmap == null) return;
 
         dst.set(-t.halfWidthPx, -t.halfHeightPx, t.halfWidthPx, t.halfHeightPx);
 

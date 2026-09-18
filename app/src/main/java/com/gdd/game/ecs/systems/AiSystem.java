@@ -104,8 +104,8 @@ public final class AiSystem implements System {
             } else if(healthEnemy.isLow()) {
                 StatusComponent enemyStatus = (StatusComponent) enemy.getComponent(ComponentType.STATUS);
                 if(enemyStatus != null) {
-                    enemyStatus.statusType = StatusComponent.Type.BLEEDING;
-                    enemyStatus.bitmap = Assets.STATUS_BLEED;
+                    enemyStatus.type = StatusComponent.Type.INJURED;
+                    enemyStatus.bitmap = Assets.STATUS_INJURED;
                 }
             }
         }

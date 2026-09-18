@@ -1,10 +1,12 @@
 package com.gdd.game.ecs.systems;
 
+import com.gdd.game.Assets;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
+import com.gdd.game.ecs.components.StatusComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.google.fpl.liquidfun.RevoluteJointDef;
 import com.google.fpl.liquidfun.Vec2;
@@ -131,6 +133,10 @@ public final class AiSystem implements System {
                 aiState.timerFOVModifierAccumulator = 0.0f;
                 aiState.timerFOVModifier = -1.0f; // sentinel
                 phys.fovPerceptionModifier = PhysicComponent.DEFAULT_FOV_PERCEPTION_MODIFIER;
+
+                // va bene qui?
+                StatusComponent status = (StatusComponent) phys.owner.getComponent(ComponentType.STATUS);
+                if(status != null) status.reset();
             }
         }
     }
@@ -142,6 +148,10 @@ public final class AiSystem implements System {
                 aiState.timerSpeedModifierAccumulator = 0.0f;
                 aiState.timerSpeedModifier = -1.0f; // sentinel
                 phys.speedModifier = PhysicComponent.DEFAULT_SPEED_MODIFIER;
+
+                // va bene qui?
+                StatusComponent status = (StatusComponent) phys.owner.getComponent(ComponentType.STATUS);
+                if(status != null) status.reset();
             }
         }
     }

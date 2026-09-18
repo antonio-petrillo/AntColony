@@ -11,6 +11,7 @@ import com.gdd.game.ecs.components.CircleRenderComp;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
 import com.gdd.game.ecs.components.BoxRenderComp;
+import com.gdd.game.ecs.components.StatusComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.BodyDef;
@@ -43,6 +44,7 @@ public class AntFactory {
         ant.transform.y = y;
         //ant.addComponent(new CircleRenderComp(Color.RED, true));
         ant.addComponent(new BitmapRenderComp(Assets.ANT_BITMAP));
+        ant.addComponent(new StatusComponent());
         ant.addComponent(new HealthComponent(20));
 
         // TODO: maybe use an exponential distribution

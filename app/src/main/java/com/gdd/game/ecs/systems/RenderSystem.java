@@ -2,8 +2,10 @@ package com.gdd.game.ecs.systems;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.net.http.UrlRequest;
 
 import com.gdd.game.TiledBackgroundRenderer;
+import com.gdd.game.ecs.components.StatusComponent;
 import com.gdd.game.ecs.misc.Camera;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.ComponentType;
@@ -46,13 +48,12 @@ public class RenderSystem implements System {
 
             Transform transform = entity.transform;
 
-            // 1. CULLING
-            // TODO: draw the entity if partially inside the camera
+            // CULLING
             if (!camera.isVisible(transform.x, transform.y, transform.halfWidth, transform.halfHeight)) {
                 continue;
             }
 
-            // 2. CONVERSIONE WORLD->SCREEN
+            // CONVERT WORLD->SCREEN
             float xPixel = camera.toPixelsX(transform.x);
             float yPixel = camera.toPixelsY(transform.y);
             float hWidthPixel = camera.toPixelsXLength(transform.halfWidth);
@@ -62,8 +63,13 @@ public class RenderSystem implements System {
             scratchTransform.set(xPixel, yPixel, hWidthPixel, hHeightPixel,
                     rotationDeg);
 
-            // 3. DRAW ACTOR
+            // RENDER ENTITY
             rc.draw(canvas, scratchTransform, scratchDst);
+
+            // RENDER STATUS ICON
+            StatusComponent sc = (StatusComponent) entity.getComponent(ComponentType.STATUS);
+            if(sc != null)
+                sc.draw(canvas, scratchTransform, scratchDst);
         }
     }
 

@@ -1,10 +1,12 @@
 package com.gdd.game.ecs.misc;
 
+import com.gdd.game.Assets;
 import com.gdd.game.GameWorld;
 import com.gdd.game.ecs.components.AiComponent;
 import com.gdd.game.ecs.components.ComponentType;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
+import com.gdd.game.ecs.components.StatusComponent;
 import com.gdd.game.ecs.entities.Entity;
 
 import com.gdd.game.ecs.entities.EntityTag;
@@ -78,6 +80,12 @@ public class GameMechanics {
 
                        phys.speedModifier = 2.0f;
                        ai.timerFOVModifier = 3.0f;
+
+                       StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
+                       if(status != null) {
+                           status.statusType = StatusComponent.Type.INCREASED_SIGHT;
+                           status.bitmap = Assets.STATUS_FOV;
+                       }
                     }
                     // NOTE: applies only to ants
                     case DOUBLE_SPEED -> {
@@ -85,6 +93,12 @@ public class GameMechanics {
                         assert (phys != null);
                         phys.speedModifier = 2.0f;
                         ai.timerSpeedModifier = 3.0f;
+
+                        StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
+                        if(status != null) {
+                            status.statusType = StatusComponent.Type.HASTE;
+                            status.bitmap = Assets.STATUS_SPEED;
+                        }
                     }
                 }
 

@@ -10,6 +10,7 @@ import com.gdd.game.ecs.components.BitmapRenderComp;
 import com.gdd.game.ecs.components.CircleRenderComp;
 import com.gdd.game.ecs.components.HealthComponent;
 import com.gdd.game.ecs.components.PhysicComponent;
+import com.gdd.game.ecs.components.StatusComponent;
 import com.gdd.game.ecs.entities.Entity;
 import com.gdd.game.ecs.entities.EntityTag;
 import com.google.fpl.liquidfun.BodyDef;
@@ -41,6 +42,7 @@ public class WaspFactory {
         wasp.transform.y = y;
         //wasp.addComponent(new CircleRenderComp(Color.YELLOW, true));
         wasp.addComponent(new BitmapRenderComp(Assets.WASP_BITMAP));
+        wasp.addComponent(new StatusComponent());
         wasp.addComponent(new HealthComponent(50));
 
         float timeBetweenActions = rng.nextFloat(0.5f, 5.0f);

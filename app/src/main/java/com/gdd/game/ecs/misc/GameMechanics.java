@@ -40,13 +40,15 @@ public class GameMechanics {
                 assert (health != null);
                 var ai = (AiComponent) entity.getComponent(ComponentType.AI);
                 assert (ai != null);
+                var status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
+                assert (status != null);
+
                 switch (ctx.action) {
                     case HEAL_ALL -> {
                         health.heal(ctx.action.amount);
 
                         if(!health.isLow()) {
-                            StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
-                            if (status != null) status.reset();
+                            status.reset();
                         }
                     }
                     // NOTE: heal only ants
@@ -55,8 +57,7 @@ public class GameMechanics {
                             health.heal(ctx.action.amount);
 
                             if(!health.isLow()) {
-                                StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
-                                if (status != null) status.reset();
+                                status.reset();
                             }
                         }
                     }
@@ -68,11 +69,8 @@ public class GameMechanics {
                             ai.restore();
                             ai.enemyToAttack = null;
                         } else if(health.isLow()) {
-                            StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
-                            if(status != null) {
-                                status.statusType = StatusComponent.Type.BLEEDING;
-                                status.bitmap = Assets.STATUS_BLEED;
-                            }
+                            status.statusType = StatusComponent.Type.BLEEDING;
+                            status.bitmap = Assets.STATUS_BLEED;
                         }
                     }
                     // NOTE: attack only wasps
@@ -85,11 +83,8 @@ public class GameMechanics {
                                 ai.restore();
                                 ai.enemyToAttack = null;
                             } else if(health.isLow()) {
-                                StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
-                                if(status != null) {
-                                    status.statusType = StatusComponent.Type.BLEEDING;
-                                    status.bitmap = Assets.STATUS_BLEED;
-                                }
+                                status.statusType = StatusComponent.Type.BLEEDING;
+                                status.bitmap = Assets.STATUS_BLEED;
                             }
                         }
                     }
@@ -100,21 +95,24 @@ public class GameMechanics {
                         if (entity.tag != EntityTag.ANT)
                             break;
 
-                       var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
-                       assert(phys != null);
+                        if (status.statusType == StatusComponent.Type.BLEEDING)
+                            break;
 
-                       phys.speedModifier = 2.0f;
-                       ai.timerFOVModifier = 3.0f;
+                        var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
+                        assert(phys != null);
 
-                       StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
-                       if(status != null) {
-                           status.statusType = StatusComponent.Type.INCREASED_SIGHT;
-                           status.bitmap = Assets.STATUS_FOV;
-                       }
+                        phys.speedModifier = 2.0f;
+                        ai.timerFOVModifier = 3.0f;
+
+                        status.statusType = StatusComponent.Type.INCREASED_SIGHT;
+                        status.bitmap = Assets.STATUS_FOV;
                     }
                     // NOTE: applies only to ants
                     case DOUBLE_SPEED -> {
                         if (entity.tag != EntityTag.ANT)
+                            break;
+
+                        if (status.statusType == StatusComponent.Type.BLEEDING)
                             break;
 
                         var phys = (PhysicComponent) entity.getComponent(ComponentType.PHYSIC);
@@ -122,11 +120,8 @@ public class GameMechanics {
                         phys.speedModifier = 2.0f;
                         ai.timerSpeedModifier = 3.0f;
 
-                        StatusComponent status = (StatusComponent) entity.getComponent(ComponentType.STATUS);
-                        if(status != null) {
-                            status.statusType = StatusComponent.Type.HASTE;
-                            status.bitmap = Assets.STATUS_SPEED;
-                        }
+                        status.statusType = StatusComponent.Type.HASTE;
+                        status.bitmap = Assets.STATUS_SPEED;
                     }
                 }
 

@@ -111,6 +111,10 @@ public class Camera {
 
         zoom = clamp(zoomAtPinchStart * (currentDistance / pinchStartDistancePx), minZoom, maxZoom);
 
+        // evita il tremolio della camera se tenti di andare oltre i limiti
+        if(zoom <= minZoom || zoom >= maxZoom)
+            return;
+
         float width = worldWidth / zoom;
         float height = worldHeight / zoom;
 

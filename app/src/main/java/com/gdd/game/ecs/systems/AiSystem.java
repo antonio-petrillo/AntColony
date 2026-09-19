@@ -76,8 +76,12 @@ public final class AiSystem implements System {
         }
         float angle = phys.body.getAngle();
         var vel = phys.body.getLinearVelocity();
-        vel.setX(entity.tag.getSpeed() * (float) Math.cos(angle));
-        vel.setY(entity.tag.getSpeed() * (float) Math.sin(angle));
+        var modifier = switch (entity.tag) {
+            case ANT -> phys.speedModifier;
+            case NONE, WASP, NEST, FOOD, WALL -> 1.0f;
+        };
+        vel.setX(entity.tag.getSpeed() * modifier * (float) Math.cos(angle));
+        vel.setY(entity.tag.getSpeed() * modifier * (float) Math.sin(angle));
         phys.body.setAngularVelocity(0);
     }
 

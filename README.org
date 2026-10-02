@@ -20,14 +20,14 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] Game mechanics:
 - [X] Texture/Bitmap
 
-* BUGS to fix [75%]
+* BUGS to fix [100%]
 - [X] Handle World boundaries appropriately
 - [X] WASP hit food apply to much velocity
   WASP shouldn't hit the food, they don't apply or collide with them
 - [X] Makes *Ants* and *Wasps* fight still standing
-- [ ] If pinch to zoom start on button *PAUSE* and on release is still on button *PAUSE* the game gets paused while zooming and panning.
+- [X] If pinch to zoom start on button *PAUSE* and on release is still on button *PAUSE* the game gets paused while zooming and panning.
 
-* Improvements [5/9]
+* Improvements [6/9]
 - [ ] MAYBE add objects POOL (Poor Objects Oriented Linear-allocator)
 - [ ] MAYBE instead of List of Objects use [[https://www.data-structures-in-practice.com/intrusive-linked-lists/][intrusive list]] to store objects
 - [X] add field of view to *Ants* and *Wasps*:
@@ -39,7 +39,7 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] Fix positioning of energy label positioning
 - [X] Spawn food near to the nest if the player has few ants 
 - [X] Game mechanics system is quite quirky to use, is thought as an UI from the '90, but with the mouse in mind (hence is super quirky) 
-- [ ] add sound o card plays
+- [X] add sound o card plays
   
   
 * Mechanics [100%]
@@ -50,8 +50,17 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
   - AOE damage that hits only wasps (more expensive)
   - AOE heal that heal only ants (more expensive)
 * Note
+** JliquidFun pain points
 JliquidFun doesn't expose method ~endContact~ in ~ContactListener~ hence it's impossible to handle in a proper way stuff like bouncing of entities and such.
 With /in a proper way/ I mean with the physic engine provide by the underlying Box2D.
+
+** Physical Simulation
+| Entity | Size  |
+|--------+-------|
+| Ant    | 9 cm  |
+| Wasp   | 14 cm |
+| Food   | 18 cm |
+
 
 # Local Variables:
 # jinx-local-words: "AntColony JliquidFun"

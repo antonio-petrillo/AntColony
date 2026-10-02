@@ -41,7 +41,9 @@ Progetto per il corso Game Design and Development della Federico II, anno accade
 - [X] Game mechanics system is quite quirky to use, is thought as an UI from the '90, but with the mouse in mind (hence is super quirky) 
 - [X] add sound o card plays
   
-  
+* APK
+L'apk può essere trovato nella directory ~./apk/~.
+
 * Mechanics [100%]
 - [X] Add *energy* counter, increase when ants deliver food    
 - [X] Add button with spell that consume *energy*:

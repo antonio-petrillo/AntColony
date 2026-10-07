@@ -3,9 +3,11 @@ package com.gdd.game.screen;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.gdd.game.Assets;
 import com.gdd.game.Game;
+import com.gdd.game.json.EntityLoader;
 
 import java.io.IOException;
 
@@ -22,6 +24,14 @@ public class LoadingScreen extends Screen {
     public void update(float deltaTime) {
 
         AssetManager manager = Assets.manager;
+
+        // ***** ENTITIES *****
+        try {
+            EntityLoader.load(manager);
+        } catch(Exception e) {
+            Log.e("Loading", "Errore caricamento entities.json", e);
+            throw new RuntimeException(e);
+        }
 
         // ***** MUSIC & SOUNDS *****
 

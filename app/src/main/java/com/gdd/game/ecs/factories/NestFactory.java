@@ -16,11 +16,25 @@ import com.google.fpl.liquidfun.FixtureDef;
 import com.google.fpl.liquidfun.PolygonShape;
 import com.google.fpl.liquidfun.Vec2;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class NestFactory {
 
-    private static final float SIDE = 0.25f;
+    private static int HEALTH;
+    private static float SIDE, DENSITY, FRICTION, RESTITUTION;
 
     private NestFactory() {}
+
+
+    public static void init(JSONObject o) throws JSONException {
+
+        HEALTH = o.getInt("health");
+
+        JSONObject p = o.getJSONObject("physics");
+        SIDE = (float) p.getDouble("size");
+        FRICTION = (float) p.getDouble("friction");
+    }
 
     public static Entity makeNest(GameWorld gw, Vec2 nestPosition) {
 
@@ -29,7 +43,7 @@ public class NestFactory {
         nest.transform.halfHeight = SIDE*3.5f;
         // nest.addComponent(new BoxRenderComp(Color.BLUE, true));
         nest.addComponent(new BitmapRenderComp(Assets.NEST_BITMAP));
-        nest.addComponent(new HealthComponent(1000));
+        nest.addComponent(new HealthComponent(HEALTH));
 
         // ***** PHYSICS
 
@@ -44,7 +58,7 @@ public class NestFactory {
 
         FixtureDef fdef = new FixtureDef();
         fdef.setShape(shape);
-        fdef.setFriction(0.3f);
+        fdef.setFriction(FRICTION);
         body.createFixture(fdef);
 
         bdef.delete();

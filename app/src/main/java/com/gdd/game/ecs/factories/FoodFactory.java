@@ -16,11 +16,23 @@ import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.CircleShape;
 import com.google.fpl.liquidfun.FixtureDef;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class FoodFactory {
 
-    public static final float RADIUS = 0.18f;
+    private static float RADIUS, DENSITY, FRICTION, RESTITUTION;
 
     private FoodFactory() {}
+
+    public static void init(JSONObject o) throws JSONException {
+
+        JSONObject p = o.getJSONObject("physics");
+        RADIUS = (float) p.getDouble("size");
+        DENSITY = (float) p.getDouble("density");
+        FRICTION = (float) p.getDouble("friction");
+        RESTITUTION = (float) p.getDouble("restitution");
+    }
 
     public static Entity makeFood(GameWorld gw, float x, float y) {
 
@@ -49,9 +61,9 @@ public class FoodFactory {
         FixtureDef fdef = new FixtureDef();
 
         fdef.setShape(shape);
-        fdef.setRestitution(0);
-        fdef.setFriction(0.3f);
-        fdef.setDensity(0.5f);
+        fdef.setDensity(DENSITY);
+        fdef.setFriction(FRICTION);
+        fdef.setRestitution(RESTITUTION);
 
         body.createFixture(fdef);
 

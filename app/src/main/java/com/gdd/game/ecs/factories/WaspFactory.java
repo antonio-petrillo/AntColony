@@ -19,19 +19,33 @@ import com.google.fpl.liquidfun.CircleShape;
 import com.google.fpl.liquidfun.FixtureDef;
 import com.google.fpl.liquidfun.Vec2;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Random;
 
 public class WaspFactory {
 
-    private static final float DENSITY     = 1.0f;
-    private static final float FRICTION    = 0.3f;
-    private static final float RESTITUTION = 0.2f;
-    private static final float RADIUS = 0.14f;
+    private static int HEALTH, ATTACK_POWER;
+    private static float SPEED;
+    private static float RADIUS, DENSITY, FRICTION, RESTITUTION;
+
     private static final Random rng = new Random();
 
-    public static final float ATTACK_COOLDOWN = 1.0f;
-
     private WaspFactory() {}
+
+    public static void init(JSONObject o) throws JSONException {
+
+        HEALTH = o.getInt("health");
+        ATTACK_POWER = o.getInt("attack_power");
+        SPEED = (float) o.getDouble("speed");
+
+        JSONObject p = o.getJSONObject("physics");
+        RADIUS = (float) p.getDouble("size");
+        DENSITY = (float) p.getDouble("density");
+        FRICTION = (float) p.getDouble("friction");
+        RESTITUTION = (float) p.getDouble("restitution");
+    }
 
     public static Entity makeWasp(GameWorld gw, float x, float y, float direction) {
 
@@ -43,10 +57,10 @@ public class WaspFactory {
         //wasp.addComponent(new CircleRenderComp(Color.YELLOW, true));
         wasp.addComponent(new BitmapRenderComp(Assets.WASP_BITMAP));
         wasp.addComponent(new StatusComponent());
-        wasp.addComponent(new HealthComponent(100));
+        wasp.addComponent(new HealthComponent(HEALTH));
 
         float timeBetweenActions = rng.nextFloat(0.5f, 5.0f);
-        wasp.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, 15));
+        wasp.addComponent(new AiComponent(AiComponent.State.WANDER, timeBetweenActions, ATTACK_POWER));
 
         // ***** PHYSICS
 
@@ -84,7 +98,7 @@ public class WaspFactory {
         body.setUserData(wasp);
         wasp.addComponent(new PhysicComponent(body));
 
-        return  wasp;
+        return wasp;
     }
 
 }

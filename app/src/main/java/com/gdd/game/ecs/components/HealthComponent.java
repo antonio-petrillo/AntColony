@@ -2,11 +2,11 @@ package com.gdd.game.ecs.components;
 
 public class HealthComponent extends Component{
 
-    public int maxHealth = 100;
-    public int health;
+    public int health, maxHealth;
 
-    public HealthComponent(int startingHealth) {
-        health = startingHealth;
+    public HealthComponent(int health) {
+        this.health = health;
+        maxHealth = health;
     }
 
     @Override
